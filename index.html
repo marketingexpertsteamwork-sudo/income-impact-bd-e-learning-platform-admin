@@ -8,26 +8,7 @@
         :root {
             --primary-color: #3498db; --secondary-color: #f5f7fa; --sidebar-bg: #2c3e50; --text-color: #333; --light-text-color: #ecf0f1; --border-color: #dfe3e8; --success-color: #2ecc71; --danger-color: #e74c3c; --warning-color: #f39c12; --shadow: 0 4px 12px rgba(0,0,0,0.08);
         }
-        /* নতুন লগইন স্ক্রিনের জন্য CSS */
-        #login-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(0, 0, 0, 0.8); backdrop-filter: blur(5px);
-            display: flex; justify-content: center; align-items: center; z-index: 9999;
-        }
-        #login-box {
-            background-color: white; padding: 30px; border-radius: 10px;
-            width: 90%; max-width: 350px; text-align: center; box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-        }
-        #login-box h3 { margin-top: 0; color: var(--text-color); }
-        #admin-password {
-            width: 100%; padding: 12px; margin-top: 15px; margin-bottom: 20px;
-            border: 1px solid var(--border-color); border-radius: 5px; box-sizing: border-box; font-size: 1rem;
-        }
-        #login-btn {
-            width: 100%; padding: 12px; background-color: var(--primary-color);
-            color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 1rem;
-        }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background-color: var(--secondary-color); display: none; /* Initially hide the body */ height: 100vh; overflow: hidden; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background-color: var(--secondary-color); display: flex; height: 100vh; overflow: hidden; }
         .sidebar { width: 250px; background-color: var(--sidebar-bg); color: var(--light-text-color); display: flex; flex-direction: column; flex-shrink: 0; transition: margin-left 0.3s ease; overflow-y: auto; }
         .sidebar-header { text-align: center; padding: 20px; border-bottom: 1px solid #34495e; }
         .sidebar-header h2 { margin: 0; font-size: 1.8rem; font-weight: 700; }
@@ -78,16 +59,21 @@
     </style>
 </head>
 <body>
-    <!-- নতুন যুক্ত করা উন্নত লগইন স্ক্রিন -->
-    <div id="login-overlay">
-        <div id="login-box">
-            <h3>অ্যাডমিন প্যানেল</h3>
-            <form id="admin-login-form">
-                <input type="password" id="admin-password" placeholder="পাসওয়ার্ড দিন" required>
-                <button type="submit" id="login-btn">প্রবেশ করুন</button>
-            </form>
-        </div>
-    </div>
+    <!-- নতুন যুক্ত করা পাসওয়ার্ড নিরাপত্তা স্ক্রিপ্ট -->
+    <script>
+        (function() {
+            // এই পাসওয়ার্ডটি আপনি নিজের মতো করে পরিবর্তন করে নিতে পারেন।
+            const correctPassword = "admin2025"; 
+            
+            let password = prompt("অ্যাডমিন প্যানেলে প্রবেশের জন্য পাসওয়ার্ড দিন:", "");
+            
+            if (password !== correctPassword) {
+                alert("ভুল পাসওয়ার্ড! আপনাকে হোমপেজে পাঠানো হচ্ছে।");
+                // ভুল পাসওয়ার্ড দিলে তাকে index.html (হোমপেজ) এ পাঠিয়ে দেওয়া হবে।
+                window.location.href = "index.html"; 
+            }
+        })();
+    </script>
     
     <button class="menu-toggle" id="menuToggle"><span class="bar"></span><span class="bar"></span><span class="bar"></span></button>
     <aside class="sidebar" id="sidebar">
@@ -214,41 +200,6 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
     <script>
-        // নতুন লগইন স্ক্রিনের জন্য JavaScript
-        (function() {
-            // এই পাসওয়ার্ডটি আপনি নিজের মতো করে পরিবর্তন করে নিতে পারেন।
-            const correctPassword = "admin2025";
-            const sessionKey = "admin_logged_in";
-
-            const loginOverlay = document.getElementById('login-overlay');
-            const loginForm = document.getElementById('admin-login-form');
-            const passwordInput = document.getElementById('admin-password');
-            const mainBody = document.querySelector('body');
-
-            // চেক করে দেখুন ইউজার আগে থেকেই লগইন করা আছে কিনা
-            if (sessionStorage.getItem(sessionKey) === "true") {
-                showAdminPanel();
-            }
-
-            loginForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                if (passwordInput.value === correctPassword) {
-                    // যদি পাসওয়ার্ড সঠিক হয়
-                    sessionStorage.setItem(sessionKey, "true");
-                    showAdminPanel();
-                } else {
-                    // যদি পাসওয়ার্ড ভুল হয়
-                    alert("ভুল পাসওয়ার্ড!");
-                    passwordInput.value = "";
-                }
-            });
-
-            function showAdminPanel() {
-                loginOverlay.style.display = 'none';
-                mainBody.style.display = 'flex';
-            }
-        })();
-
         const firebaseConfig = { apiKey: "AIzaSyChZ7-QGcqYPCEAXMSSzlvcj_7ZR0kRpcA", authDomain: "income-impact-bd.firebaseapp.com", databaseURL: "https://income-impact-bd-default-rtdb.firebaseio.com", projectId: "income-impact-bd", storageBucket: "income-impact-bd.firebasestorage.app", messagingSenderId: "513352311845", appId: "1:513352311845:web:a775d725d4a8ceb2eecbcc", measurementId: "G-MSVLBPL2SX" };
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
