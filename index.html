@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Income Impact BD</title>
+    <style>
+        :root {
+            --primary-color: #3498db; --secondary-color: #f5f7fa; --sidebar-bg: #2c3e50; --text-color: #333; --light-text-color: #ecf0f1; --border-color: #dfe3e8; --success-color: #2ecc71; --danger-color: #e74c3c; --warning-color: #f39c12; --shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        /* নতুন লগইন স্ক্রিনের জন্য CSS */
+        #login-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.8); backdrop-filter: blur(5px);
+            display: flex; justify-content: center; align-items: center; z-index: 9999;
+        }
+        #login-box {
+            background-color: white; padding: 30px; border-radius: 10px;
+            width: 90%; max-width: 350px; text-align: center; box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+        #login-box h3 { margin-top: 0; color: var(--text-color); }
+        #admin-password {
+            width: 100%; padding: 12px; margin-top: 15px; margin-bottom: 20px;
+            border: 1px solid var(--border-color); border-radius: 5px; box-sizing: border-box; font-size: 1rem;
+        }
+        #login-btn {
+            width: 100%; padding: 12px; background-color: var(--primary-color);
+            color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 1rem;
+        }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background-color: var(--secondary-color); display: none; /* Initially hide the body */ height: 100vh; overflow: hidden; }
+        .sidebar { width: 250px; background-color: var(--sidebar-bg); color: var(--light-text-color); display: flex; flex-direction: column; flex-shrink: 0; transition: margin-left 0.3s ease; overflow-y: auto; }
+        .sidebar-header { text-align: center; padding: 20px; border-bottom: 1px solid #34495e; }
+        .sidebar-header h2 { margin: 0; font-size: 1.8rem; font-weight: 700; }
+        .sidebar nav ul { list-style: none; padding: 0; margin: 20px 0; }
+        .sidebar nav ul li a { display: block; padding: 15px 25px; color: var(--light-text-color); text-decoration: none; transition: background-color 0.3s, border-left 0.3s; font-size: 1.1rem; border-left: 4px solid transparent; }
+        .sidebar nav ul li a:hover { background-color: #34495e; }
+        .sidebar nav ul li a.active { background-color: #34495e; border-left: 4px solid var(--primary-color); font-weight: bold; }
+        .main-content { flex-grow: 1; padding: 25px; overflow-y: auto; position: relative; }
+        .content-section { display: none; }
+        .content-section.active { display: block; animation: fadeIn 0.5s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .page-header { margin-bottom: 25px; }
+        .page-header h1 { margin: 0; font-size: 2.2rem; color: var(--text-color); font-weight: 700; }
+        .menu-toggle { display: none; position: fixed; top: 15px; left: 15px; z-index: 1001; background: var(--sidebar-bg); color: white; border: none; padding: 10px 12px; border-radius: 5px; cursor: pointer; }
+        .menu-toggle .bar { display: block; width: 22px; height: 3px; background-color: white; margin: 4px 0; transition: 0.3s; }
+        .dashboard-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .card { background-color: #fff; padding: 25px; border-radius: 8px; box-shadow: var(--shadow); border-left: 5px solid var(--primary-color); }
+        .card.success { border-color: var(--success-color); } .card.danger { border-color: var(--danger-color); } .card.warning { border-color: var(--warning-color); }
+        .card h3 { margin-top: 0; font-size: 1.1rem; color: #777; }
+        .card .value { font-size: 2.2rem; font-weight: bold; color: var(--text-color); }
+        .chart-container { background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: var(--shadow); }
+        .table-container { background-color: #fff; border-radius: 8px; box-shadow: var(--shadow); overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid var(--border-color); white-space: nowrap; }
+        th { background-color: #f9fafb; font-weight: 600; }
+        .status { padding: 5px 12px; border-radius: 15px; font-size: 0.85rem; font-weight: bold; color: #fff; }
+        .status.active, .status.published { background-color: var(--success-color); } .status.blocked { background-color: var(--danger-color); } .status.pending { background-color: var(--warning-color); }
+        .action-btn { border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; color: #fff; margin-right: 5px; font-size: 0.9rem; }
+        .edit-btn { background-color: var(--primary-color); } .delete-btn { background-color: var(--danger-color); }
+        .settings-card { background-color: #fff; padding: 30px 25px; border-radius: 12px; box-shadow: var(--shadow); margin-bottom: 25px; }
+        .settings-card .form-group { margin-bottom: 25px; }
+        .settings-card .form-group label { display: block; margin-bottom: 10px; font-weight: 600; font-size: 1.1rem; color: var(--text-color); }
+        .settings-card .form-group input, .settings-card .form-group textarea { width: 100%; padding: 14px; border: 1px solid var(--border-color); border-radius: 8px; box-sizing: border-box; font-size: 1rem; }
+        .settings-card .submit-btn, .settings-card .form-btn { width: auto; min-width: 150px; padding: 15px; background-color: var(--primary-color); color: #fff; border: none; border-radius: 8px; cursor: pointer; font-size: 1.1rem; font-weight: bold; margin-top: 10px; }
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); justify-content: center; align-items: center; }
+        .modal-content { background-color: #fff; padding: 30px; border-radius: 8px; width: 90%; max-width: 500px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); animation: slideIn 0.3s; }
+        @keyframes slideIn { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 20px; }
+        .close-btn { cursor: pointer; font-size: 1.5rem; color: #aaa; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 5px; box-sizing: border-box; }
+        .submit-btn { width: 100%; padding: 15px; background-color: var(--primary-color); color: #fff; border: none; border-radius: 5px; cursor: pointer; font-size: 1.1rem; font-weight: bold; }
+        .add-new-btn { background-color: var(--success-color); color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 1rem; margin-bottom: 20px; }
+        @media (max-width: 768px) {
+            .sidebar { position: fixed; left: 0; top: 0; height: 100%; z-index: 1000; margin-left: -250px; } .sidebar.show { margin-left: 0; }
+            .main-content { padding: 20px; padding-top: 70px; } .menu-toggle { display: block; } .page-header h1 { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- নতুন যুক্ত করা উন্নত লগইন স্ক্রিন -->
+    <div id="login-overlay">
+        <div id="login-box">
+            <h3>অ্যাডমিন প্যানেল</h3>
+            <form id="admin-login-form">
+                <input type="password" id="admin-password" placeholder="পাসওয়ার্ড দিন" required>
+                <button type="submit" id="login-btn">প্রবেশ করুন</button>
+            </form>
+        </div>
+    </div>
+    
+    <button class="menu-toggle" id="menuToggle"><span class="bar"></span><span class="bar"></span><span class="bar"></span></button>
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header"><h2>Admin<br>Panel</h2></div>
+        <nav>
+            <ul>
+                <li><a href="#dashboard" class="nav-link active">ড্যাশবোর্ড</a></li>
+                <li><a href="#user-management" class="nav-link">ব্যবহারকারী ম্যানেজমেন্ট</a></li>
+                <li><a href="#course-management" class="nav-link">কোর্স ম্যানেজমেন্ট</a></li>
+                <li><a href="#earnings" class="nav-link">আর্নিং রিপোর্ট</a></li>
+                <li><a href="#project-management" class="nav-link">প্রজেক্ট ম্যানেজমেন্ট</a></li>
+                <li><a href="#blog-management" class="nav-link">ব্লগ/নোটিশ</a></li>
+                <li><a href="#page-content" class="nav-link">পেজ কনটেন্ট</a></li>
+                <li><a href="#menu-management" class="nav-link">ন্যাভিগেশন মেনু</a></li>
+                <li><a href="#role-management" class="nav-link">সাব-অ্যাডমিন রোল</a></li>
+                <li><a href="#footer-management" class="nav-link">ফুটার ম্যানেজমেন্ট</a></li>
+                <li><a href="#settings" class="nav-link">সেটিংস ও থিম</a></li>
+            </ul>
+        </nav>
+    </aside>
+    <main class="main-content">
+        <section id="dashboard" class="content-section active">
+            <div class="page-header"><h1>ড্যাশবোর্ড</h1></div>
+            <div class="dashboard-cards">
+                <div class="card"><h3>মোট ব্যবহারকারী</h3><p class="value" id="totalUsers">0</p></div>
+                <div class="card success"><h3>মোট কোর্স</h3><p class="value" id="totalCourses">0</p></div>
+                <div class="card warning"><h3>মোট আয় (BDT)</h3><p class="value" id="totalEarnings">0</p></div>
+                <div class="card danger"><h3>অ্যাক্টিভ শিক্ষার্থী</h3><p class="value" id="activeStudents">0</p></div>
+            </div>
+            <div class="chart-container"><canvas id="userGrowthChart"></canvas></div>
+        </section>
+        <section id="user-management" class="content-section">
+            <div class="page-header"><h1>ব্যবহারকারী ম্যানেজমেন্ট</h1></div>
+            <div class="table-container">
+                <table><thead><tr><th>নাম</th><th>ইমেইল</th><th>রেজিস্ট্রেশনের তারিখ</th><th>স্ট্যাটাস</th><th>অ্যাকশন</th></tr></thead><tbody id="userTableBody"></tbody></table>
+            </div>
+        </section>
+        <section id="course-management" class="content-section">
+            <div class="page-header"><h1>কোর্স ম্যানেজমেন্ট</h1></div><button class="add-new-btn" onclick="openCourseModal()">নতুন কোর্স যোগ করুন</button>
+            <div class="table-container">
+                <table><thead><tr><th>কোর্সের নাম</th><th>ক্যাটেগরি</th><th>মূল্য (BDT)</th><th>স্ট্যাটাস</th><th>অ্যাকশন</th></tr></thead><tbody id="courseTableBody"></tbody></table>
+            </div>
+        </section>
+        <section id="earnings" class="content-section">
+            <div class="page-header"><h1>আর্নিং রিপোর্ট</h1></div>
+            <div class="table-container">
+                <table><thead><tr><th>ট্রানজেকশন আইডি</th><th>ব্যবহারকারী</th><th>কোর্স</th><th>পরিমাণ (BDT)</th><th>তারিখ</th></tr></thead><tbody id="earningsTableBody"></tbody></table>
+            </div>
+        </section>
+        <section id="project-management" class="content-section">
+            <div class="page-header"><h1>আপকামিং প্রজেক্ট ম্যানেজমেন্ট</h1></div><button class="add-new-btn" onclick="openProjectModal()">নতুন প্রজেক্ট যোগ করুন</button>
+            <div class="table-container">
+                <table><thead><tr><th>প্রজেক্টের নাম</th><th>লিংক</th><th>অ্যাকশন</th></tr></thead><tbody id="projectTableBody"></tbody></table>
+            </div>
+        </section>
+        <section id="blog-management" class="content-section">
+            <div class="page-header"><h1>ব্লগ/নোটিশ ম্যানেজমেন্ট</h1></div><button class="add-new-btn" onclick="openBlogModal()">নতুন পোস্ট যোগ করুন</button>
+            <div class="table-container">
+                <table><thead><tr><th>শিরোনাম</th><th>স্ট্যাটাস</th><th>তারিখ</th><th>অ্যাকশন</th></tr></thead><tbody id="blogTableBody"></tbody></table>
+            </div>
+        </section>
+        <section id="page-content" class="content-section">
+            <div class="page-header"><h1>পেজ কনটেন্ট ম্যানেজমেন্ট</h1></div>
+            <div class="settings-card">
+                <h3>সাধারণ কনটেন্ট</h3><form id="siteContentForm"><div class="form-group"><label for="bannerText">ব্যানারের লেখা</label><textarea id="bannerText" rows="4"></textarea></div><div class="form-group"><label for="aboutAdminText">"About Admin" সেকশনের লেখা</label><textarea id="aboutAdminText" rows="6"></textarea></div><button type="submit" class="form-btn">কনটেন্ট সেভ করুন</button></form>
+            </div>
+            <div class="settings-card">
+                <h3>সেকশনের শিরোনামসমূহ</h3><form id="sectionTitlesForm"><h4>ফিচার সেকশন</h4><div class="form-group"><label for="featuresSubtitle">সাব-টাইটেল</label><input type="text" id="featuresSubtitle"></div><div class="form-group"><label for="featuresMainTitle">প্রধান শিরোনাম</label><input type="text" id="featuresMainTitle"></div><hr><h4>কোর্স সেকশন</h4><div class="form-group"><label for="coursesSubtitle">সাব-টাইটেল</label><input type="text" id="coursesSubtitle"></div><div class="form-group"><label for="coursesMainTitle">প্রধান শিরোনাম</label><input type="text" id="coursesMainTitle"></div><hr><h4>প্রজেক্ট সেকশন</h4><div class="form-group"><label for="projectsSubtitle">সাব-টাইটেল</label><input type="text" id="projectsSubtitle"></div><div class="form-group"><label for="projectsMainTitle">প্রধান শিরোনাম</label><input type="text" id="projectsMainTitle"></div><button type="submit" class="form-btn">শিরোনাম সেভ করুন</button></form>
+            </div>
+            <div class="settings-card">
+                <h3>ফিচার সেকশন ম্যানেজমেন্ট</h3><button class="add-new-btn" onclick="openFeatureModal()">নতুন ফিচার যোগ করুন</button>
+                <div class="table-container">
+                    <table><thead><tr><th>আইকন URL</th><th>শিরোনাম</th><th>বর্ণনা</th><th>অ্যাকশন</th></tr></thead><tbody id="featuresTableBody"></tbody></table>
+                </div>
+            </div>
+            <div class="settings-card">
+                <h3>ইন্ট্রো ফুটার আইটেম</h3><form id="introFooterForm"><h4>আইটেম ১</h4><div class="form-group"><label for="introItem1Image">ছবির URL</label><input type="text" id="introItem1Image"></div><div class="form-group"><label for="introItem1Title">শিরোনাম</label><input type="text" id="introItem1Title"></div><hr><h4>আইটেম ২</h4><div class="form-group"><label for="introItem2Image">ছবির URL</label><input type="text" id="introItem2Image"></div><div class="form-group"><label for="introItem2Title">শিরোনাম</label><input type="text" id="introItem2Title"></div><hr><h4>আইটেম ৩</h4><div class="form-group"><label for="introItem3Image">ছবির URL</label><input type="text" id="introItem3Image"></div><div class="form-group"><label for="introItem3Title">শিরোনাম</label><input type="text" id="introItem3Title"></div><button type="submit" class="form-btn">আইটেম সেভ করুন</button></form>
+            </div>
+            <div class="settings-card">
+                <h3>সোশ্যাল মিডিয়া লিংক</h3><form id="socialLinksForm"><div class="form-group"><label for="facebookLink">Facebook</label><input type="text" id="facebookLink"></div><div class="form-group"><label for="telegramLink">Telegram</label><input type="text" id="telegramLink"></div><div class="form-group"><label for="twitterLink">Twitter</label><input type="text" id="twitterLink"></div><div class="form-group"><label for="youtubeLink">YouTube</label><input type="text" id="youtubeLink"></div><button type="submit" class="form-btn">লিংক সেভ করুন</button></form>
+            </div>
+        </section>
+        <section id="menu-management" class="content-section">
+            <div class="page-header"><h1>ন্যাভিগেশন মেনু ম্যানেজমেন্ট</h1></div><button class="add-new-btn" onclick="openMenuModal()">নতুন মেনু আইটেম যোগ করুন</button>
+            <div class="table-container">
+                <table><thead><tr><th>নাম</th><th>URL</th><th>Order</th><th>অ্যাকশন</th></tr></thead><tbody id="menuTableBody"></tbody></table>
+            </div>
+        </section>
+        <section id="role-management" class="content-section">
+            <div class="page-header"><h1>সাব-অ্যাডমিন রোল ম্যানেজমেন্ট</h1></div><button class="add-new-btn" onclick="openRoleModal()">নতুন রোল যোগ করুন</button>
+            <div class="table-container">
+                <table><thead><tr><th>রোলের নাম</th><th>ভ্যালু</th><th>অ্যাকশন</th></tr></thead><tbody id="roleTableBody"></tbody></table>
+            </div>
+        </section>
+        <section id="footer-management" class="content-section">
+            <div class="page-header"><h1>ফুটার ম্যানেজমেন্ট</h1></div><button class="add-new-btn" onclick="openFooterLinkModal()">নতুন ফুটার লিংক যোগ করুন</button>
+            <div class="table-container">
+                <table><thead><tr><th>লিংকের নাম</th><th>লিংকের URL</th><th>অ্যাকশন</th></tr></thead><tbody id="footerLinksTableBody"></tbody></table>
+            </div>
+        </section>
+        <section id="settings" class="content-section">
+            <div class="page-header"><h1>ওয়েবসাইট সেটিংস ও থিম</h1></div>
+            <div class="settings-card">
+                <form id="settingsForm">
+                    <h3>সাধারণ সেটিংস</h3><div class="form-group"><label for="siteTitle">ওয়েবসাইটের শিরোনাম</label><input type="text" id="siteTitle"></div><div class="form-group"><label for="logoUrl">লোগোর URL</label><input type="text" id="logoUrl"></div><div class="form-group"><label for="copyrightText">কপিরাইট লেখা</label><input type="text" id="copyrightText"></div><hr>
+                    <h3>থিম কাস্টমাইজেশন</h3><div class="form-group"><label for="primaryColor">প্রাইমারি রঙ</label><input type="color" id="primaryColor" style="width: 100px; height: 40px;"></div><div class="form-group"><label for="secondaryColor">সেকেন্ডারি রঙ</label><input type="color" id="secondaryColor" style="width: 100px; height: 40px;"></div><hr>
+                    <h3>পেজের ছবিসমূহ</h3><div class="form-group"><label for="aboutImageUrl">About ছবির URL</label><input type="text" id="aboutImageUrl"></div><div class="form-group"><label for="projectsImageUrl">Projects ছবির URL</label><input type="text" id="projectsImageUrl"></div><hr>
+                    <h3>যোগাযোগ ও ফুটার</h3><div class="form-group"><label for="contactEmail">যোগাযোগের ইমেইল</label><input type="email" id="contactEmail"></div><div class="form-group"><label for="contactPhone">যোগাযোগের ফোন</label><input type="text" id="contactPhone"></div><div class="form-group"><label for="contactAddress">ঠিকানা</label><input type="text" id="contactAddress"></div><div class="form-group"><label for="footerDescription">ফুটারের বিবরণ</label><textarea id="footerDescription" rows="4"></textarea></div><hr>
+                    <h3>ডেভেলপার ক্রেডিট</h3><div class="form-group"><label for="developerName">ডেভেলপারের নাম</label><input type="text" id="developerName"></div><div class="form-group"><label for="developerUrl">ডেভেলপারের URL</label><input type="text" id="developerUrl"></div>
+                    <button type="submit" class="form-btn">সেটিংস সেভ করুন</button>
+                </form>
+            </div>
+        </section>
+    </main>
+    <div id="userModal" class="modal"><div class="modal-content"><div class="modal-header"><h2 id="userModalTitle"></h2><span class="close-btn" onclick="closeModal('userModal')">&times;</span></div><form id="userForm"><input type="hidden" id="userId"><div class="form-group"><label for="userName">নাম</label><input type="text" id="userName" required></div><div class="form-group"><label for="userEmail">ইমেইল</label><input type="email" id="userEmail" required></div><div class="form-group"><label for="userStatus">স্ট্যাটাস</label><select id="userStatus"><option value="active">অ্যাক্টিভ</option><option value="blocked">ব্লকড</option></select></div><button type="submit" class="submit-btn">সেভ করুন</button></form></div></div>
+    <div id="courseModal" class="modal"><div class="modal-content" style="max-height: 80vh; overflow-y: auto;"><div class="modal-header"><h2 id="courseModalTitle"></h2><span class="close-btn" onclick="closeModal('courseModal')">&times;</span></div><form id="courseForm"><input type="hidden" id="courseId"><div class="form-group"><label for="courseName">কোর্সের নাম</label><input type="text" id="courseName" required></div><div class="form-group"><label for="courseCategory">ক্যাটেগরি</label><input type="text" id="courseCategory" required></div><div class="form-group"><label for="coursePrice">মূল্য (BDT)</label><input type="number" id="coursePrice" required></div><div class="form-group"><label for="courseImageURL"> ছবির URL</label><input type="text" id="courseImageURL"></div><div class="form-group"><label for="courseDescription">বিস্তারিত বিবরণ</label><textarea id="courseDescription" rows="5"></textarea></div><div class="form-group"><label for="courseStatus">স্ট্যাটাস</label><select id="courseStatus"><option value="published">পাবলিশড</option><option value="pending">পেন্ডিং</option></select></div><button type="submit" class="submit-btn">সেভ করুন</button></form></div></div>
+    <div id="projectModal" class="modal"><div class="modal-content"><div class="modal-header"><h2 id="projectModalTitle"></h2><span class="close-btn" onclick="closeModal('projectModal')">&times;</span></div><form id="projectForm"><input type="hidden" id="projectId"><div class="form-group"><label for="projectTitle">প্রজেক্টের নাম</label><input type="text" id="projectTitle" required></div><div class="form-group"><label for="projectLink">লিংক</label><input type="text" id="projectLink" required></div><button type="submit" class="submit-btn">সেভ করুন</button></form></div></div>
+    <div id="footerLinkModal" class="modal"><div class="modal-content"><div class="modal-header"><h2 id="footerLinkModalTitle"></h2><span class="close-btn" onclick="closeModal('footerLinkModal')">&times;</span></div><form id="footerLinkForm"><input type="hidden" id="footerLinkId"><div class="form-group"><label for="footerLinkName">লিংকের নাম</label><input type="text" id="footerLinkName" required></div><div class="form-group"><label for="footerLinkUrl">লিংকের URL</label><input type="text" id="footerLinkUrl" required></div><button type="submit" class="submit-btn">সেভ করুন</button></form></div></div>
+    <div id="blogModal" class="modal"><div class="modal-content" style="max-height: 80vh; overflow-y: auto;"><div class="modal-header"><h2 id="blogModalTitle"></h2><span class="close-btn" onclick="closeModal('blogModal')">&times;</span></div><form id="blogForm"><input type="hidden" id="blogId"><div class="form-group"><label for="blogTitle">শিরোনাম</label><input type="text" id="blogTitle" required></div><div class="form-group"><label for="blogContent">কনটেন্ট</label><textarea id="blogContent" rows="8" required></textarea></div><div class="form-group"><label for="blogStatus">স্ট্যাটাস</label><select id="blogStatus"><option value="published">পাবলিশড</option><option value="pending">পেন্ডিং</option></select></div><button type="submit" class="submit-btn">সেভ করুন</button></form></div></div>
+    <div id="menuModal" class="modal"><div class="modal-content"><div class="modal-header"><h2 id="menuModalTitle"></h2><span class="close-btn" onclick="closeModal('menuModal')">&times;</span></div><form id="menuForm"><input type="hidden" id="menuId"><div class="form-group"><label for="menuName">মেনুর নাম</label><input type="text" id="menuName" required></div><div class="form-group"><label for="menuUrl">URL</label><input type="text" id="menuUrl" required></div><div class="form-group"><label for="menuOrder">Order</label><input type="number" id="menuOrder" required></div><button type="submit" class="submit-btn">সেভ করুন</button></form></div></div>
+    <div id="roleModal" class="modal"><div class="modal-content"><div class="modal-header"><h2 id="roleModalTitle"></h2><span class="close-btn" onclick="closeModal('roleModal')">&times;</span></div><form id="roleForm"><input type="hidden" id="roleId"><div class="form-group"><label for="roleName">রোলের নাম</label><input type="text" id="roleName" required></div><div class="form-group"><label for="roleValue">ভ্যালু</label><input type="number" id="roleValue" required></div><button type="submit" class="submit-btn">সেভ করুন</button></form></div></div>
+    <div id="featureModal" class="modal"><div class="modal-content"><div class="modal-header"><h2 id="featureModalTitle"></h2><span class="close-btn" onclick="closeModal('featureModal')">&times;</span></div><form id="featureForm"><input type="hidden" id="featureId"><div class="form-group"><label for="featureImage">আইকন URL</label><input type="text" id="featureImage" required></div><div class="form-group"><label for="featureTitle">শিরোনাম</label><input type="text" id="featureTitle" required></div><div class="form-group"><label for="featureDesc">ছোট বর্ণনা</label><textarea id="featureDesc" rows="3"></textarea></div><button type="submit" class="submit-btn">সেভ করুন</button></form></div></div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    <script>
+        // নতুন লগইন স্ক্রিনের জন্য JavaScript
+        (function() {
+            // এই পাসওয়ার্ডটি আপনি নিজের মতো করে পরিবর্তন করে নিতে পারেন।
+            const correctPassword = "admin2025";
+            const sessionKey = "admin_logged_in";
+
+            const loginOverlay = document.getElementById('login-overlay');
+            const loginForm = document.getElementById('admin-login-form');
+            const passwordInput = document.getElementById('admin-password');
+            const mainBody = document.querySelector('body');
+
+            // চেক করে দেখুন ইউজার আগে থেকেই লগইন করা আছে কিনা
+            if (sessionStorage.getItem(sessionKey) === "true") {
+                showAdminPanel();
+            }
+
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                if (passwordInput.value === correctPassword) {
+                    // যদি পাসওয়ার্ড সঠিক হয়
+                    sessionStorage.setItem(sessionKey, "true");
+                    showAdminPanel();
+                } else {
+                    // যদি পাসওয়ার্ড ভুল হয়
+                    alert("ভুল পাসওয়ার্ড!");
+                    passwordInput.value = "";
+                }
+            });
+
+            function showAdminPanel() {
+                loginOverlay.style.display = 'none';
+                mainBody.style.display = 'flex';
+            }
+        })();
+
+        const firebaseConfig = { apiKey: "AIzaSyChZ7-QGcqYPCEAXMSSzlvcj_7ZR0kRpcA", authDomain: "income-impact-bd.firebaseapp.com", databaseURL: "https://income-impact-bd-default-rtdb.firebaseio.com", projectId: "income-impact-bd", storageBucket: "income-impact-bd.firebasestorage.app", messagingSenderId: "513352311845", appId: "1:513352311845:web:a775d725d4a8ceb2eecbcc", measurementId: "G-MSVLBPL2SX" };
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        let allUsers = {}, allCourses = {}, allEarnings = {}, allProjects = {}, allFooterLinks = {}, allBlogPosts = {}, allMenus = {}, allRoles = {}, allFeatures = {};
+
+        document.addEventListener('DOMContentLoaded', () => { setupNavigation(); setupEventListeners(); setupMobileMenu(); listenToFirebaseData(); });
+        function setupMobileMenu() { const t = document.getElementById("menuToggle"), e = document.getElementById("sidebar"); t.addEventListener("click", (() => e.classList.toggle("show"))) }
+        function setupNavigation() { const t = document.querySelectorAll(".nav-link"), e = document.querySelectorAll(".content-section"), n = document.getElementById("sidebar"); t.forEach((l => { l.addEventListener("click", (s => { s.preventDefault(), t.forEach((t => t.classList.remove("active"))), l.classList.add("active"); const o = l.getAttribute("href").substring(1); e.forEach((t => { t.classList.remove("active"), t.id === o && t.classList.add("active") })), window.innerWidth <= 768 && n.classList.remove("show") })) })) }
+        function listenToFirebaseData() { database.ref("users").on("value", (t => { allUsers = t.val() || {}, renderUserTable(), updateDashboard() })), database.ref("courses").on("value", (t => { allCourses = t.val() || {}, renderCourseTable(), updateDashboard() })), database.ref("earnings").on("value", (t => { allEarnings = t.val() || {}, renderEarningsTable(), updateDashboard() })), database.ref("projects").on("value", (t => { allProjects = t.val() || {}, renderProjectTable() })), database.ref("blogPosts").on("value", (t => { allBlogPosts = t.val() || {}, renderBlogTable() })), database.ref("siteContent").on("value", (t => { const e = t.val() || {}; allFeatures = e.features || {}, renderFeaturesTable(), renderSiteContentForms(e) })), database.ref("footerLinks").on("value", (t => { allFooterLinks = t.val() || {}, renderFooterLinksTable() })), database.ref("navigationMenu").on("value", (t => { allMenus = t.val() || {}, renderMenuTable() })), database.ref("subAdminRoles").on("value", (t => { allRoles = t.val() || {}, renderRoleTable() })) }
+        function updateDashboard() { const t = Object.values(allUsers), e = Object.values(allCourses), n = Object.values(allEarnings); document.getElementById("totalUsers").textContent = t.length, document.getElementById("totalCourses").textContent = e.length; const l = n.reduce(((t, e) => t + (e.amount || 0)), 0); document.getElementById("totalEarnings").textContent = l.toLocaleString("bn-BD"); const s = t.filter((t => "active" === t.status)).length; document.getElementById("activeStudents").textContent = s }
+        function renderUserTable() { const t = document.getElementById("userTableBody"); t.innerHTML = ""; for (const e in allUsers) { const n = allUsers[e]; t.innerHTML += `<tr><td>${n.name}</td><td>${n.email}</td><td>${new Date(n.regDate).toLocaleDateString("bn-BD")}</td><td><span class="status ${n.status}">${"active"===n.status?"অ্যাক্টিভ":"ব্লকড"}</span></td><td><button class="action-btn edit-btn" onclick="editUser('${e}')">সম্পাদনা</button><button class="action-btn delete-btn" onclick="deleteData('users/${e}')">মুছুন</button></td></tr>` } }
+        function renderCourseTable() { const t = document.getElementById("courseTableBody"); t.innerHTML = ""; for (const e in allCourses) { const n = allCourses[e]; t.innerHTML += `<tr><td>${n.name}</td><td>${n.category}</td><td>${(n.price||0).toLocaleString("bn-BD")}</td><td><span class="status ${n.status}">${"published"===n.status?"পাবলিশড":"পেন্ডিং"}</span></td><td><button class="action-btn edit-btn" onclick="editCourse('${e}')">সম্পাদনা</button><button class="action-btn delete-btn" onclick="deleteData('courses/${e}')">মুছুন</button></td></tr>` } }
+        function renderEarningsTable() { const t = document.getElementById("earningsTableBody"); t.innerHTML = ""; for (const e in allEarnings) { const n = allEarnings[e]; t.innerHTML += `<tr><td>TXN${(n.id||"").toString().padStart(5,"0")}</td><td>${n.userName}</td><td>${n.courseName}</td><td>${(n.amount||0).toLocaleString("bn-BD")}</td><td>${new Date(n.date).toLocaleDateString("bn-BD")}</td></tr>` } }
+        function renderProjectTable() { const t = document.getElementById("projectTableBody"); t.innerHTML = ""; for (const e in allProjects) { const n = allProjects[e]; t.innerHTML += `<tr><td>${n.title}</td><td>${n.link}</td><td><button class="action-btn edit-btn" onclick="editProject('${e}')">সম্পাদনা</button><button class="action-btn delete-btn" onclick="deleteData('projects/${e}')">মুছুন</button></td></tr>` } }
+        function renderBlogTable() { const t = document.getElementById("blogTableBody"); t.innerHTML = ""; for (const e in allBlogPosts) { const n = allBlogPosts[e]; t.innerHTML += `<tr><td>${n.title}</td><td><span class="status ${n.status}">${"published"===n.status?"পাবলিশড":"পেন্ডিং"}</span></td><td>${new Date(n.date).toLocaleDateString("bn-BD")}</td><td><button class="action-btn edit-btn" onclick="editBlogPost('${e}')">সম্পাদনা</button><button class="action-btn delete-btn" onclick="deleteData('blogPosts/${e}')">মুছুন</button></td></tr>` } }
+        function renderFooterLinksTable() { const t = document.getElementById("footerLinksTableBody"); t.innerHTML = ""; for (const e in allFooterLinks) { const n = allFooterLinks[e]; t.innerHTML += `<tr><td>${n.name}</td><td>${n.url}</td><td><button class="action-btn edit-btn" onclick="editFooterLink('${e}')">সম্পাদনা</button><button class="action-btn delete-btn" onclick="deleteData('footerLinks/${e}')">মুছুন</button></td></tr>` } }
+        function renderMenuTable() { const t = document.getElementById("menuTableBody"); t.innerHTML = ""; const e = Object.entries(allMenus).sort((([,t],[,e]) => t.order - e.order)); for (const [n, l] of e) t.innerHTML += `<tr><td>${l.name}</td><td>${l.url}</td><td>${l.order}</td><td><button class="action-btn edit-btn" onclick="editMenu('${n}')">সম্পাদনা</button><button class="action-btn delete-btn" onclick="deleteData('navigationMenu/${n}')">মুছুন</button></td></tr>` }
+        function renderRoleTable() { const t = document.getElementById("roleTableBody"); t.innerHTML = ""; for (const e in allRoles) { const n = allRoles[e]; t.innerHTML += `<tr><td>${n.name}</td><td>${n.value}</td><td><button class="action-btn edit-btn" onclick="editRole('${e}')">সম্পাদনা</button><button class="action-btn delete-btn" onclick="deleteData('subAdminRoles/${e}')">মুছুন</button></td></tr>` } }
+        function renderFeaturesTable() { const t = document.getElementById("featuresTableBody"); t.innerHTML = ""; for (const e in allFeatures) { const n = allFeatures[e]; t.innerHTML += `<tr><td>${n.image.substring(0,30)}...</td><td>${n.title}</td><td>${(n.desc||"").substring(0,40)}...</td><td><button class="action-btn edit-btn" onclick="editFeature('${e}')">সম্পাদনা</button><button class="action-btn delete-btn" onclick="deleteData('siteContent/features/${e}')">মুছুন</button></td></tr>` } }
+        function renderSiteContentForms(t) { var e, n, l, s, o, a, i, d, r, c, u, m, p, h, g, f, y, v, b, k; document.getElementById("bannerText").value = (null === (e = t.banner) || void 0 === e ? void 0 : e.text) || "", document.getElementById("aboutAdminText").value = (null === (n = t.aboutAdmin) || void 0 === n ? void 0 : n.text) || "", document.getElementById("featuresSubtitle").value = (null === (l = t.sectionTitles) || void 0 === l ? void 0 : l.featuresSubtitle) || "", document.getElementById("featuresMainTitle").value = (null === (s = t.sectionTitles) || void 0 === s ? void 0 : s.featuresMainTitle) || "", document.getElementById("coursesSubtitle").value = (null === (o = t.sectionTitles) || void 0 === o ? void 0 : o.coursesSubtitle) || "", document.getElementById("coursesMainTitle").value = (null === (a = t.sectionTitles) || void 0 === a ? void 0 : a.coursesMainTitle) || "", document.getElementById("projectsSubtitle").value = (null === (i = t.sectionTitles) || void 0 === i ? void 0 : i.projectsSubtitle) || "", document.getElementById("projectsMainTitle").value = (null === (d = t.sectionTitles) || void 0 === d ? void 0 : d.projectsMainTitle) || "", document.getElementById("introItem1Image").value = (null === (r = t.introFooter) || void 0 === r ? void 0 : r[0].image) || "", document.getElementById("introItem1Title").value = (null === (c = t.introFooter) || void 0 === c ? void 0 : c[0].title) || "", document.getElementById("introItem2Image").value = (null === (u = t.introFooter) || void 0 === u ? void 0 : u[1].image) || "", document.getElementById("introItem2Title").value = (null === (m = t.introFooter) || void 0 === m ? void 0 : m[1].title) || "", document.getElementById("introItem3Image").value = (null === (p = t.introFooter) || void 0 === p ? void 0 : p[2].image) || "", document.getElementById("introItem3Title").value = (null === (h = t.introFooter) || void 0 === h ? void 0 : h[2].title) || "", document.getElementById("facebookLink").value = (null === (g = t.socialLinks) || void 0 === g ? void 0 : g.facebook) || "", document.getElementById("telegramLink").value = (null === (f = t.socialLinks) || void 0 === f ? void 0 : f.telegram) || "", document.getElementById("twitterLink").value = (null === (y = t.socialLinks) || void 0 === y ? void 0 : y.twitter) || "", document.getElementById("youtubeLink").value = (null === (v = t.socialLinks) || void 0 === v ? void 0 : v.youtube) || "", document.getElementById("siteTitle").value = (null === (b = t.settings) || void 0 === b ? void 0 : b.title) || "", document.getElementById("logoUrl").value = (null === (k = t.settings) || void 0 === k ? void 0 : k.logoUrl) || "", document.getElementById("copyrightText").value = t.settings?.copyrightText || "", document.getElementById("aboutImageUrl").value = t.settings?.aboutImageUrl || "", document.getElementById("projectsImageUrl").value = t.settings?.projectsImageUrl || "", document.getElementById("contactEmail").value = t.contactInfo?.email || "", document.getElementById("contactPhone").value = t.contactInfo?.phone || "", document.getElementById("contactAddress").value = t.contactInfo?.address || "", document.getElementById("footerDescription").value = t.contactInfo?.footerDescription || "", document.getElementById("developerName").value = t.developerCredit?.name || "", document.getElementById("developerUrl").value = t.developerCredit?.url || "", document.getElementById("primaryColor").value = t.theme?.primaryColor || "#007BFF", document.getElementById("secondaryColor").value = t.theme?.secondaryColor || "#00C9A7" }
+        function deleteData(t) { confirm("আপনি কি নিশ্চিতভাবে এটি মুছতে চান?") && database.ref(t).remove().catch((t => alert("Error: " + t.message))) }
+        function openModal(t, e, n) { document.getElementById(n).reset(), document.getElementById(t + "Title").textContent = e, document.getElementById(t).style.display = "flex" }
+        function closeModal(t) { document.getElementById(t).style.display = "none" }
+        function openUserModal() { openModal("userModal", "নতুন ব্যবহারকারী", "userForm"), document.getElementById("userId").value = "" }
+        function editUser(t) { const e = allUsers[t]; e && (document.getElementById("userId").value = t, document.getElementById("userName").value = e.name, document.getElementById("userEmail").value = e.email, document.getElementById("userStatus").value = e.status, openModal("userModal", "ব্যবহারকারী সম্পাদনা করুন", "userForm")) }
+        function openCourseModal() { openModal("courseModal", "নতুন কোর্স", "courseForm"), document.getElementById("courseId").value = "" }
+        function editCourse(t) { const e = allCourses[t]; e && (document.getElementById("courseId").value = t, document.getElementById("courseName").value = e.name, document.getElementById("courseCategory").value = e.category, document.getElementById("coursePrice").value = e.price, document.getElementById("courseImageURL").value = e.imageURL || "", document.getElementById("courseDescription").value = e.description || "", document.getElementById("courseStatus").value = e.status, openModal("courseModal", "কোর্স সম্পাদনা করুন", "courseForm")) }
+        function openProjectModal() { openModal("projectModal", "নতুন প্রজেক্ট", "projectForm"), document.getElementById("projectId").value = "" }
+        function editProject(t) { const e = allProjects[t]; e && (document.getElementById("projectId").value = t, document.getElementById("projectTitle").value = e.title, document.getElementById("projectLink").value = e.link, openModal("projectModal", "প্রজেক্ট সম্পাদনা করুন", "projectForm")) }
+        function openFooterLinkModal() { openModal("footerLinkModal", "নতুন ফুটার লিংক", "footerLinkForm"), document.getElementById("footerLinkId").value = "" }
+        function editFooterLink(t) { const e = allFooterLinks[t]; e && (document.getElementById("footerLinkId").value = t, document.getElementById("footerLinkName").value = e.name, document.getElementById("footerLinkUrl").value = e.url, openModal("footerLinkModal", "ফুটার লিংক সম্পাদনা করুন", "footerLinkForm")) }
+        function openBlogModal() { openModal("blogModal", "নতুন ব্লগ পোস্ট", "blogForm"), document.getElementById("blogId").value = "" }
+        function editBlogPost(t) { const e = allBlogPosts[t]; e && (document.getElementById("blogId").value = t, document.getElementById("blogTitle").value = e.title, document.getElementById("blogContent").value = e.content, document.getElementById("blogStatus").value = e.status, openModal("blogModal", "ব্লগ পোস্ট সম্পাদনা করুন", "blogForm")) }
+        function openMenuModal() { openModal("menuModal", "নতুন মেনু আইটেম", "menuForm"), document.getElementById("menuId").value = "" }
+        function editMenu(t) { const e = allMenus[t]; e && (document.getElementById("menuId").value = t, document.getElementById("menuName").value = e.name, document.getElementById("menuUrl").value = e.url, document.getElementById("menuOrder").value = e.order, openModal("menuModal", "মেনু সম্পাদনা করুন", "menuForm")) }
+        function openRoleModal() { openModal("roleModal", "নতুন সাব-অ্যাডমিন রোল", "roleForm"), document.getElementById("roleId").value = "" }
+        function editRole(t) { const e = allRoles[t]; e && (document.getElementById("roleId").value = t, document.getElementById("roleName").value = e.name, document.getElementById("roleValue").value = e.value, openModal("roleModal", "রোল সম্পাদনা করুন", "roleForm")) }
+        function openFeatureModal() { openModal("featureModal", "নতুন ফিচার", "featureForm"), document.getElementById("featureId").value = "" }
+        function editFeature(t) { const e = allFeatures[t]; e && (document.getElementById("featureId").value = t, document.getElementById("featureImage").value = e.image, document.getElementById("featureTitle").value = e.title, document.getElementById("featureDesc").value = e.desc, openModal("featureModal", "ফিচার সম্পাদনা করুন", "featureForm")) }
+        function setupEventListeners() { document.getElementById("userForm").addEventListener("submit", (function(t) { t.preventDefault(); const e = document.getElementById("userId").value, n = { name: document.getElementById("userName").value, email: document.getElementById("userEmail").value, status: document.getElementById("userStatus").value, regDate: e ? allUsers[e].regDate : (new Date).toISOString() }; (e ? database.ref("users/" + e) : database.ref("users").push()).set(n).then((() => closeModal("userModal"))) })), document.getElementById("courseForm").addEventListener("submit", (function(t) { t.preventDefault(); const e = document.getElementById("courseId").value, n = { name: document.getElementById("courseName").value, category: document.getElementById("courseCategory").value, price: parseInt(document.getElementById("coursePrice").value) || 0, imageURL: document.getElementById("courseImageURL").value, description: document.getElementById("courseDescription").value, status: document.getElementById("courseStatus").value }; (e ? database.ref("courses/" + e) : database.ref("courses").push()).set(n).then((() => closeModal("courseModal"))) })), document.getElementById("projectForm").addEventListener("submit", (function(t) { t.preventDefault(); const e = document.getElementById("projectId").value, n = { title: document.getElementById("projectTitle").value, link: document.getElementById("projectLink").value }; (e ? database.ref("projects/" + e) : database.ref("projects").push()).set(n).then((() => closeModal("projectModal"))) })), document.getElementById("blogForm").addEventListener("submit", (function(t) { t.preventDefault(); const e = document.getElementById("blogId").value, n = { title: document.getElementById("blogTitle").value, content: document.getElementById("blogContent").value, status: document.getElementById("blogStatus").value, date: e ? allBlogPosts[e].date : (new Date).toISOString() }; (e ? database.ref("blogPosts/" + e) : database.ref("blogPosts").push()).set(n).then((() => closeModal("blogModal"))) })), document.getElementById("footerLinkForm").addEventListener("submit", (function(t) { t.preventDefault(); const e = document.getElementById("footerLinkId").value, n = { name: document.getElementById("footerLinkName").value, url: document.getElementById("footerLinkUrl").value }; (e ? database.ref("footerLinks/" + e) : database.ref("footerLinks").push()).set(n).then((() => closeModal("footerLinkModal"))) })), document.getElementById("siteContentForm").addEventListener("submit", (function(t) { t.preventDefault(), database.ref("siteContent").update({ banner: { text: document.getElementById("bannerText").value }, aboutAdmin: { text: document.getElementById("aboutAdminText").value } }), alert("কনটেন্ট সফলভাবে সেভ করা হয়েছে!") })), document.getElementById("sectionTitlesForm").addEventListener("submit", (function(t) { t.preventDefault(), database.ref("siteContent/sectionTitles").update({ featuresSubtitle: document.getElementById("featuresSubtitle").value, featuresMainTitle: document.getElementById("featuresMainTitle").value, coursesSubtitle: document.getElementById("coursesSubtitle").value, coursesMainTitle: document.getElementById("coursesMainTitle").value, projectsSubtitle: document.getElementById("projectsSubtitle").value, projectsMainTitle: document.getElementById("projectsMainTitle").value }), alert("শিরোনাম সফলভাবে সেভ করা হয়েছে!") })), document.getElementById("introFooterForm").addEventListener("submit", (function(t) { t.preventDefault(), database.ref("siteContent/introFooter").set([{ image: document.getElementById("introItem1Image").value, title: document.getElementById("introItem1Title").value }, { image: document.getElementById("introItem2Image").value, title: document.getElementById("introItem2Title").value }, { image: document.getElementById("introItem3Image").value, title: document.getElementById("introItem3Title").value }]), alert("ইন্ট্রো ফুটার আইটেম সফলভাবে সেভ করা হয়েছে!") })), document.getElementById("socialLinksForm").addEventListener("submit", (function(t) { t.preventDefault(), database.ref("siteContent/socialLinks").update({ facebook: document.getElementById("facebookLink").value, telegram: document.getElementById("telegramLink").value, twitter: document.getElementById("twitterLink").value, youtube: document.getElementById("youtubeLink").value }), alert("সোশ্যাল লিংক সফলভাবে সেভ করা হয়েছে!") })), document.getElementById("settingsForm").addEventListener("submit", (function(t) { t.preventDefault(), database.ref("siteContent/settings").update({ title: document.getElementById("siteTitle").value, logoUrl: document.getElementById("logoUrl").value, copyrightText: document.getElementById("copyrightText").value, aboutImageUrl: document.getElementById("aboutImageUrl").value, projectsImageUrl: document.getElementById("projectsImageUrl").value }), database.ref("siteContent/contactInfo").update({ email: document.getElementById("contactEmail").value, phone: document.getElementById("contactPhone").value, address: document.getElementById("contactAddress").value, footerDescription: document.getElementById("footerDescription").value }), database.ref("siteContent/developerCredit").update({ name: document.getElementById("developerName").value, url: document.getElementById("developerUrl").value }), database.ref("siteContent/theme").update({ primaryColor: document.getElementById("primaryColor").value, secondaryColor: document.getElementById("secondaryColor").value }), alert("সেটিংস সফলভাবে সেভ করা হয়েছে!") })), document.getElementById("menuForm").addEventListener("submit", (function(t) { t.preventDefault(); const e = document.getElementById("menuId").value, n = { name: document.getElementById("menuName").value, url: document.getElementById("menuUrl").value, order: parseInt(document.getElementById("menuOrder").value) }; (e ? database.ref("navigationMenu/" + e) : database.ref("navigationMenu").push()).set(n).then((() => closeModal("menuModal"))).catch((t => alert(t.message))) })), document.getElementById("roleForm").addEventListener("submit", (function(t) { t.preventDefault(); const e = document.getElementById("roleId").value, n = { name: document.getElementById("roleName").value, value: document.getElementById("roleValue").value }; (e ? database.ref("subAdminRoles/" + e) : database.ref("subAdminRoles").push()).set(n).then((() => closeModal("roleModal"))).catch((t => alert(t.message))) })), document.getElementById("featureForm").addEventListener("submit", (function(t) { t.preventDefault(); const e = document.getElementById("featureId").value, n = { image: document.getElementById("featureImage").value, title: document.getElementById("featureTitle").value, desc: document.getElementById("featureDesc").value }; (e ? database.ref("siteContent/features/" + e) : database.ref("siteContent/features").push()).set(n).then((() => closeModal("featureModal"))).catch((t => alert(t.message))) })) }
+    </script>
+</body>
+</html>
