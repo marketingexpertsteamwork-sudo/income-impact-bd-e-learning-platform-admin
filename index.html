@@ -69,19 +69,6 @@
     </style>
 </head>
 <body>
-    <script>
-        (function() {
-            if (sessionStorage.getItem('isAdminAuthenticated') === 'true') return;
-            const correctPassword = "admin2025"; 
-            let password = prompt("অ্যাডমিন প্যানেলে প্রবেশের জন্য পাসওয়ার্ড দিন:", "");
-            if (password !== correctPassword) {
-                alert("ভুল পাসওয়ার্ড! আপনাকে হোমপেজে পাঠানো হচ্ছে।");
-                window.location.href = "index.html"; 
-            } else {
-                sessionStorage.setItem('isAdminAuthenticated', 'true');
-            }
-        })();
-    </script>
     
     <button class="menu-toggle" id="menuToggle"><span class="bar"></span><span class="bar"></span><span class="bar"></span></button>
     <aside class="sidebar" id="sidebar">
@@ -368,6 +355,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyAARwxCzudakwIfyZT_CKkF-CUep-NlKPE",
@@ -378,13 +366,44 @@
             appId: "1:935646225143:web:c37289c1603d1a49b4e9f2"
         };
         firebase.initializeApp(firebaseConfig);
+
+        // --- অ্যাডমিন হিসেবে স্বয়ংক্রিয় লগইন ---
+        const adminEmail = "my.admin.email@gmail.com";
+        const adminPassword = "admin@2025jr";
+        const adminUid = "vcwR2irXaiTNiiOb5o0pBrIqfRV2";
+
+        firebase.auth().onAuthStateChanged(user => {
+            if (!user || user.uid !== adminUid) {
+                firebase.auth().signInWithEmailAndPassword(adminEmail, adminPassword)
+                    .then((userCredential) => {
+                        console.log("Admin signed in successfully:", userCredential.user.uid);
+                        // লগইন সফল হওয়ার পর ডেটা লোড করার ফাংশনগুলো কল করুন
+                        initializeApp();
+                    })
+                    .catch((error) => {
+                        console.error("Admin auto-login failed:", error);
+                        alert("Error: Could not authenticate admin privileges. Please check console.");
+                    });
+            } else {
+                 console.log("Admin already signed in.");
+                 // ইউজার আগে থেকেই লগইন করা থাকলে ডেটা লোড করুন
+                 initializeApp();
+            }
+        });
+
         const database = firebase.database();
         let allUsers = {}, allCourses = {}, allEarnings = {}, allProjects = {}, allFooterLinks = {}, allBlogPosts = {}, allMenus = {}, allRoles = {}, allFeatures = {}, allContactMessages = {};
         let allPayments = {}, allSupportTickets = {}, allReviews = {}, allCoupons = {}, allNotifications = {};
         let currentEditingCourseId = null, currentEditingModuleId = null;
         let userGrowthChartInstance = null;
+        
+        function initializeApp() {
+            setupNavigation(); 
+            setupEventListeners(); 
+            setupMobileMenu(); 
+            listenToFirebaseData();
+        }
 
-        document.addEventListener('DOMContentLoaded', () => { setupNavigation(); setupEventListeners(); setupMobileMenu(); listenToFirebaseData(); });
         function setupMobileMenu() { const t = document.getElementById("menuToggle"), e = document.getElementById("sidebar"); t.addEventListener("click", (() => e.classList.toggle("show"))) }
         function setupNavigation() { const t = document.querySelectorAll(".nav-link"), e = document.querySelectorAll(".content-section"), n = document.getElementById("sidebar"); t.forEach((l => { l.addEventListener("click", (s => { s.preventDefault(), t.forEach((t => t.classList.remove("active"))), l.classList.add("active"); const o = l.getAttribute("href").substring(1); e.forEach((t => { t.classList.remove("active"), t.id === o && t.classList.add("active") })), window.innerWidth <= 768 && n.classList.remove("show") })) })) }
         
