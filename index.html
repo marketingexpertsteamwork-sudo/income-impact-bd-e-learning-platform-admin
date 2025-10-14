@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel - Income Impact BD</title>
+    <link rel="icon" href="https://img.icons8.com/fluency/48/000000/source-code.png">
     <style>
         :root {
             --primary-color: #3498db; --secondary-color: #f5f7fa; --sidebar-bg: #2c3e50; --text-color: #333; --light-text-color: #ecf0f1; --border-color: #dfe3e8; --success-color: #2ecc71; --danger-color: #e74c3c; --warning-color: #f39c12; --shadow: 0 4px 12px rgba(0,0,0,0.08);
@@ -92,9 +93,7 @@
                 <li><a href="#course-management" class="nav-link">কোর্স ম্যানেজমেন্ট</a></li>
                 <li><a href="#coupon-management" class="nav-link">কুপন ম্যানেজমেন্ট</a></li>
                 <li><a href="#notifications" class="nav-link">বিজ্ঞপ্তি পাঠান</a></li>
-                <!-- Added Start: New Nav Link for Q&A Management -->
                 <li><a href="#qna-management" class="nav-link">প্রশ্নোত্তর ম্যানেজমেন্ট</a></li>
-                <!-- Added End -->
                 <li><a href="#course-reviews" class="nav-link">কোর্স রিভিউ</a></li>
                 <li><a href="#payment-history" class="nav-link">পেমেন্ট হিস্ট্রি</a></li>
                 <li><a href="#support-tickets" class="nav-link">সাপোর্ট টিকেট</a></li>
@@ -165,7 +164,6 @@
                 </table>
             </div>
         </section>
-        <!-- Added Start: Q&A Management Section -->
         <section id="qna-management" class="content-section">
             <div class="page-header"><h1>প্রশ্নোত্তর ম্যানেজমেন্ট</h1></div>
             <div class="table-container">
@@ -183,7 +181,6 @@
                 </table>
             </div>
         </section>
-        <!-- Added End -->
          <section id="course-reviews" class="content-section">
             <div class="page-header"><h1>কোর্স রিভিউ ম্যানেজমেন্ট</h1></div>
             <div class="table-container">
@@ -339,12 +336,17 @@
                         </select>
                     </div>
                     <hr><h3>থিম কাস্টমাইজেশন</h3><div class="form-group"><label for="primaryColor">প্রাইমারি রঙ</label><input type="color" id="primaryColor" style="width: 100px; height: 40px;"></div><div class="form-group"><label for="secondaryColor">সেকেন্ডারি রঙ</label><input type="color" id="secondaryColor" style="width: 100px; height: 40px;"></div><hr>
-                    <h3>পেজের ছবিসমূহ</h3><div class="form-group"><label for="aboutImageUrl">About ছবির URL</label><input type="text" id="aboutImageUrl"></div><div class="form-group"><label for="projectsImageUrl">Projects ছবির URL</label><input type="text" id="projectsImageUrl"></div><hr>
+                    <h3>পেজের ছবিসমূহ</h3>
+                    <div class="form-group"><label for="bannerImageUrl">ব্যানার ছবির URL</label><input type="text" id="bannerImageUrl"></div>
+                    <div class="form-group"><label for="aboutImageUrl">About ছবির URL</label><input type="text" id="aboutImageUrl"></div>
+                    <div class="form-group"><label for="projectsImageUrl">Projects ছবির URL</label><input type="text" id="projectsImageUrl"></div>
+                    <hr>
                     <h3>যোগাযোগ ও ফুটার</h3><div class="form-group"><label for="contactEmail">যোগাযোগের ইমেইল</label><input type="email" id="contactEmail"></div><div class="form-group"><label for="contactPhone">যোগাযোগের ফোন</label><input type="text" id="contactPhone"></div><div class="form-group"><label for="contactAddress">ঠিকানা</label><input type="text" id="contactAddress"></div><div class="form-group"><label for="footerDescription">ফুটারের বিবরণ</label><textarea id="footerDescription" rows="4"></textarea></div><hr>
                     <h3>ডেভেলপার ক্রেডিট</h3><div class="form-group"><label for="developerName">ডেভেলপারের নাম</label><input type="text" id="developerName"></div><div class="form-group"><label for="developerUrl">ডেভেলপারের URL</label><input type="text" id="developerUrl"></div>
                     <button type="submit" class="form-btn">সেটিংস সেভ করুন</button>
-                    <hr><h3>ডেটা ব্যাকআপ</h3>
+                    <hr><h3>ডেটা ম্যানেজমেন্ট</h3>
                     <button type="button" class="form-btn" style="background-color: var(--warning-color);" onclick="backupData()">ডেটা ডাউনলোড করুন (Backup)</button>
+                    <button type="button" class="form-btn" style="background-color: var(--danger-color);" onclick="seedDatabaseWithInitialData()">Initialize Site with Sample Data</button>
                 </form>
             </div>
         </section>
@@ -353,7 +355,7 @@
     <div id="courseModal" class="modal"><div class="modal-content" style="max-height: 80vh; overflow-y: auto;"><div class="modal-header"><h2 id="courseModalTitle"></h2><span class="close-btn" onclick="closeModal('courseModal')">&times;</span></div><form id="courseForm"><input type="hidden" id="courseId"><div class="form-group"><label for="courseName">কোর্সের নাম</label><input type="text" id="courseName" required></div><div class="form-group"><label for="courseCategory">ক্যাটেগরি</label><input type="text" id="courseCategory" required></div><div class="form-group"><label for="coursePrice">মূল্য (BDT)</label><input type="number" id="coursePrice" required></div><div class="form-group"><label for="courseImageURL"> ছবির URL</label><input type="text" id="courseImageURL"></div><div class="form-group"><label for="courseDescription">বিস্তারিত বিবরণ</label><textarea id="courseDescription" rows="5"></textarea></div><div class="form-group"><label for="courseStatus">স্ট্যাটাস</label><select id="courseStatus"><option value="published">পাবলিশড</option><option value="pending">পেন্ডিং</option></select></div><button type="submit" class="submit-btn">সেভ করুন</button></form></div></div>
     <div id="projectModal" class="modal"><div class="modal-content"><div class="modal-header"><h2 id="projectModalTitle"></h2><span class="close-btn" onclick="closeModal('projectModal')">&times;</span></div><form id="projectForm"><input type="hidden" id="projectId"><div class="form-group"><label for="projectTitle">প্রজেক্টের নাম</label><input type="text" id="projectTitle" required></div><div class="form-group"><label for="projectLink">লিংক</label><input type="text" id="projectLink" required></div><button type="submit" class="submit-btn">সেভ করুন</button></form></div></div>
     <div id="footerLinkModal" class="modal"><div class="modal-content"><div class="modal-header"><h2 id="footerLinkModalTitle"></h2><span class="close-btn" onclick="closeModal('footerLinkModal')">&times;</span></div><form id="footerLinkForm"><input type="hidden" id="footerLinkId"><div class="form-group"><label for="footerLinkName">লিংকের নাম</label><input type="text" id="footerLinkName" required></div><div class="form-group"><label for="footerLinkUrl">লিংকের URL</label><input type="text" id="footerLinkUrl" required></div><button type="submit" class="submit-btn">সেভ করুন</button></form></div></div>
-    <div id="blogModal" class="modal"><div class="modal-content" style="max-height: 80vh; overflow-y: auto;"><div class="modal-header"><h2 id="blogModalTitle"></h2><span class="close-btn" onclick="closeModal('blogModal')">&times;</span></div><form id="blogForm"><input type="hidden" id="blogId"><div class="form-group"><label for="blogTitle">শিরোনাম</label><input type="text" id="blogTitle" required></div><div class="form-group"><label for="blogContent">কনটেন্ট</label><textarea id="blogContent" rows="8" required></textarea></div><div class="form-group"><label for="blogStatus">স্ট্যাটাস</label><select id="blogStatus"><option value="published">পাবলিশড</option><option value="pending">পেন্ডিং</option></select></div><button type="submit" class="submit-btn">সেভ করুন</button></form></div></div>
+    <div id="blogModal" class="modal"><div class="modal-content" style="max-height: 80vh; overflow-y: auto;"><div class="modal-header"><h2 id="blogModalTitle"></h2><span class="close-btn" onclick="closeModal('blogModal')">&times;</span></div><form id="blogForm"><input type="hidden" id="blogId"><div class="form-group"><label for="blogTitle">শিরোনাম</label><input type="text" id="blogTitle" required></div><div class="form-group"><label for="blogImageUrl">ছবির URL</label><input type="text" id="blogImageUrl"></div><div class="form-group"><label for="blogContent">কনটেন্ট</label><textarea id="blogContent" rows="8" required></textarea></div><div class="form-group"><label for="blogStatus">স্ট্যাটাস</label><select id="blogStatus"><option value="published">পাবলিশড</option><option value="pending">পেন্ডিং</option></select></div><button type="submit" class="submit-btn">সেভ করুন</button></form></div></div>
     <div id="menuModal" class="modal"><div class="modal-content"><div class="modal-header"><h2 id="menuModalTitle"></h2><span class="close-btn" onclick="closeModal('menuModal')">&times;</span></div><form id="menuForm"><input type="hidden" id="menuId"><div class="form-group"><label for="menuName">মেনুর নাম</label><input type="text" id="menuName" required></div><div class="form-group"><label for="menuUrl">URL</label><input type="text" id="menuUrl" required></div><div class="form-group"><label for="menuOrder">Order</label><input type="number" id="menuOrder" required></div><button type="submit" class="submit-btn">সেভ করুন</button></form></div></div>
     <div id="roleModal" class="modal"><div class="modal-content"><div class="modal-header"><h2 id="roleModalTitle"></h2><span class="close-btn" onclick="closeModal('roleModal')">&times;</span></div><form id="roleForm"><input type="hidden" id="roleId"><div class="form-group"><label for="roleName">রোলের নাম</label><input type="text" id="roleName" required></div><div class="form-group"><label for="roleValue">ভ্যালু</label><input type="number" id="roleValue" required></div><button type="submit" class="submit-btn">সেভ করুন</button></form></div></div>
     <div id="featureModal" class="modal"><div class="modal-content"><div class="modal-header"><h2 id="featureModalTitle"></h2><span class="close-btn" onclick="closeModal('featureModal')">&times;</span></div><form id="featureForm"><input type="hidden" id="featureId"><div class="form-group"><label for="featureImage">আইকন URL</label><input type="text" id="featureImage" required></div><div class="form-group"><label for="featureTitle">শিরোনাম</label><input type="text" id="featureTitle" required></div><div class="form-group"><label for="featureDesc">ছোট বর্ণনা</label><textarea id="featureDesc" rows="3"></textarea></div><button type="submit" class="submit-btn">সেভ করুন</button></form></div></div>
@@ -399,9 +401,7 @@
                 renderCourseTable(); 
                 updateDashboard();
                 calculateAdvancedAnalytics();
-                // Added Start: Re-render Q&A table if courses change
                 renderQnaTable();
-                // Added End
             }));
             database.ref("earnings").on("value", (t => { allEarnings = t.val() || {}, renderEarningsTable(), updateDashboard() }));
             database.ref("projects").on("value", (t => { allProjects = t.val() || {}, renderProjectTable() }));
@@ -413,17 +413,52 @@
             database.ref("contacts").on("value", (t => { allContactMessages = t.val() || {}, renderContactMessagesTable() }));
             database.ref("payments").orderByKey().limitToLast(100).on("value", (t => { allPayments = t.val() || {}, renderPaymentHistoryTable() }));
             database.ref("supportTickets").on("value", (t => { allSupportTickets = t.val() || {}, renderSupportTicketsTable() }));
-            // Added Start: Changed listener to call the new render function
             database.ref("courseReviews").on("value", (t => { allReviews = t.val() || {}, renderReviewsTableWithApproval() }));
-            // Added End
             database.ref("coupons").on("value", (t => { allCoupons = t.val() || {}, renderCouponTable() }));
             database.ref("notifications").on("value", (t => { allNotifications = t.val() || {}, renderSentNotificationsTable() }));
-            // Added Start: Listener for all Q&A
             database.ref('courses').on('value', snapshot => {
                 allCourses = snapshot.val() || {};
-                renderQnaTable(); // This will fetch all Q&A across all courses
+                renderQnaTable();
             });
-            // Added End
+        }
+
+        function seedDatabaseWithInitialData() {
+            if (!confirm("Are you sure you want to initialize the site with sample data? This will overwrite existing courses, roles, and some site content. This action cannot be undone.")) {
+                return;
+            }
+
+            const courses = [
+                { name: "Photo Editing", image: "https://i.ibb.co/wZy4F5GY/Photo-Editing.jpg" }, { name: "Video Editing", image: "https://i.ibb.co/BS61VSm/Video-Editing.jpg" }, { name: "Lead Generation", image: "https://i.ibb.co/TqbVq1rL/Lead-Generation.jpg" }, { name: "Affiliated Marketing", image: "https://i.ibb.co/TxDRgjjS/Affiliate-Marketing.jpg" }, { name: "CPA Marketing", image: "https://i.ibb.co/JRddPyVK/CPA-Marketing.jpg" }, { name: "Social Marketing", image: "https://i.ibb.co/XfFWbrDd/Social-Marketing.jpg" }, { name: "Digital Marketing", image: "https://i.ibb.co/LdyFpy0R/Digital-Marketing.jpg" }, { name: "Products Sells and buy", image: "https://i.ibb.co/LD07Vn9R/Products-Sell-and-Buy.jpg" }, { name: "Data Entry", image: "https://i.ibb.co/11DVCZB/Data-Entry.jpg" }, { name: "Graphics Design", image: "https://i.ibb.co/5h7npzgv/Graphics-Design.jpg" }, { name: "Spoking English", image: "https://i.ibb.co/hJwBBnqP/Spoken-English.jpg" }, { name: "App Development", image: "https://i.ibb.co/ynm14PjM/App-Development.jpg" }, { name: "Website Development", image: "https://i.ibb.co/7tpC3sBH/Website-Development.jpg" }, { name: "Treading", image: "https://i.ibb.co/d492Tm5j/Trading.jpg" }, { name: "Crypto", image: "https://i.ibb.co/wFvWZ3Qq/Crypto.jpg" }
+            ];
+
+            const subAdminRoles = [
+                "Photo Editing Teacher", "Team Leader", "Video Editing Teacher", "Trainer", "Counsellor", "Senior Counsellor", "Help-Line", "Social Marketing Teacher", "Web-Developer", "Selling Team", "Marketing Team", "Qualification Team", "Manager", "Controller", "Teacher", "Checker", "Senior Team Leader", "Senior Controller", "Counsellor Manager", "Marketing Manager"
+            ];
+
+            const updates = {};
+            const coursesData = {};
+            courses.forEach(course => {
+                const newCourseKey = database.ref().child('courses').push().key;
+                coursesData[newCourseKey] = { name: course.name, imageURL: course.image, price: 1500, category: "Skill Development", description: `A comprehensive course on ${course.name}.`, status: "published" };
+            });
+            updates['/courses'] = coursesData;
+
+            const rolesData = {};
+            subAdminRoles.forEach((role, index) => {
+                const newRoleKey = database.ref().child('subAdminRoles').push().key;
+                rolesData[newRoleKey] = { name: role, value: index + 1 };
+            });
+            updates['/subAdminRoles'] = rolesData;
+
+            updates['/siteContent/settings/logoUrl'] = "https://i.ibb.co/jk2nT0LF/IMG-20251012-WA0006.jpg";
+            updates['/siteContent/settings/bannerImageUrl'] = "https://i.ibb.co/LzXmdd7g/Banner-Image.jpg";
+            updates['/siteContent/settings/aboutImageUrl'] = "https://i.ibb.co/PGbByrmD/About-Admin.jpg";
+            updates['/siteContent/banner/text'] = "আপনার দক্ষতার মাধ্যমে আয়ের জগতে স্বাগতম!";
+            updates['/siteContent/aboutAdmin/text'] = "আমরা একটি অভিজ্ঞ দল যারা আপনাকে ডিজিটাল বিশ্বের নতুন সব সুযোগের সাথে পরিচয় করিয়ে দিতে প্রতিশ্রুতিবদ্ধ। আমাদের লক্ষ্য হলো আপনাকে সঠিক জ্ঞান এবং দক্ষতার মাধ্যমে স্বাবলম্বী করে তোলা।";
+            
+            database.ref().update(updates)
+                .then(() => alert("Site has been initialized with sample data successfully!"))
+                .catch((error) => alert("An error occurred: " + error.message));
         }
 
         function renderUserGrowthChart() {
@@ -467,7 +502,6 @@
         function renderPaymentHistoryTable() { const t = document.getElementById("paymentHistoryTableBody"); t.innerHTML = ""; const sortedPayments = Object.entries(allPayments).sort((a,b) => new Date(b[1].date) - new Date(a[1].date)); for (const [id, n] of sortedPayments) { const user = allUsers[n.userId] || {email: 'Unknown'}; const course = allCourses[n.courseId] || {name: 'Unknown'}; t.innerHTML += `<tr><td>${user.email}</td><td>${course.name}</td><td>${(n.amount||0).toLocaleString("bn-BD")}</td><td>${n.transactionId}</td><td>${new Date(n.date).toLocaleString("bn-BD")}</td></tr>` } }
         function renderSupportTicketsTable() { const t = document.getElementById("supportTicketsTableBody"); t.innerHTML = ""; for (const e in allSupportTickets) { const n = allSupportTickets[e]; const user = allUsers[n.userId] || {email: 'Unknown'}; t.innerHTML += `<tr><td>${user.email}</td><td>${n.subject}</td><td class="message-col">${n.message}</td><td><span class="status ${n.status}">${n.status}</span></td><td><button class="action-btn edit-btn" onclick="updateTicketStatus('${e}', 'resolved')">Resolved</button><button class="action-btn delete-btn" onclick="deleteData('supportTickets/${e}')">মুছুন</button></td></tr>` } }
         
-        // Added Start: New render function for reviews with approval system
         function renderReviewsTableWithApproval() {
             const t = document.getElementById("reviewsTableBody");
             t.innerHTML = "";
@@ -503,19 +537,20 @@
                 .then(() => alert(`Review status updated to ${status}`))
                 .catch(err => alert('Error updating status: ' + err.message));
         }
-        // Added End
         
-        // Added Start: New functions for Q&A Management
         function renderQnaTable() {
             const tableBody = document.getElementById("qnaTableBody");
             tableBody.innerHTML = "";
 
             for (const courseId in allCourses) {
                 const course = allCourses[courseId];
+                if (!course.modules) continue;
                 for (const moduleId in course.modules) {
                     const module = course.modules[moduleId];
+                    if (!module.lessons) continue;
                     for (const lessonId in module.lessons) {
                         const lesson = module.lessons[lessonId];
+                        if (!lesson.qna) continue;
                         for (const qnaId in lesson.qna) {
                             const qna = lesson.qna[qnaId];
                             const fullPath = `courses/${courseId}/modules/${moduleId}/lessons/${lessonId}/qna/${qnaId}`;
@@ -554,7 +589,6 @@
                     .catch(err => alert("Error posting reply: " + err.message));
             }
         }
-        // Added End
 
 
         function renderEarningsTable() { const t = document.getElementById("earningsTableBody"); t.innerHTML = ""; for (const e in allEarnings) { const n = allEarnings[e]; t.innerHTML += `<tr><td>TXN${(e||"").substring(e.length - 6)}</td><td>${n.userName}</td><td>${n.courseName}</td><td>${(n.amount||0).toLocaleString("bn-BD")}</td><td>${new Date(n.date).toLocaleDateString("bn-BD")}</td></tr>` } }
@@ -587,6 +621,7 @@
             document.getElementById("siteTitle").value = t.settings?.title || ""; 
             document.getElementById("logoUrl").value = t.settings?.logoUrl || ""; 
             document.getElementById("copyrightText").value = t.settings?.copyrightText || ""; 
+            document.getElementById("bannerImageUrl").value = t.settings?.bannerImageUrl || "";
             document.getElementById("aboutImageUrl").value = t.settings?.aboutImageUrl || ""; 
             document.getElementById("projectsImageUrl").value = t.settings?.projectsImageUrl || ""; 
             document.getElementById("contactEmail").value = t.contactInfo?.email || ""; 
@@ -634,7 +669,7 @@
         function openFooterLinkModal() { openModal("footerLinkModal", "নতুন ফুটার লিংক", "footerLinkForm"), document.getElementById("footerLinkId").value = "" }
         function editFooterLink(t) { const e = allFooterLinks[t]; e && (document.getElementById("footerLinkId").value = t, document.getElementById("footerLinkName").value = e.name, document.getElementById("footerLinkUrl").value = e.url, openModal("footerLinkModal", "ফুটার লিংক সম্পাদনা করুন", "footerLinkForm")) }
         function openBlogModal() { openModal("blogModal", "নতুন ব্লগ পোস্ট", "blogForm"), document.getElementById("blogId").value = "" }
-        function editBlogPost(t) { const e = allBlogPosts[t]; e && (document.getElementById("blogId").value = t, document.getElementById("blogTitle").value = e.title, document.getElementById("blogContent").value = e.content, document.getElementById("blogStatus").value = e.status, openModal("blogModal", "ব্লগ পোস্ট সম্পাদনা করুন", "blogForm")) }
+        function editBlogPost(t) { const e = allBlogPosts[t]; e && (document.getElementById("blogId").value = t, document.getElementById("blogTitle").value = e.title, document.getElementById("blogImageUrl").value = e.imageUrl || "", document.getElementById("blogContent").value = e.content, document.getElementById("blogStatus").value = e.status, openModal("blogModal", "ব্লগ পোস্ট সম্পাদনা করুন", "blogForm")) }
         function openMenuModal() { openModal("menuModal", "নতুন মেনু আইটেম", "menuForm"), document.getElementById("menuId").value = "" }
         function editMenu(t) { const e = allMenus[t]; e && (document.getElementById("menuId").value = t, document.getElementById("menuName").value = e.name, document.getElementById("menuUrl").value = e.url, document.getElementById("menuOrder").value = e.order, openModal("menuModal", "মেনু সম্পাদনা করুন", "menuForm")) }
         function openRoleModal() { openModal("roleModal", "নতুন সাব-অ্যাডমিন রোল", "roleForm"), document.getElementById("roleId").value = "" }
@@ -758,7 +793,7 @@
         function backupData() {
             if(!confirm("Are you sure you want to download the data backup?")) return;
             const dataToBackup = {};
-            const paths = ['users', 'courses', 'payments', 'earnings', 'coupons'];
+            const paths = ['users', 'courses', 'payments', 'earnings', 'coupons', 'siteContent', 'subAdminRoles', 'navigationMenu', 'footerLinks'];
             let fetchedCount = 0;
 
             paths.forEach(path => {
@@ -800,7 +835,11 @@
             });
             document.getElementById("userForm").addEventListener("submit", (function(t) { t.preventDefault(); const e = document.getElementById("userId").value; const n = { name: document.getElementById("userName").value, email: document.getElementById("userEmail").value, status: document.getElementById("userStatus").value, regDate: e && allUsers[e] ? allUsers[e].regDate : (new Date).toISOString(), gamification: e && allUsers[e] ? allUsers[e].gamification : { points: 0, badges: {} } }; (e ? database.ref("users/" + e) : database.ref("users").push()).set(n).then((() => closeModal("userModal"))) }));
             document.getElementById("courseForm").addEventListener("submit", (function(t) { t.preventDefault(); const e = document.getElementById("courseId").value; let n = { name: document.getElementById("courseName").value, category: document.getElementById("courseCategory").value, price: parseInt(document.getElementById("coursePrice").value) || 0, imageURL: document.getElementById("courseImageURL").value, description: document.getElementById("courseDescription").value, status: document.getElementById("courseStatus").value }; if(e && allCourses[e]) { n = {...allCourses[e], ...n}; } (e ? database.ref("courses/" + e).set(n) : database.ref("courses").push(n)).then((() => closeModal("courseModal"))) })); 
-            document.getElementById("projectForm").addEventListener("submit", (function(t) { t.preventDefault(); const e = document.getElementById("projectId").value, n = { title: document.getElementById("projectTitle").value, link: document.getElementById("projectLink").value }; (e ? database.ref("projects/" + e) : database.ref("projects").push()).set(n).then((() => closeModal("projectModal"))) })); document.getElementById("blogForm").addEventListener("submit", (function(t) { t.preventDefault(); const e = document.getElementById("blogId").value, n = { title: document.getElementById("blogTitle").value, content: document.getElementById("blogContent").value, status: document.getElementById("blogStatus").value, date: e ? allBlogPosts[e].date : (new Date).toISOString() }; (e ? database.ref("blogPosts/" + e) : database.ref("blogPosts").push()).set(n).then((() => closeModal("blogModal"))) })); document.getElementById("footerLinkForm").addEventListener("submit", (function(t) { t.preventDefault(); const e = document.getElementById("footerLinkId").value, n = { name: document.getElementById("footerLinkName").value, url: document.getElementById("footerLinkUrl").value }; (e ? database.ref("footerLinks/" + e) : database.ref("footerLinks").push()).set(n).then((() => closeModal("footerLinkModal"))) })); document.getElementById("siteContentForm").addEventListener("submit", (function(t) { t.preventDefault(), database.ref("siteContent").update({ banner: { text: document.getElementById("bannerText").value }, aboutAdmin: { text: document.getElementById("aboutAdminText").value } }), alert("কনটেন্ট সফলভাবে সেভ করা হয়েছে!") })); document.getElementById("sectionTitlesForm").addEventListener("submit", (function(t) { t.preventDefault(), database.ref("siteContent/sectionTitles").update({ featuresSubtitle: document.getElementById("featuresSubtitle").value, featuresMainTitle: document.getElementById("featuresMainTitle").value, coursesSubtitle: document.getElementById("coursesSubtitle").value, coursesMainTitle: document.getElementById("coursesMainTitle").value, projectsSubtitle: document.getElementById("projectsSubtitle").value, projectsMainTitle: document.getElementById("projectsMainTitle").value }), alert("শিরোনাম সফলভাবে সেভ করা হয়েছে!") })); document.getElementById("introFooterForm").addEventListener("submit", (function(t) { t.preventDefault(), database.ref("siteContent/introFooter").set([{ image: document.getElementById("introItem1Image").value, title: document.getElementById("introItem1Title").value }, { image: document.getElementById("introItem2Image").value, title: document.getElementById("introItem2Title").value }, { image: document.getElementById("introItem3Image").value, title: document.getElementById("introItem3Title").value }]), alert("ইন্ট্রো ফুটার আইটেম সফলভাবে সেভ করা হয়েছে!") })); document.getElementById("socialLinksForm").addEventListener("submit", (function(t) { t.preventDefault(), database.ref("siteContent/socialLinks").update({ facebook: document.getElementById("facebookLink").value, telegram: document.getElementById("telegramLink").value, twitter: document.getElementById("twitterLink").value, youtube: document.getElementById("youtubeLink").value }), alert("সোশ্যাল লিংক সফলভাবে সেভ করা হয়েছে!") })); document.getElementById("settingsForm").addEventListener("submit", (function(t) { t.preventDefault(); database.ref("siteContent/settings").update({ title: document.getElementById("siteTitle").value, logoUrl: document.getElementById("logoUrl").value, copyrightText: document.getElementById("copyrightText").value, aboutImageUrl: document.getElementById("aboutImageUrl").value, projectsImageUrl: document.getElementById("projectsImageUrl").value, allowRegistration: document.getElementById("allowRegistration").value === 'true' }); database.ref("siteContent/contactInfo").update({ email: document.getElementById("contactEmail").value, phone: document.getElementById("contactPhone").value, address: document.getElementById("contactAddress").value, footerDescription: document.getElementById("footerDescription").value }); database.ref("siteContent/developerCredit").update({ name: document.getElementById("developerName").value, url: document.getElementById("developerUrl").value }); database.ref("siteContent/theme").update({ primaryColor: document.getElementById("primaryColor").value, secondaryColor: document.getElementById("secondaryColor").value }); alert("সেটিংস সফলভাবে সেভ করা হয়েছে!"); })); document.getElementById("menuForm").addEventListener("submit", (function(t) { t.preventDefault(); const e = document.getElementById("menuId").value, n = { name: document.getElementById("menuName").value, url: document.getElementById("menuUrl").value, order: parseInt(document.getElementById("menuOrder").value) }; (e ? database.ref("navigationMenu/" + e) : database.ref("navigationMenu").push()).set(n).then((() => closeModal("menuModal"))).catch((t => alert(t.message))) })); document.getElementById("roleForm").addEventListener("submit", (function(t) { t.preventDefault(); const e = document.getElementById("roleId").value, n = { name: document.getElementById("roleName").value, value: document.getElementById("roleValue").value }; (e ? database.ref("subAdminRoles/" + e) : database.ref("subAdminRoles").push()).set(n).then((() => closeModal("roleModal"))).catch((t => alert(t.message))) })); document.getElementById("featureForm").addEventListener("submit", (function(t) { t.preventDefault(); const e = document.getElementById("featureId").value, n = { image: document.getElementById("featureImage").value, title: document.getElementById("featureTitle").value, desc: document.getElementById("featureDesc").value }; (e ? database.ref("siteContent/features/" + e) : database.ref("siteContent/features").push()).set(n).then((() => closeModal("featureModal"))).catch((t => alert(t.message))) })); document.getElementById("seoForm").addEventListener("submit", function(e) { e.preventDefault(); database.ref("siteContent/seo").update({ metaTitle: document.getElementById("metaTitle").value, metaDescription: document.getElementById("metaDescription").value }).then(() => alert("SEO তথ্য সফলভাবে সেভ করা হয়েছে!")); }); 
+            document.getElementById("projectForm").addEventListener("submit", (function(t) { t.preventDefault(); const e = document.getElementById("projectId").value, n = { title: document.getElementById("projectTitle").value, link: document.getElementById("projectLink").value }; (e ? database.ref("projects/" + e) : database.ref("projects").push()).set(n).then((() => closeModal("projectModal"))) })); 
+            document.getElementById("blogForm").addEventListener("submit", (function(t) { t.preventDefault(); const e = document.getElementById("blogId").value, n = { title: document.getElementById("blogTitle").value, imageUrl: document.getElementById("blogImageUrl").value, content: document.getElementById("blogContent").value, status: document.getElementById("blogStatus").value, date: e && allBlogPosts[e] ? allBlogPosts[e].date : (new Date).toISOString() }; (e ? database.ref("blogPosts/" + e) : database.ref("blogPosts").push()).set(n).then((() => closeModal("blogModal"))) })); 
+            document.getElementById("footerLinkForm").addEventListener("submit", (function(t) { t.preventDefault(); const e = document.getElementById("footerLinkId").value, n = { name: document.getElementById("footerLinkName").value, url: document.getElementById("footerLinkUrl").value }; (e ? database.ref("footerLinks/" + e) : database.ref("footerLinks").push()).set(n).then((() => closeModal("footerLinkModal"))) })); document.getElementById("siteContentForm").addEventListener("submit", (function(t) { t.preventDefault(), database.ref("siteContent").update({ banner: { text: document.getElementById("bannerText").value }, aboutAdmin: { text: document.getElementById("aboutAdminText").value } }), alert("কনটেন্ট সফলভাবে সেভ করা হয়েছে!") })); document.getElementById("sectionTitlesForm").addEventListener("submit", (function(t) { t.preventDefault(), database.ref("siteContent/sectionTitles").update({ featuresSubtitle: document.getElementById("featuresSubtitle").value, featuresMainTitle: document.getElementById("featuresMainTitle").value, coursesSubtitle: document.getElementById("coursesSubtitle").value, coursesMainTitle: document.getElementById("coursesMainTitle").value, projectsSubtitle: document.getElementById("projectsSubtitle").value, projectsMainTitle: document.getElementById("projectsMainTitle").value }), alert("শিরোনাম সফলভাবে সেভ করা হয়েছে!") })); document.getElementById("introFooterForm").addEventListener("submit", (function(t) { t.preventDefault(), database.ref("siteContent/introFooter").set([{ image: document.getElementById("introItem1Image").value, title: document.getElementById("introItem1Title").value }, { image: document.getElementById("introItem2Image").value, title: document.getElementById("introItem2Title").value }, { image: document.getElementById("introItem3Image").value, title: document.getElementById("introItem3Title").value }]), alert("ইন্ট্রো ফুটার আইটেম সফলভাবে সেভ করা হয়েছে!") })); document.getElementById("socialLinksForm").addEventListener("submit", (function(t) { t.preventDefault(), database.ref("siteContent/socialLinks").update({ facebook: document.getElementById("facebookLink").value, telegram: document.getElementById("telegramLink").value, twitter: document.getElementById("twitterLink").value, youtube: document.getElementById("youtubeLink").value }), alert("সোশ্যাল লিংক সফলভাবে সেভ করা হয়েছে!") })); 
+            document.getElementById("settingsForm").addEventListener("submit", (function(t) { t.preventDefault(); database.ref("siteContent/settings").update({ title: document.getElementById("siteTitle").value, logoUrl: document.getElementById("logoUrl").value, copyrightText: document.getElementById("copyrightText").value, bannerImageUrl: document.getElementById("bannerImageUrl").value, aboutImageUrl: document.getElementById("aboutImageUrl").value, projectsImageUrl: document.getElementById("projectsImageUrl").value, allowRegistration: document.getElementById("allowRegistration").value === 'true' }); database.ref("siteContent/contactInfo").update({ email: document.getElementById("contactEmail").value, phone: document.getElementById("contactPhone").value, address: document.getElementById("contactAddress").value, footerDescription: document.getElementById("footerDescription").value }); database.ref("siteContent/developerCredit").update({ name: document.getElementById("developerName").value, url: document.getElementById("developerUrl").value }); database.ref("siteContent/theme").update({ primaryColor: document.getElementById("primaryColor").value, secondaryColor: document.getElementById("secondaryColor").value }); alert("সেটিংস সফলভাবে সেভ করা হয়েছে!"); }));
+            document.getElementById("menuForm").addEventListener("submit", (function(t) { t.preventDefault(); const e = document.getElementById("menuId").value, n = { name: document.getElementById("menuName").value, url: document.getElementById("menuUrl").value, order: parseInt(document.getElementById("menuOrder").value) }; (e ? database.ref("navigationMenu/" + e) : database.ref("navigationMenu").push()).set(n).then((() => closeModal("menuModal"))).catch((t => alert(t.message))) })); document.getElementById("roleForm").addEventListener("submit", (function(t) { t.preventDefault(); const e = document.getElementById("roleId").value, n = { name: document.getElementById("roleName").value, value: document.getElementById("roleValue").value }; (e ? database.ref("subAdminRoles/" + e) : database.ref("subAdminRoles").push()).set(n).then((() => closeModal("roleModal"))).catch((t => alert(t.message))) })); document.getElementById("featureForm").addEventListener("submit", (function(t) { t.preventDefault(); const e = document.getElementById("featureId").value, n = { image: document.getElementById("featureImage").value, title: document.getElementById("featureTitle").value, desc: document.getElementById("featureDesc").value }; (e ? database.ref("siteContent/features/" + e) : database.ref("siteContent/features").push()).set(n).then((() => closeModal("featureModal"))).catch((t => alert(t.message))) })); document.getElementById("seoForm").addEventListener("submit", function(e) { e.preventDefault(); database.ref("siteContent/seo").update({ metaTitle: document.getElementById("metaTitle").value, metaDescription: document.getElementById("metaDescription").value }).then(() => alert("SEO তথ্য সফলভাবে সেভ করা হয়েছে!")); }); 
             document.getElementById("languageForm").addEventListener("submit", function(e) { 
                 e.preventDefault(); 
                 database.ref("siteContent/language").update({ 
