@@ -38,7 +38,7 @@
         td.message-col, td.review-col { white-space: normal; min-width: 300px; }
         th { background-color: #f9fafb; font-weight: 600; }
         .status { padding: 5px 12px; border-radius: 15px; font-size: 0.85rem; font-weight: bold; color: #fff; }
-        .status.active, .status.published, .status.Approved { background-color: var(--success-color); } .status.blocked, .status.Rejected { background-color: var(--danger-color); } .status.pending, .status.Pending { background-color: var(--warning-color); } .status.resolved { background-color: var(--primary-color); }
+        .status.active, .status.published, .status.Approved { background-color: var(--success-color); } .status.blocked, .status.Rejected { background-color: var(--danger-color); } .status.pending, .status.Pending, .status.inactive { background-color: var(--warning-color); } .status.resolved { background-color: var(--primary-color); }
         .action-btn { border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; color: #fff; margin-right: 5px; font-size: 0.9rem; }
         .edit-btn { background-color: var(--primary-color); } .delete-btn { background-color: var(--danger-color); } .content-btn { background-color: #9b59b6; } .progress-btn { background-color: var(--warning-color); } .enroll-btn { background-color: #16a085; }
         .settings-card { background-color: #fff; padding: 30px 25px; border-radius: 12px; box-shadow: var(--shadow); margin-bottom: 25px; }
@@ -86,6 +86,7 @@
                 <li><a href="#support-tickets" class="nav-link">সাপোর্ট টিকেট</a></li>
                 <li><a href="#earnings" class="nav-link">আর্নিং রিপোর্ট</a></li>
                 <li><a href="#project-management" class="nav-link">প্রজেক্ট ম্যানেজমেন্ট</a></li>
+                <li><a href="#workshop-management" class="nav-link">ওয়ার্কশপ ম্যানেজমেন্ট</a></li>
                 <li><a href="#blog-management" class="nav-link">ব্লগ/নোটিশ</a></li>
                 <li><a href="#contact-messages" class="nav-link">যোগাযোগ বার্তা</a></li>
                 <li><a href="#page-content" class="nav-link">পেজ কনটেন্ট</a></li>
@@ -205,6 +206,38 @@
             <div class="page-header"><h1>আপকামিং প্রজেক্ট ম্যানেজমেন্ট</h1></div><button class="add-new-btn" onclick="openProjectModal()">নতুন প্রজেক্ট যোগ করুন</button>
             <div class="table-container">
                 <table><thead><tr><th>প্রজেক্টের নাম</th><th>লিংক</th><th>অ্যাকশন</th></tr></thead><tbody id="projectTableBody"></tbody></table>
+            </div>
+        </section>
+        <section id="workshop-management" class="content-section">
+            <div class="page-header"><h1>আসন্ন ওয়ার্কশপ ম্যানেজমেন্ট</h1></div>
+            <div class="settings-card">
+                <form id="workshopForm">
+                    <input type="hidden" id="workshopId" value="main_workshop">
+                    <div class="form-group">
+                        <label for="workshopTitle">ওয়ার্কশপের শিরোনাম</label>
+                        <input type="text" id="workshopTitle" placeholder="যেমন: আগামী মাসের ফ্রিল্যান্সিং ওয়ার্কশপ" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="workshopDate">তারিখ ও সময়</label>
+                        <input type="text" id="workshopDate" placeholder="যেমন: নভেম্বর ২৫, ২০২৫ - রাত ৯টা" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="workshopDescription">সংক্ষিপ্ত বিবরণ</label>
+                        <textarea id="workshopDescription" rows="4" placeholder="ওয়ার্কশপে কী কী শেখানো হবে তার একটি সংক্ষিপ্ত বিবরণ দিন।"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="workshopRegLink">রেজিস্ট্রেশন লিংক</label>
+                        <input type="text" id="workshopRegLink" placeholder="Google Form বা অন্য কোনো রেজিস্ট্রেশন পেজের লিংক" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="workshopStatus">স্ট্যাটাস</label>
+                        <select id="workshopStatus">
+                            <option value="active">সক্রিয় (ওয়েবসাইটে দেখাবে)</option>
+                            <option value="inactive">নিষ্ক্রিয় (ওয়েবসাইটে দেখাবে না)</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="submit-btn">ওয়ার্কশপের তথ্য সেভ করুন</button>
+                </form>
             </div>
         </section>
         <section id="blog-management" class="content-section">
@@ -377,7 +410,6 @@
                 firebase.auth().signInWithEmailAndPassword(adminEmail, adminPassword)
                     .then((userCredential) => {
                         console.log("Admin signed in successfully:", userCredential.user.uid);
-                        // লগইন সফল হওয়ার পর ডেটা লোড করার ফাংশনগুলো কল করুন
                         initializeApp();
                     })
                     .catch((error) => {
@@ -386,7 +418,6 @@
                     });
             } else {
                  console.log("Admin already signed in.");
-                 // ইউজার আগে থেকেই লগইন করা থাকলে ডেটা লোড করুন
                  initializeApp();
             }
         });
@@ -408,7 +439,7 @@
         function setupNavigation() { const t = document.querySelectorAll(".nav-link"), e = document.querySelectorAll(".content-section"), n = document.getElementById("sidebar"); t.forEach((l => { l.addEventListener("click", (s => { s.preventDefault(), t.forEach((t => t.classList.remove("active"))), l.classList.add("active"); const o = l.getAttribute("href").substring(1); e.forEach((t => { t.classList.remove("active"), t.id === o && t.classList.add("active") })), window.innerWidth <= 768 && n.classList.remove("show") })) })) }
         
         function listenToFirebaseData() {
-            database.ref("users").orderByKey().limitToLast(100).on("value", (t => { 
+            database.ref("users").on("value", (t => { 
                 allUsers = t.val() || {}; 
                 renderUserTable(); 
                 updateDashboard();
@@ -430,14 +461,20 @@
             database.ref("navigationMenu").on("value", (t => { allMenus = t.val() || {}, renderMenuTable() }));
             database.ref("subAdminRoles").on("value", (t => { allRoles = t.val() || {}, renderRoleTable() }));
             database.ref("contacts").on("value", (t => { allContactMessages = t.val() || {}, renderContactMessagesTable() }));
-            database.ref("payments").orderByKey().limitToLast(100).on("value", (t => { allPayments = t.val() || {}, renderPaymentHistoryTable() }));
+            database.ref("payments").on("value", (t => { allPayments = t.val() || {}, renderPaymentHistoryTable() }));
             database.ref("supportTickets").on("value", (t => { allSupportTickets = t.val() || {}, renderSupportTicketsTable() }));
             database.ref("courseReviews").on("value", (t => { allReviews = t.val() || {}, renderReviewsTableWithApproval() }));
             database.ref("coupons").on("value", (t => { allCoupons = t.val() || {}, renderCouponTable() }));
             database.ref("notifications").on("value", (t => { allNotifications = t.val() || {}, renderSentNotificationsTable() }));
-            database.ref('courses').on('value', snapshot => {
-                allCourses = snapshot.val() || {};
-                renderQnaTable();
+            database.ref("workshops/main_workshop").on("value", (snapshot) => {
+                const workshopData = snapshot.val();
+                if (workshopData) {
+                    document.getElementById("workshopTitle").value = workshopData.title || "";
+                    document.getElementById("workshopDate").value = workshopData.date || "";
+                    document.getElementById("workshopDescription").value = workshopData.description || "";
+                    document.getElementById("workshopRegLink").value = workshopData.regLink || "";
+                    document.getElementById("workshopStatus").value = workshopData.status || "inactive";
+                }
             });
         }
 
@@ -906,6 +943,20 @@
                     alert('Coupon saved successfully!');
                     closeModal('couponModal');
                 });
+            });
+            document.getElementById("workshopForm").addEventListener("submit", function(e) {
+                e.preventDefault();
+                const workshopId = document.getElementById("workshopId").value;
+                const data = {
+                    title: document.getElementById("workshopTitle").value,
+                    date: document.getElementById("workshopDate").value,
+                    description: document.getElementById("workshopDescription").value,
+                    regLink: document.getElementById("workshopRegLink").value,
+                    status: document.getElementById("workshopStatus").value
+                };
+                database.ref(`workshops/${workshopId}`).set(data)
+                    .then(() => alert("ওয়ার্কশপের তথ্য সফলভাবে সেভ করা হয়েছে!"))
+                    .catch(err => alert("Error: " + err.message));
             });
             document.getElementById("addModuleForm").addEventListener('submit', function(e) { e.preventDefault(); const moduleName = document.getElementById('newModuleName').value; if (moduleName && currentEditingCourseId) { database.ref(`courses/${currentEditingCourseId}/modules`).push({ title: moduleName }).then(() => { document.getElementById('newModuleName').value = ''; }); } }); }
     </script>
