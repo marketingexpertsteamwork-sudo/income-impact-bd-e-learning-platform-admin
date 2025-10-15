@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel - Income Impact BD</title>
     <link rel="icon" href="https://img.icons8.com/fluency/48/000000/source-code.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         :root {
             --primary-color: #3498db; --secondary-color: #f5f7fa; --sidebar-bg: #2c3e50; --text-color: #333; --light-text-color: #ecf0f1; --border-color: #dfe3e8; --success-color: #2ecc71; --danger-color: #e74c3c; --warning-color: #f39c12; --shadow: 0 4px 12px rgba(0,0,0,0.08);
@@ -38,8 +39,11 @@
         td.message-col, td.review-col { white-space: normal; min-width: 300px; }
         th { background-color: #f9fafb; font-weight: 600; }
         .status { padding: 5px 12px; border-radius: 15px; font-size: 0.85rem; font-weight: bold; color: #fff; }
-        .status.active, .status.published, .status.Approved { background-color: var(--success-color); } .status.blocked, .status.Rejected { background-color: var(--danger-color); } .status.pending, .status.Pending, .status.inactive { background-color: var(--warning-color); } .status.resolved { background-color: var(--primary-color); }
-        .action-btn { border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; color: #fff; margin-right: 5px; font-size: 0.9rem; }
+        .status.active, .status.published, .status.Approved, .status.processed { background-color: var(--success-color); } 
+        .status.blocked, .status.Rejected, .status.rejected { background-color: var(--danger-color); } 
+        .status.pending, .status.Pending, .status.inactive, .status.submitted { background-color: var(--warning-color); } 
+        .status.resolved, .status.correction_needed { background-color: var(--primary-color); }
+        .action-btn { border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; color: #fff; margin: 2px; font-size: 0.9rem; }
         .edit-btn { background-color: var(--primary-color); } .delete-btn { background-color: var(--danger-color); } .content-btn { background-color: #9b59b6; } .progress-btn { background-color: var(--warning-color); } .enroll-btn { background-color: #16a085; }
         .settings-card { background-color: #fff; padding: 30px 25px; border-radius: 12px; box-shadow: var(--shadow); margin-bottom: 25px; }
         .settings-card .form-group { margin-bottom: 25px; }
@@ -76,12 +80,22 @@
         <nav>
             <ul>
                 <li><a href="#dashboard" class="nav-link active">ড্যাশবোর্ড</a></li>
+                <!-- NEW FEATURE: Detailed Analytics Link -->
+                <li><a href="#analytics" class="nav-link">বিস্তারিত অ্যানালিটিক্স</a></li>
                 <li><a href="#user-management" class="nav-link">ব্যবহারকারী ম্যানেজমেন্ট</a></li>
                 <li><a href="#course-management" class="nav-link">কোর্স ম্যানেজমেন্ট</a></li>
+                <li><a href="#homework-review" class="nav-link">হোমওয়ার্ক রিভিউ</a></li>
+                <li><a href="#withdrawal-requests" class="nav-link">উইথড্র রিকুয়েস্ট</a></li>
                 <li><a href="#coupon-management" class="nav-link">কুপন ম্যানেজমেন্ট</a></li>
+                <li><a href="#liveclass-management" class="nav-link">লাইভ ক্লাস ম্যানেজমেন্ট</a></li>
+                <li><a href="#certificate-management" class="nav-link">সার্টিফিকেট ম্যানেজমেন্ট</a></li>
                 <li><a href="#notifications" class="nav-link">বিজ্ঞপ্তি পাঠান</a></li>
+                <!-- NEW FEATURE: Group Messaging Link -->
+                <li><a href="#group-messaging" class="nav-link">গ্রুপ মেসেজিং</a></li>
                 <li><a href="#qna-management" class="nav-link">প্রশ্নোত্তর ম্যানেজমেন্ট</a></li>
                 <li><a href="#course-reviews" class="nav-link">কোর্স রিভিউ</a></li>
+                 <!-- NEW FEATURE: Community Forum Management Link -->
+                <li><a href="#community-management" class="nav-link">কমিউনিটি ম্যানেজমেন্ট</a></li>
                 <li><a href="#payment-history" class="nav-link">পেমেন্ট হিস্ট্রি</a></li>
                 <li><a href="#support-tickets" class="nav-link">সাপোর্ট টিকেট</a></li>
                 <li><a href="#earnings" class="nav-link">আর্নিং রিপোর্ট</a></li>
@@ -94,7 +108,9 @@
                 <li><a href="#menu-management" class="nav-link">ন্যাভিগেশন মেনু</a></li>
                 <li><a href="#role-management" class="nav-link">সাব-অ্যাডমিন রোল</a></li>
                 <li><a href="#footer-management" class="nav-link">ফুটার ম্যানেজমেন্ট</a></li>
+                <li><a href="#gamification-settings" class="nav-link">গ্যামিফিকেশন সেটিংস</a></li>
                 <li><a href="#settings" class="nav-link">সেটিংস ও থিম</a></li>
+                <li><a href="#" id="logout-btn" class="nav-link" style="color: var(--danger-color);">লগআউট</a></li>
             </ul>
         </nav>
     </aside>
@@ -111,18 +127,54 @@
             </div>
             <div class="chart-container"><canvas id="userGrowthChart"></canvas></div>
         </section>
+
+        <!-- NEW FEATURE: Detailed Analytics Section -->
+        <section id="analytics" class="content-section">
+            <div class="page-header"><h1>বিস্তারিত অ্যানালিটিক্স</h1></div>
+            <div class="settings-card">
+                <h3>কোর্স অনুযায়ী আয় ও এনরোলমেন্ট</h3>
+                <div class="table-container">
+                    <table id="courseAnalyticsTable">
+                        <thead><tr><th>কোর্সের নাম</th><th>মোট এনরোলমেন্ট</th><th>মোট আয় (BDT)</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
         <section id="user-management" class="content-section">
             <div class="page-header"><h1>ব্যবহারকারী ম্যানেজমেন্ট</h1></div>
             <div class="table-container">
-                <table><thead><tr><th>নাম</th><th>ইমেইল</th><th>রেজিস্ট্রেশনের তারিখ</th><th>স্ট্যাটাস</th><th>অ্যাকশন</th></tr></thead><tbody id="userTableBody"></tbody></table>
+                <table><thead><tr><th>প্রোফাইল ছবি</th><th>নাম</th><th>ইমেইল</th><th>ব্যালেন্স (BDT)</th><th>স্ট্যাটাস</th><th>অ্যাকশন</th></tr></thead><tbody id="userTableBody"></tbody></table>
             </div>
         </section>
         <section id="course-management" class="content-section">
             <div class="page-header"><h1>কোর্স ম্যানেজমেন্ট</h1></div><button class="add-new-btn" onclick="openCourseModal()">নতুন কোর্স যোগ করুন</button>
             <div class="table-container">
-                <table><thead><tr><th>কোর্সের নাম</th><th>ক্যাটেগরি</th><th>মূল্য (BDT)</th><th>স্ট্যাটাস</th><th>অ্যাকশন</th></tr></thead><tbody id="courseTableBody"></tbody></table>
+                <table><thead><tr><th>কোর্সের নাম</th><th>মূল্য (BDT)</th><th>হোমওয়ার্ক রিওয়ার্ড</th><th>হোমওয়ার্ক লিমিট</th><th>স্ট্যাটাস</th><th>অ্যাকশন</th></tr></thead><tbody id="courseTableBody"></tbody></table>
             </div>
         </section>
+
+        <section id="homework-review" class="content-section">
+            <div class="page-header"><h1>হোমওয়ার্ক রিভিউ</h1></div>
+            <div class="table-container">
+                <table>
+                    <thead><tr><th>ছাত্রের নাম</th><th>কোর্সের নাম</th><th>হোমওয়ার্ক লিংক</th><th>জমা দেওয়ার তারিখ</th><th>অ্যাকশন</th></tr></thead>
+                    <tbody id="homeworkReviewTableBody"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="withdrawal-requests" class="content-section">
+            <div class="page-header"><h1>উইথড্র রিকুয়েস্ট</h1></div>
+            <div class="table-container">
+                <table>
+                    <thead><tr><th>ব্যবহারকারী</th><th>টাকার পরিমাণ (BDT)</th><th>পেমেন্ট মেথড</th><th>অ্যাকাউন্ট বিবরণ</th><th>রিকুয়েস্টের তারিখ</th><th>স্ট্যাটাস</th><th>অ্যাকশন</th></tr></thead>
+                    <tbody id="withdrawalRequestsTableBody"></tbody>
+                </table>
+            </div>
+        </section>
+
         <section id="coupon-management" class="content-section">
             <div class="page-header"><h1>কুপন ম্যানেজমেন্ট</h1></div>
             <button class="add-new-btn" onclick="openCouponModal()">নতুন কুপন যোগ করুন</button>
@@ -131,6 +183,29 @@
                     <thead><tr><th>কুপন কোড</th><th>ধরন</th><th>مقدار</th><th>মেয়াদ শেষ</th><th>অ্যাকশন</th></tr></thead>
                     <tbody id="couponTableBody"></tbody>
                 </table>
+            </div>
+        </section>
+        <section id="liveclass-management" class="content-section">
+            <div class="page-header"><h1>লাইভ ক্লাস ম্যানেজমেন্ট</h1></div>
+            <div class="settings-card">
+                <form id="liveClassForm">
+                    <h3>নতুন লাইভ ক্লাস তৈরি করুন</h3>
+                    <div class="form-group"><label for="liveClassTitle">ক্লাসের শিরোনাম</label><input type="text" id="liveClassTitle" required></div>
+                    <div class="form-group"><label for="liveClassUrl">মিটিং URL (Zoom/Meet)</label><input type="url" id="liveClassUrl" required></div>
+                    <div class="form-group"><label for="liveClassDateTime">তারিখ ও সময়</label><input type="datetime-local" id="liveClassDateTime" required></div>
+                    <div class="form-group"><label for="liveClassDesc">সংক্ষিপ্ত বিবরণ</label><textarea id="liveClassDesc" rows="3"></textarea></div>
+                    <button type="submit" class="submit-btn">ক্লাস যুক্ত করুন</button>
+                </form>
+            </div>
+             <div class="table-container" style="margin-top: 30px;">
+                <h3>পূর্ববর্তী লাইভ ক্লাসসমূহ</h3>
+                <table><thead><tr><th>শিরোনাম</th><th>URL</th><th>সময়</th><th>অ্যাকশন</th></tr></thead><tbody id="liveClassTableBody"></tbody></table>
+            </div>
+        </section>
+        <section id="certificate-management" class="content-section">
+            <div class="page-header"><h1>সার্টিফিকেট ম্যানেজমেন্ট</h1></div>
+            <div class="table-container">
+                 <table><thead><tr><th>ছাত্রছাত্রীর নাম</th><th>কোর্সের নাম</th><th>সম্পন্ন করার তারিখ</th><th>অ্যাকশন</th></tr></thead><tbody id="certificateTableBody"></tbody></table>
             </div>
         </section>
         <section id="notifications" class="content-section">
@@ -152,6 +227,25 @@
                 </table>
             </div>
         </section>
+
+        <!-- NEW FEATURE: Group Messaging Section -->
+        <section id="group-messaging" class="content-section">
+            <div class="page-header"><h1>গ্রুপ মেসেজিং (কোর্স অনুযায়ী)</h1></div>
+            <div class="settings-card">
+                <form id="groupNotificationForm">
+                    <div class="form-group">
+                        <label for="groupNotificationCourse">কোর্স নির্বাচন করুন</label>
+                        <select id="groupNotificationCourse" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="groupNotificationMessage">বিজ্ঞপ্তির বার্তা</label>
+                        <textarea id="groupNotificationMessage" rows="5" required placeholder="শুধুমাত্র নির্বাচিত কোর্সের শিক্ষার্থীরা এই বার্তাটি পাবে।"></textarea>
+                    </div>
+                    <button type="submit" class="submit-btn">নির্বাচিত গ্রুপে পাঠান</button>
+                </form>
+            </div>
+        </section>
+
         <section id="qna-management" class="content-section">
             <div class="page-header"><h1>প্রশ্নোত্তর ম্যানেজমেন্ট</h1></div>
             <div class="table-container">
@@ -178,6 +272,18 @@
                 </table>
             </div>
         </section>
+        
+        <!-- NEW FEATURE: Community Management Section -->
+        <section id="community-management" class="content-section">
+            <div class="page-header"><h1>কমিউনিটি ফোরাম ম্যানেজমেন্ট</h1></div>
+            <div class="table-container">
+                <table>
+                    <thead><tr><th>পোস্টকারী</th><th>পোস্ট</th><th>তারিখ</th><th>অ্যাকশন</th></tr></thead>
+                    <tbody id="forumPostsTableBody"></tbody>
+                </table>
+            </div>
+        </section>
+
         <section id="payment-history" class="content-section">
             <div class="page-header"><h1>পেমেন্ট হিস্ট্রি</h1></div>
             <div class="table-container">
@@ -342,6 +448,34 @@
                 <table><thead><tr><th>লিংকের নাম</th><th>লিংকের URL</th><th>অ্যাকশন</th></tr></thead><tbody id="footerLinksTableBody"></tbody></table>
             </div>
         </section>
+        <section id="gamification-settings" class="content-section">
+            <div class="page-header"><h1>গ্যামিফিকেশন সেটিংস</h1></div>
+            <div class="settings-card">
+                <form id="gamificationForm">
+                     <h3>পয়েন্ট সিস্টেম পরিচালনা</h3>
+                     <div class="form-group">
+                         <label for="pointsPerLesson">প্রতিটি পাঠ শেষ করার জন্য পয়েন্ট</label>
+                         <input type="number" id="pointsPerLesson" placeholder="e.g., 10">
+                     </div>
+                     <div class="form-group">
+                         <label for="pointsPerQuiz">প্রতিটি কুইজ পাশ করার জন্য পয়েন্ট</label>
+                         <input type="number" id="pointsPerQuiz" placeholder="e.g., 50">
+                     </div>
+                     <button type="submit" class="submit-btn">পয়েন্ট সেটিংস সেভ করুন</button>
+                </form>
+            </div>
+            <!-- NEW FEATURE: Badge Management -->
+            <div class="settings-card">
+                <h3>ব্যাজ ম্যানেজমেন্ট</h3>
+                <button class="add-new-btn" onclick="openBadgeModal()">নতুন ব্যাজ যোগ করুন</button>
+                <div class="table-container">
+                    <table>
+                        <thead><tr><th>ব্যাজের নাম</th><th>আইকন (Font Awesome)</th><th>শর্ত</th><th>অ্যাকশন</th></tr></thead>
+                        <tbody id="badgesTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
         <section id="settings" class="content-section">
             <div class="page-header"><h1>ওয়েবসাইট সেটিংস ও থিম</h1></div>
             <div class="settings-card">
@@ -361,6 +495,17 @@
                     <div class="form-group"><label for="aboutImageUrl">About ছবির URL</label><input type="text" id="aboutImageUrl"></div>
                     <div class="form-group"><label for="projectsImageUrl">Projects ছবির URL</label><input type="text" id="projectsImageUrl"></div>
                     <hr>
+                    <h3>অ্যানাউন্সমেন্ট পপ-আপ</h3>
+                    <div class="form-group"><label for="announcementTitle">পপ-আপ শিরোনাম</label><input type="text" id="announcementTitle"></div>
+                    <div class="form-group"><label for="announcementMessage">বার্তা</label><textarea id="announcementMessage" rows="3"></textarea></div>
+                    <div class="form-group">
+                        <label for="announcementStatus">স্ট্যাটাস</label>
+                        <select id="announcementStatus">
+                            <option value="active">সক্রিয় (Active)</option>
+                            <option value="inactive">নিষ্ক্রিয় (Inactive)</option>
+                        </select>
+                    </div>
+                    <hr>
                     <h3>যোগাযোগ ও ফুটার</h3><div class="form-group"><label for="contactEmail">যোগাযোগের ইমেইল</label><input type="email" id="contactEmail"></div><div class="form-group"><label for="contactPhone">যোগাযোগের ফোন</label><input type="text" id="contactPhone"></div><div class="form-group"><label for="contactAddress">ঠিকানা</label><input type="text" id="contactAddress"></div><div class="form-group"><label for="footerDescription">ফুটারের বিবরণ</label><textarea id="footerDescription" rows="4"></textarea></div><hr>
                     <h3>ডেভেলপার ক্রেডিট</h3><div class="form-group"><label for="developerName">ডেভেলপারের নাম</label><input type="text" id="developerName"></div><div class="form-group"><label for="developerUrl">ডেভেলপারের URL</label><input type="text" id="developerUrl"></div>
                     <button type="submit" class="form-btn">সেটিংস সেভ করুন</button>
@@ -371,8 +516,55 @@
             </div>
         </section>
     </main>
-    <div id="userModal" class="modal"><div class="modal-content"><div class="modal-header"><h2 id="userModalTitle"></h2><span class="close-btn" onclick="closeModal('userModal')">&times;</span></div><form id="userForm"><input type="hidden" id="userId"><div class="form-group"><label for="userName">নাম</label><input type="text" id="userName" required></div><div class="form-group"><label for="userEmail">ইমেইল</label><input type="email" id="userEmail" required></div><div class="form-group"><label for="userStatus">স্ট্যাটাস</label><select id="userStatus"><option value="active">অ্যাক্টিভ</option><option value="blocked">ব্লকড</option></select></div><button type="submit" class="submit-btn">সেভ করুন</button></form></div></div>
-    <div id="courseModal" class="modal"><div class="modal-content" style="max-height: 80vh; overflow-y: auto;"><div class="modal-header"><h2 id="courseModalTitle"></h2><span class="close-btn" onclick="closeModal('courseModal')">&times;</span></div><form id="courseForm"><input type="hidden" id="courseId"><div class="form-group"><label for="courseName">কোর্সের নাম</label><input type="text" id="courseName" required></div><div class="form-group"><label for="courseCategory">ক্যাটেগরি</label><input type="text" id="courseCategory" required></div><div class="form-group"><label for="coursePrice">মূল্য (BDT)</label><input type="number" id="coursePrice" required></div><div class="form-group"><label for="courseImageURL"> ছবির URL</label><input type="text" id="courseImageURL"></div><div class="form-group"><label for="courseDescription">বিস্তারিত বিবরণ</label><textarea id="courseDescription" rows="5"></textarea></div><div class="form-group"><label for="courseStatus">স্ট্যাটাস</label><select id="courseStatus"><option value="published">পাবলিশড</option><option value="pending">পেন্ডিং</option></select></div><button type="submit" class="submit-btn">সেভ করুন</button></form></div></div>
+    
+    <div id="userModal" class="modal"><div class="modal-content"><div class="modal-header"><h2 id="userModalTitle"></h2><span class="close-btn" onclick="closeModal('userModal')">&times;</span></div>
+    <form id="userForm"><input type="hidden" id="userId">
+        <div class="form-group"><label for="userName">নাম</label><input type="text" id="userName" required></div>
+        <div class="form-group"><label for="userEmail">ইমেইল</label><input type="email" id="userEmail" required></div>
+        <div class="form-group"><label for="userBalance">ব্যালেন্স</label><input type="number" id="userBalance"></div>
+        <!-- NEW FEATURE: Balance adjustment reason -->
+        <div class="form-group"><label for="balanceReason">ব্যালেন্স পরিবর্তনের কারণ (ঐচ্ছিক)</label><textarea id="balanceReason" rows="2"></textarea></div>
+        <div class="form-group"><label for="userRole">রোল (e.g., Team Leader)</label><input type="text" id="userRole" placeholder="Optional"></div>
+        <div class="form-group"><label for="userWhatsapp">হোয়াটসঅ্যাপ নম্বর</label><input type="text" id="userWhatsapp" placeholder="Optional"></div>
+        <div class="form-group"><label for="userPoints">পয়েন্ট</label><input type="number" id="userPoints"></div>
+        <div class="form-group"><label for="userStatus">স্ট্যাটাস</label><select id="userStatus"><option value="active">Active</option><option value="pending">Pending</option><option value="blocked">Blocked</option></select></div>
+        <button type="submit" class="submit-btn">সেভ করুন</button>
+    </form></div></div>
+
+    <div id="courseModal" class="modal"><div class="modal-content" style="max-height: 80vh; overflow-y: auto;"><div class="modal-header"><h2 id="courseModalTitle"></h2><span class="close-btn" onclick="closeModal('courseModal')">&times;</span></div>
+    <form id="courseForm"><input type="hidden" id="courseId">
+        <div class="form-group"><label for="courseName">কোর্সের নাম</label><input type="text" id="courseName" required></div>
+        <div class="form-group"><label for="coursePrice">মূল্য (BDT)</label><input type="number" id="coursePrice" required></div>
+        <div class="form-group"><label for="courseHomeworkReward">হোমওয়ার্ক রিওয়ার্ড (BDT)</label><input type="number" id="courseHomeworkReward" value="0"></div>
+        <div class="form-group"><label for="courseHomeworkLimit">হোমওয়ার্ক লিমিট</label><input type="number" id="courseHomeworkLimit" value="0"></div>
+        <div class="form-group"><label for="courseImageURL"> ছবির URL</label><input type="text" id="courseImageURL"></div>
+        <div class="form-group"><label for="courseDescription">বিস্তারিত বিবরণ</label><textarea id="courseDescription" rows="5"></textarea></div>
+        <div class="form-group"><label for="courseStatus">স্ট্যাটাস</label><select id="courseStatus"><option value="published">পাবলিশড</option><option value="pending">পেন্ডিং</option></select></div>
+        <button type="submit" class="submit-btn">সেভ করুন</button>
+    </form></div></div>
+
+    <!-- NEW FEATURE: Badge Modal -->
+    <div id="badgeModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="badgeModalTitle">নতুন ব্যাজ</h2>
+                <span class="close-btn" onclick="closeModal('badgeModal')">&times;</span>
+            </div>
+            <form id="badgeForm">
+                <input type="hidden" id="badgeId">
+                <div class="form-group"><label for="badgeName">ব্যাজের নাম</label><input type="text" id="badgeName" required></div>
+                <div class="form-group"><label for="badgeIcon">আইকন (e.g., fas fa-trophy)</label><input type="text" id="badgeIcon" required></div>
+                <div class="form-group"><label for="badgeType">শর্তের ধরন</label>
+                    <select id="badgeType">
+                        <option value="complete_courses">কোর্স সম্পন্ন করা</option>
+                    </select>
+                </div>
+                <div class="form-group"><label for="badgeValue">প্রয়োজনীয় সংখ্যা (e.g., 5)</label><input type="number" id="badgeValue" required></div>
+                <button type="submit" class="submit-btn">সেভ করুন</button>
+            </form>
+        </div>
+    </div>
+
     <div id="projectModal" class="modal"><div class="modal-content"><div class="modal-header"><h2 id="projectModalTitle"></h2><span class="close-btn" onclick="closeModal('projectModal')">&times;</span></div><form id="projectForm"><input type="hidden" id="projectId"><div class="form-group"><label for="projectTitle">প্রজেক্টের নাম</label><input type="text" id="projectTitle" required></div><div class="form-group"><label for="projectLink">লিংক</label><input type="text" id="projectLink" required></div><button type="submit" class="submit-btn">সেভ করুন</button></form></div></div>
     <div id="footerLinkModal" class="modal"><div class="modal-content"><div class="modal-header"><h2 id="footerLinkModalTitle"></h2><span class="close-btn" onclick="closeModal('footerLinkModal')">&times;</span></div><form id="footerLinkForm"><input type="hidden" id="footerLinkId"><div class="form-group"><label for="footerLinkName">লিংকের নাম</label><input type="text" id="footerLinkName" required></div><div class="form-group"><label for="footerLinkUrl">লিংকের URL</label><input type="text" id="footerLinkUrl" required></div><button type="submit" class="submit-btn">সেভ করুন</button></form></div></div>
     <div id="blogModal" class="modal"><div class="modal-content" style="max-height: 80vh; overflow-y: auto;"><div class="modal-header"><h2 id="blogModalTitle"></h2><span class="close-btn" onclick="closeModal('blogModal')">&times;</span></div><form id="blogForm"><input type="hidden" id="blogId"><div class="form-group"><label for="blogTitle">শিরোনাম</label><input type="text" id="blogTitle" required></div><div class="form-group"><label for="blogImageUrl">ছবির URL</label><input type="text" id="blogImageUrl"></div><div class="form-group"><label for="blogContent">কনটেন্ট</label><textarea id="blogContent" rows="8" required></textarea></div><div class="form-group"><label for="blogStatus">স্ট্যাটাস</label><select id="blogStatus"><option value="published">পাবলিশড</option><option value="pending">পেন্ডিং</option></select></div><button type="submit" class="submit-btn">সেভ করুন</button></form></div></div>
@@ -384,6 +576,7 @@
     <div id="courseContentModal" class="modal"><div class="modal-content" style="max-width: 700px; max-height: 90vh; overflow-y: auto;"><div class="modal-header"><h2 id="courseContentModalTitle">Manage Course Content</h2><span class="close-btn" onclick="closeModal('courseContentModal')">&times;</span></div><div id="modulesContainer"></div><hr><h4>নতুন মডিউল যোগ করুন</h4><form id="addModuleForm" style="display: flex; gap: 10px;"><input type="text" id="newModuleName" placeholder="মডিউলের নাম" style="flex-grow: 1;" required><button type="submit" class="add-new-btn" style="margin: 0;">যোগ করুন</button></form></div></div>
     <div id="quizModal" class="modal"><div class="modal-content" style="max-width: 800px; max-height: 90vh; overflow-y: auto;"><div class="modal-header"><h2 id="quizModalTitle">Manage Quiz</h2><span class="close-btn" onclick="closeModal('quizModal')">&times;</span></div><div id="quizQuestionsContainer"></div><hr><h4>Add New Question</h4><form id="addQuestionForm"><div class="form-group"><label>Question</label><input type="text" id="newQuestionText" required></div><div class="form-group"><label>Option 1</label><input type="text" class="quiz-option" required></div><div class="form-group"><label>Option 2</label><input type="text" class="quiz-option" required></div><div class="form-group"><label>Option 3</label><input type="text" class="quiz-option"></div><div class="form-group"><label>Option 4</label><input type="text" class="quiz-option"></div><div class="form-group"><label>Correct Answer (1-4)</label><input type="number" id="newCorrectAnswer" min="1" max="4" required></div><button type="submit" class="add-new-btn">Add Question</button></form></div></div>
     <div id="userProgressModal" class="modal"><div class="modal-content"><div class="modal-header"><h2 id="userProgressModalTitle">Student Progress</h2><span class="close-btn" onclick="closeModal('userProgressModal')">&times;</span></div><div id="userProgressContainer"></div></div></div>
+    <div id="userNotesModal" class="modal"><div class="modal-content" style="max-width: 700px; max-height: 80vh; overflow-y: auto;"><div class="modal-header"><h2 id="userNotesModalTitle">Student Notes</h2><span class="close-btn" onclick="closeModal('userNotesModal')">&times;</span></div><div id="userNotesContainer"></div></div></div>
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
@@ -399,32 +592,41 @@
             appId: "1:935646225143:web:c37289c1603d1a49b4e9f2"
         };
         firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        const auth = firebase.auth();
 
-        // --- অ্যাডমিন হিসেবে স্বয়ংক্রিয় লগইন ---
         const adminEmail = "my.admin.email@gmail.com";
         const adminPassword = "admin@2025jr";
         const adminUid = "vcwR2irXaiTNiiOb5o0pBrIqfRV2";
 
-        firebase.auth().onAuthStateChanged(user => {
+        auth.onAuthStateChanged(user => {
             if (!user || user.uid !== adminUid) {
-                firebase.auth().signInWithEmailAndPassword(adminEmail, adminPassword)
+                auth.signInWithEmailAndPassword(adminEmail, adminPassword)
                     .then((userCredential) => {
                         console.log("Admin signed in successfully:", userCredential.user.uid);
                         initializeApp();
                     })
                     .catch((error) => {
                         console.error("Admin auto-login failed:", error);
-                        alert("Error: Could not authenticate admin privileges. Please check console.");
+                        document.body.innerHTML = `<div style="text-align: center; padding-top: 50px;"><h1>Admin Authentication Failed</h1><p>${error.message}</p></div>`;
                     });
             } else {
                  console.log("Admin already signed in.");
                  initializeApp();
             }
         });
+        
+        document.getElementById('logout-btn').addEventListener('click', (e) => {
+            e.preventDefault();
+            auth.signOut().then(() => {
+                alert("You have been logged out.");
+                document.body.innerHTML = `<div style="text-align: center; padding-top: 50px;"><h1>Logged Out</h1><p>Please close this page.</p></div>`;
+            });
+        });
 
-        const database = firebase.database();
         let allUsers = {}, allCourses = {}, allEarnings = {}, allProjects = {}, allFooterLinks = {}, allBlogPosts = {}, allMenus = {}, allRoles = {}, allFeatures = {}, allContactMessages = {};
-        let allPayments = {}, allSupportTickets = {}, allReviews = {}, allCoupons = {}, allNotifications = {};
+        let allPayments = {}, allSupportTickets = {}, allReviews = {}, allCoupons = {}, allNotifications = {}, allLiveClasses = {};
+        let allHomework = {}, allWithdrawals = {};
         let currentEditingCourseId = null, currentEditingModuleId = null;
         let userGrowthChartInstance = null;
         
@@ -439,20 +641,16 @@
         function setupNavigation() { const t = document.querySelectorAll(".nav-link"), e = document.querySelectorAll(".content-section"), n = document.getElementById("sidebar"); t.forEach((l => { l.addEventListener("click", (s => { s.preventDefault(), t.forEach((t => t.classList.remove("active"))), l.classList.add("active"); const o = l.getAttribute("href").substring(1); e.forEach((t => { t.classList.remove("active"), t.id === o && t.classList.add("active") })), window.innerWidth <= 768 && n.classList.remove("show") })) })) }
         
         function listenToFirebaseData() {
-            database.ref("users").on("value", (t => { 
-                allUsers = t.val() || {}; 
-                renderUserTable(); 
-                updateDashboard();
-                renderUserGrowthChart();
-                calculateAdvancedAnalytics();
-            }));
-            database.ref("courses").on("value", (t => { 
-                allCourses = t.val() || {}; 
-                renderCourseTable(); 
-                updateDashboard();
-                calculateAdvancedAnalytics();
-                renderQnaTable();
-            }));
+            database.ref("users").on("value", (t => { allUsers = t.val() || {}; renderUserTable(); updateDashboard(); renderUserGrowthChart(); calculateAdvancedAnalytics(); renderCertificateTable(); }));
+            database.ref("courses").on("value", (t => { allCourses = t.val() || {}; renderCourseTable(); updateDashboard(); calculateAdvancedAnalytics(); renderQnaTable(); populateCourseSelect();}));
+            database.ref("liveClasses").on("value", (snapshot) => { allLiveClasses = snapshot.val() || {}; renderLiveClassTable(); });
+            database.ref('siteContent/gamificationSettings').on('value', (snapshot) => {
+                 const settings = snapshot.val() || {};
+                 document.getElementById('pointsPerLesson').value = settings.pointsPerLesson || '';
+                 document.getElementById('pointsPerQuiz').value = settings.pointsPerQuiz || '';
+                 renderBadgesTable(settings.badges);
+            });
+            database.ref('siteContent/announcement').on('value', (snapshot) => { const data = snapshot.val(); if (data) { document.getElementById('announcementTitle').value = data.title || ''; document.getElementById('announcementMessage').value = data.message || ''; document.getElementById('announcementStatus').value = data.status || 'inactive'; } });
             database.ref("earnings").on("value", (t => { allEarnings = t.val() || {}, renderEarningsTable(), updateDashboard() }));
             database.ref("projects").on("value", (t => { allProjects = t.val() || {}, renderProjectTable() }));
             database.ref("blogPosts").on("value", (t => { allBlogPosts = t.val() || {}, renderBlogTable() }));
@@ -461,265 +659,193 @@
             database.ref("navigationMenu").on("value", (t => { allMenus = t.val() || {}, renderMenuTable() }));
             database.ref("subAdminRoles").on("value", (t => { allRoles = t.val() || {}, renderRoleTable() }));
             database.ref("contacts").on("value", (t => { allContactMessages = t.val() || {}, renderContactMessagesTable() }));
-            database.ref("payments").on("value", (t => { allPayments = t.val() || {}, renderPaymentHistoryTable() }));
+            database.ref("payments").on("value", (t => { allPayments = t.val() || {}, renderPaymentHistoryTable(); calculateAdvancedAnalytics(); }));
             database.ref("supportTickets").on("value", (t => { allSupportTickets = t.val() || {}, renderSupportTicketsTable() }));
             database.ref("courseReviews").on("value", (t => { allReviews = t.val() || {}, renderReviewsTableWithApproval() }));
             database.ref("coupons").on("value", (t => { allCoupons = t.val() || {}, renderCouponTable() }));
             database.ref("notifications").on("value", (t => { allNotifications = t.val() || {}, renderSentNotificationsTable() }));
-            database.ref("workshops/main_workshop").on("value", (snapshot) => {
-                const workshopData = snapshot.val();
-                if (workshopData) {
-                    document.getElementById("workshopTitle").value = workshopData.title || "";
-                    document.getElementById("workshopDate").value = workshopData.date || "";
-                    document.getElementById("workshopDescription").value = workshopData.description || "";
-                    document.getElementById("workshopRegLink").value = workshopData.regLink || "";
-                    document.getElementById("workshopStatus").value = workshopData.status || "inactive";
-                }
-            });
+            database.ref("workshops/main_workshop").on("value", (snapshot) => { const workshopData = snapshot.val(); if (workshopData) { document.getElementById("workshopTitle").value = workshopData.title || ""; document.getElementById("workshopDate").value = workshopData.date || ""; document.getElementById("workshopDescription").value = workshopData.description || ""; document.getElementById("workshopRegLink").value = workshopData.regLink || ""; document.getElementById("workshopStatus").value = workshopData.status || "inactive"; } });
+            database.ref("homeworkSubmissions").on("value", (t => { allHomework = t.val() || {}; renderHomeworkReviewTable(); }));
+            database.ref("withdrawalRequests").on("value", (t => { allWithdrawals = t.val() || {}; renderWithdrawalRequestsTable(); }));
+            database.ref("forum_posts").on("value", (t => { renderForumPostsTable(t.val() || {}); }));
         }
 
-        function seedDatabaseWithInitialData() {
-            if (!confirm("Are you sure you want to initialize the site with sample data? This will overwrite existing courses, roles, and some site content. This action cannot be undone.")) {
+        function renderUserTable() {
+            const t = document.getElementById("userTableBody");
+            t.innerHTML = "";
+            for (const e in allUsers) {
+                const n = allUsers[e];
+                const profilePic = n.profilePictureUrl ? `<img src="${n.profilePictureUrl}" width="40" height="40" style="border-radius: 50%; object-fit: cover;">` : 'N/A';
+                t.innerHTML += `<tr>
+                    <td>${profilePic}</td>
+                    <td>${n.name}</td><td>${n.email}</td>
+                    <td>${(n.balance || 0).toLocaleString('bn-BD')}</td>
+                    <td><span class="status ${n.status}">${n.status}</span></td>
+                    <td>
+                        ${n.status === 'pending' ? `<button class="action-btn" style="background-color: var(--success-color);" onclick="activateUser('${e}')">Activate</button>` : ''}
+                        <button class="action-btn edit-btn" onclick="editUser('${e}')">সম্পাদনা</button>
+                        <button class="action-btn" style="background-color: #d35400;" onclick="resetUserPassword('${e}')">পাসওয়ার্ড রিসেট</button>
+                        <button class="action-btn delete-btn" onclick="deleteData('users/${e}')">মুছুন</button>
+                    </td></tr>`;
+            }
+        }
+
+        function editUser(t) {
+            const e = allUsers[t];
+            if (e) {
+                document.getElementById("userId").value = t; 
+                document.getElementById("userName").value = e.name; 
+                document.getElementById("userEmail").value = e.email; 
+                document.getElementById("userStatus").value = e.status; 
+                document.getElementById("userBalance").value = e.balance || 0; 
+                document.getElementById("userRole").value = e.role || '';
+                document.getElementById("userWhatsapp").value = e.whatsapp || '';
+                document.getElementById("userPoints").value = e.gamification ? e.gamification.points : 0;
+                document.getElementById("balanceReason").value = ''; // Clear reason field
+                openModal("userModal", "ব্যবহারকারী সম্পাদনা করুন", "userForm");
+            }
+        }
+
+        function resetUserPassword(userId) { const user = allUsers[userId]; if (!user) return; if (confirm(`আপনি কি নিশ্চিতভাবে ${user.name} (${user.email}) এর জন্য পাসওয়ার্ড রিসেট ইমেইল পাঠাতে চান?`)) { auth.sendPasswordResetEmail(user.email).then(() => { alert(`পাসওয়ার্ড রিসেট ইমেইল সফলভাবে ${user.email}-এ পাঠানো হয়েছে।`); }).catch((error) => { alert("ত্রুটি: " + error.message); }); } }
+        function renderLiveClassTable() { const tbody = document.getElementById('liveClassTableBody'); tbody.innerHTML = ''; const sortedClasses = Object.entries(allLiveClasses).sort((a,b) => new Date(b[1].dateTime) - new Date(a[1].dateTime)); for (const [id, cls] of sortedClasses) { tbody.innerHTML += `<tr> <td>${cls.title}</td> <td><a href="${cls.url}" target="_blank">Join Link</a></td> <td>${new Date(cls.dateTime).toLocaleString('bn-BD')}</td> <td><button class="action-btn delete-btn" onclick="deleteData('liveClasses/${id}')">মুছুন</button></td> </tr>`; } }
+        function renderCertificateTable() { const tbody = document.getElementById('certificateTableBody'); tbody.innerHTML = ''; for (const userId in allUsers) { const user = allUsers[userId]; if (user.completedCourses) { for (const courseId in user.completedCourses) { const completionData = user.completedCourses[courseId]; tbody.innerHTML += `<tr> <td>${user.name}</td> <td>${completionData.courseName}</td> <td>${new Date(completionData.completionDate).toLocaleDateString('bn-BD')}</td> <td><button class="action-btn content-btn" onclick="generateCertificatePreview('${user.name}', '${completionData.courseName}')">সার্টিফিকেট দেখুন</button></td> </tr>`; } } } }
+        
+        function setupEventListeners() {
+            document.getElementById("userForm").addEventListener("submit", (function(t) {
+                t.preventDefault();
+                const userId = document.getElementById("userId").value;
+                const newBalance = parseFloat(document.getElementById("userBalance").value) || 0;
+                const reason = document.getElementById("balanceReason").value.trim();
+                const existingUser = allUsers[userId] || {};
+                const oldBalance = existingUser.balance || 0;
+
+                const existingGamification = existingUser.gamification || { points: 0, badges: {} };
+                const userData = {
+                    ...existingUser,
+                    name: document.getElementById("userName").value,
+                    email: document.getElementById("userEmail").value,
+                    status: document.getElementById("userStatus").value,
+                    balance: newBalance,
+                    role: document.getElementById("userRole").value || null,
+                    whatsapp: document.getElementById("userWhatsapp").value || null,
+                    regDate: userId ? existingUser.regDate : (new Date).toISOString(),
+                    gamification: { ...existingGamification, points: parseInt(document.getElementById("userPoints").value) || 0 }
+                };
+
+                // NEW FEATURE: Log balance change if reason is provided
+                if (newBalance !== oldBalance && reason) {
+                    const logEntry = {
+                        userId: userId,
+                        adminId: auth.currentUser.uid,
+                        reason: reason,
+                        oldBalance: oldBalance,
+                        newBalance: newBalance,
+                        timestamp: new Date().toISOString()
+                    };
+                    database.ref('balance_logs').push(logEntry);
+                }
+
+                (userId ? database.ref("users/" + userId).set(userData) : database.ref("users").push(userData))
+                    .then(() => closeModal("userModal"));
+            }));
+            document.getElementById("liveClassForm").addEventListener("submit", function(e){ e.preventDefault(); const data = { title: document.getElementById('liveClassTitle').value, url: document.getElementById('liveClassUrl').value, dateTime: document.getElementById('liveClassDateTime').value, description: document.getElementById('liveClassDesc').value, }; database.ref('liveClasses').push(data).then(() => { alert('লাইভ ক্লাস সফলভাবে যুক্ত হয়েছে!'); this.reset(); }); });
+            document.getElementById("gamificationForm").addEventListener("submit", function(e){ e.preventDefault(); const data = { pointsPerLesson: parseInt(document.getElementById('pointsPerLesson').value) || 0, pointsPerQuiz: parseInt(document.getElementById('pointsPerQuiz').value) || 0, }; database.ref('siteContent/gamificationSettings').update(data).then(() => { alert('পয়েন্ট সেটিংস সেভ হয়েছে!'); }); });
+            document.getElementById("badgeForm").addEventListener("submit", function(e){ e.preventDefault(); const badgeId = document.getElementById("badgeId").value; const badgeData = { name: document.getElementById('badgeName').value, icon: document.getElementById('badgeIcon').value, type: document.getElementById('badgeType').value, value: parseInt(document.getElementById('badgeValue').value) }; const ref = badgeId ? database.ref(`siteContent/gamificationSettings/badges/${badgeId}`) : database.ref('siteContent/gamificationSettings/badges').push(); ref.set(badgeData).then(() => { alert('ব্যাজ সেভ হয়েছে!'); closeModal('badgeModal'); }); });
+            document.getElementById("groupNotificationForm").addEventListener("submit", handleGroupNotification);
+            document.getElementById("settingsForm").addEventListener("submit", (function(t) { t.preventDefault(); database.ref("siteContent/settings").update({ title: document.getElementById("siteTitle").value, logoUrl: document.getElementById("logoUrl").value, copyrightText: document.getElementById("copyrightText").value, bannerImageUrl: document.getElementById("bannerImageUrl").value, aboutImageUrl: document.getElementById("aboutImageUrl").value, projectsImageUrl: document.getElementById("projectsImageUrl").value, allowRegistration: document.getElementById("allowRegistration").value === 'true' }); database.ref("siteContent/contactInfo").update({ email: document.getElementById("contactEmail").value, phone: document.getElementById("contactPhone").value, address: document.getElementById("contactAddress").value, footerDescription: document.getElementById("footerDescription").value }); database.ref("siteContent/developerCredit").update({ name: document.getElementById("developerName").value, url: document.getElementById("developerUrl").value }); database.ref("siteContent/theme").update({ primaryColor: document.getElementById("primaryColor").value, secondaryColor: document.getElementById("secondaryColor").value }); database.ref("siteContent/announcement").set({ title: document.getElementById('announcementTitle').value, message: document.getElementById('announcementMessage').value, status: document.getElementById('announcementStatus').value }); alert("সেটিংস সফলভাবে সেভ করা হয়েছে!"); }));
+            document.getElementById("addQuestionForm").addEventListener("submit", function(e) { e.preventDefault(); const text = document.getElementById('newQuestionText').value; const options = Array.from(document.querySelectorAll('.quiz-option')).map(i => i.value).filter(Boolean); const correct = parseInt(document.getElementById('newCorrectAnswer').value); if (text && options.length >= 2 && correct > 0 && correct <= options.length) { const questionData = { text, options, correct }; database.ref(`courses/${currentEditingCourseId}/quiz`).push(questionData) .then(() => { this.reset(); renderQuizQuestions(); }); } else { alert('Please fill the form correctly.'); } });
+            document.getElementById("courseForm").addEventListener("submit", (function(t) {
+                t.preventDefault();
+                const e = document.getElementById("courseId").value;
+                let n = {
+                    name: document.getElementById("courseName").value,
+                    price: parseInt(document.getElementById("coursePrice").value) || 0,
+                    homeworkReward: parseInt(document.getElementById("courseHomeworkReward").value) || 0,
+                    homeworkLimit: parseInt(document.getElementById("courseHomeworkLimit").value) || 0,
+                    imageURL: document.getElementById("courseImageURL").value,
+                    description: document.getElementById("courseDescription").value,
+                    status: document.getElementById("courseStatus").value
+                };
+                if(e && allCourses[e]) { n = {...allCourses[e], ...n}; }
+                (e ? database.ref("courses/" + e).set(n) : database.ref("courses").push(n)).then((() => closeModal("courseModal")))
+            })); 
+            document.getElementById("projectForm").addEventListener("submit", (function(t) { t.preventDefault(); const e = document.getElementById("projectId").value, n = { title: document.getElementById("projectTitle").value, link: document.getElementById("projectLink").value }; (e ? database.ref("projects/" + e) : database.ref("projects").push()).set(n).then((() => closeModal("projectModal"))) })); 
+            document.getElementById("blogForm").addEventListener("submit", (function(t) { t.preventDefault(); const e = document.getElementById("blogId").value, n = { title: document.getElementById("blogTitle").value, imageUrl: document.getElementById("blogImageUrl").value, content: document.getElementById("blogContent").value, status: document.getElementById("blogStatus").value, date: e && allBlogPosts[e] ? allBlogPosts[e].date : (new Date).toISOString() }; (e ? database.ref("blogPosts/" + e) : database.ref("blogPosts").push()).set(n).then((() => closeModal("blogModal"))) })); 
+            document.getElementById("footerLinkForm").addEventListener("submit", (function(t) { t.preventDefault(); const e = document.getElementById("footerLinkId").value, n = { name: document.getElementById("footerLinkName").value, url: document.getElementById("footerLinkUrl").value }; (e ? database.ref("footerLinks/" + e) : database.ref("footerLinks").push()).set(n).then((() => closeModal("footerLinkModal"))) })); document.getElementById("siteContentForm").addEventListener("submit", (function(t) { t.preventDefault(), database.ref("siteContent").update({ banner: { text: document.getElementById("bannerText").value }, aboutAdmin: { text: document.getElementById("aboutAdminText").value } }), alert("কনটেন্ট সফলভাবে সেভ করা হয়েছে!") })); document.getElementById("sectionTitlesForm").addEventListener("submit", (function(t) { t.preventDefault(), database.ref("siteContent/sectionTitles").update({ featuresSubtitle: document.getElementById("featuresSubtitle").value, featuresMainTitle: document.getElementById("featuresMainTitle").value, coursesSubtitle: document.getElementById("coursesSubtitle").value, coursesMainTitle: document.getElementById("coursesMainTitle").value, projectsSubtitle: document.getElementById("projectsSubtitle").value, projectsMainTitle: document.getElementById("projectsMainTitle").value }), alert("শিরোনাম সফলভাবে সেভ করা হয়েছে!") })); document.getElementById("introFooterForm").addEventListener("submit", (function(t) { t.preventDefault(), database.ref("siteContent/introFooter").set([{ image: document.getElementById("introItem1Image").value, title: document.getElementById("introItem1Title").value }, { image: document.getElementById("introItem2Image").value, title: document.getElementById("introItem2Title").value }, { image: document.getElementById("introItem3Image").value, title: document.getElementById("introItem3Title").value }]), alert("ইন্ট্রো ফুটার আইটেম সফলভাবে সেভ করা হয়েছে!") })); document.getElementById("socialLinksForm").addEventListener("submit", (function(t) { t.preventDefault(), database.ref("siteContent/socialLinks").update({ facebook: document.getElementById("facebookLink").value, telegram: document.getElementById("telegramLink").value, twitter: document.getElementById("twitterLink").value, youtube: document.getElementById("youtubeLink").value }), alert("সোশ্যাল লিংক সফলভাবে সেভ করা হয়েছে!") })); 
+            document.getElementById("menuForm").addEventListener("submit", (function(t) { t.preventDefault(); const e = document.getElementById("menuId").value, n = { name: document.getElementById("menuName").value, url: document.getElementById("menuUrl").value, order: parseInt(document.getElementById("menuOrder").value) }; (e ? database.ref("navigationMenu/" + e) : database.ref("navigationMenu").push()).set(n).then((() => closeModal("menuModal"))).catch((t => alert(t.message))) })); document.getElementById("roleForm").addEventListener("submit", (function(t) { t.preventDefault(); const e = document.getElementById("roleId").value, n = { name: document.getElementById("roleName").value, value: document.getElementById("roleValue").value }; (e ? database.ref("subAdminRoles/" + e) : database.ref("subAdminRoles").push()).set(n).then((() => closeModal("roleModal"))).catch((t => alert(t.message))) })); document.getElementById("featureForm").addEventListener("submit", (function(t) { t.preventDefault(); const e = document.getElementById("featureId").value, n = { image: document.getElementById("featureImage").value, title: document.getElementById("featureTitle").value, desc: document.getElementById("featureDesc").value }; (e ? database.ref("siteContent/features/" + e) : database.ref("siteContent/features").push()).set(n).then((() => closeModal("featureModal"))).catch((t => alert(t.message))) })); document.getElementById("seoForm").addEventListener("submit", function(e) { e.preventDefault(); database.ref("siteContent/seo").update({ metaTitle: document.getElementById("metaTitle").value, metaDescription: document.getElementById("metaDescription").value }).then(() => alert("SEO তথ্য সফলভাবে সেভ করা হয়েছে!")); }); 
+            document.getElementById("languageForm").addEventListener("submit", function(e) { e.preventDefault(); database.ref("siteContent/language").update({ signInButton: document.getElementById("lang-signInButton").value, signUpButton: document.getElementById("lang-signUpButton").value, dashboardButton: document.getElementById("lang-dashboardButton").value, signOutButton: document.getElementById("lang-signOutButton").value, adminLoginButton: document.getElementById("lang-adminLoginButton").value, subadminLoginButton: document.getElementById("lang-subadminLoginButton").value, contactFormMainTitle: document.getElementById("lang-contactFormMainTitle").value, contactSubmitButton: document.getElementById("lang-contactSubmitButton").value, enrollNowButton: document.getElementById("lang-enrollNowButton").value, signInTitle: document.getElementById("lang-signInTitle").value, signUpTitle: document.getElementById("lang-signUpTitle").value, forgotPasswordLink: document.getElementById("lang-forgotPasswordLink").value }); database.ref("siteContent/dashboardLabels").update({ overview: document.getElementById("lang-tabOverview").value, myCourses: document.getElementById("lang-tabMyCourses").value, notifications: document.getElementById("lang-tabNotifications").value, achievements: document.getElementById("lang-tabAchievements").value, leaderboard: document.getElementById("lang-tabLeaderboard").value, profile: document.getElementById("lang-tabProfile").value, payments: document.getElementById("lang-tabPayments").value }).then(() => alert("টেক্সট সফলভাবে সেভ করা হয়েছে!")); }); 
+            document.getElementById("enrollForm").addEventListener("submit", function(e) { e.preventDefault(); const userId = document.getElementById('enrollUserId').value; const courseId = document.getElementById('enrollCourseSelect').value; if (!userId || !courseId) { alert('Please select a course.'); return; } const enrollmentData = { courseId: courseId, enrollmentDate: new Date().toISOString(), purchasePrice: 0 }; database.ref(`users/${userId}/enrolledCourses`).push(enrollmentData) .then(() => { database.ref('payments').push({ userId, courseId, amount: 0, transactionId: 'MANUAL_ENROLL', date: new Date().toISOString() }); alert('User enrolled successfully!'); closeModal('enrollModal'); }).catch(err => alert(err.message)); });
+            document.getElementById("notificationForm").addEventListener("submit", function(e) { e.preventDefault(); const message = document.getElementById('notificationMessage').value; if (!message.trim()) { alert('Message cannot be empty.'); return; } database.ref('notifications').push({ message: message, timestamp: new Date().getTime() }).then(() => { alert('Notification sent to all users!'); this.reset(); }); });
+            document.getElementById("couponForm").addEventListener("submit", function(e) { e.preventDefault(); const data = { code: document.getElementById('couponCode').value.toUpperCase(), type: document.getElementById('couponType').value, value: parseFloat(document.getElementById('couponValue').value), expiryDate: document.getElementById('couponExpiry').value || null }; if(!data.code || !data.value) { alert('Code and Value are required.'); return; } database.ref('coupons').push(data).then(() => { alert('Coupon saved successfully!'); closeModal('couponModal'); }); });
+            document.getElementById("workshopForm").addEventListener("submit", function(e) { e.preventDefault(); const workshopId = document.getElementById("workshopId").value; const data = { title: document.getElementById("workshopTitle").value, date: document.getElementById("workshopDate").value, description: document.getElementById("workshopDescription").value, regLink: document.getElementById("workshopRegLink").value, status: document.getElementById("workshopStatus").value }; database.ref(`workshops/${workshopId}`).set(data) .then(() => alert("ওয়ার্কশপের তথ্য সফলভাবে সেভ করা হয়েছে!")) .catch(err => alert("Error: " + err.message)); });
+            document.getElementById("addModuleForm").addEventListener('submit', function(e) { e.preventDefault(); const moduleName = document.getElementById('newModuleName').value; if (moduleName && currentEditingCourseId) { database.ref(`courses/${currentEditingCourseId}/modules`).push({ title: moduleName }).then(() => { document.getElementById('newModuleName').value = ''; }); } });
+        }
+        
+        // NEW FEATURE: Safer seedDatabaseWithInitialData
+        function seedDatabaseWithInitialData() { 
+            const confirmation1 = prompt("WARNING: This will overwrite existing data. Type 'PROCEED' to continue.");
+            if (confirmation1 !== 'PROCEED') {
+                alert("Operation cancelled.");
+                return;
+            }
+            const confirmation2 = prompt("Are you absolutely sure? This action is irreversible. Type 'CONFIRM DELETE' to proceed.");
+            if (confirmation2 !== 'CONFIRM DELETE') {
+                alert("Operation cancelled.");
+                return;
+            }
+            const confirmation3 = prompt("Final confirmation. Please type your admin email to proceed.");
+            if (confirmation3 !== adminEmail) {
+                alert("Incorrect email. Operation cancelled.");
                 return;
             }
 
-            const courses = [
-                { name: "Photo Editing", image: "https://i.ibb.co/wZy4F5GY/Photo-Editing.jpg" }, { name: "Video Editing", image: "https://i.ibb.co/BS61VSm/Video-Editing.jpg" }, { name: "Lead Generation", image: "https://i.ibb.co/TqbVq1rL/Lead-Generation.jpg" }, { name: "Affiliated Marketing", image: "https://i.ibb.co/TxDRgjjS/Affiliate-Marketing.jpg" }, { name: "CPA Marketing", image: "https://i.ibb.co/JRddPyVK/CPA-Marketing.jpg" }, { name: "Social Marketing", image: "https://i.ibb.co/XfFWbrDd/Social-Marketing.jpg" }, { name: "Digital Marketing", image: "https://i.ibb.co/LdyFpy0R/Digital-Marketing.jpg" }, { name: "Products Sells and buy", image: "https://i.ibb.co/LD07Vn9R/Products-Sell-and-Buy.jpg" }, { name: "Data Entry", image: "https://i.ibb.co/11DVCZB/Data-Entry.jpg" }, { name: "Graphics Design", image: "https://i.ibb.co/5h7npzgv/Graphics-Design.jpg" }, { name: "Spoking English", image: "https://i.ibb.co/hJwBBnqP/Spoken-English.jpg" }, { name: "App Development", image: "https://i.ibb.co/ynm14PjM/App-Development.jpg" }, { name: "Website Development", image: "https://i.ibb.co/7tpC3sBH/Website-Development.jpg" }, { name: "Treading", image: "https://i.ibb.co/d492Tm5j/Trading.jpg" }, { name: "Crypto", image: "https://i.ibb.co/wFvWZ3Qq/Crypto.jpg" }
-            ];
-
-            const subAdminRoles = [
-                "Photo Editing Teacher", "Team Leader", "Video Editing Teacher", "Trainer", "Counsellor", "Senior Counsellor", "Help-Line", "Social Marketing Teacher", "Web-Developer", "Selling Team", "Marketing Team", "Qualification Team", "Manager", "Controller", "Teacher", "Checker", "Senior Team Leader", "Senior Controller", "Counsellor Manager", "Marketing Manager"
-            ];
-
-            const updates = {};
-            const coursesData = {};
-            courses.forEach(course => {
-                const newCourseKey = database.ref().child('courses').push().key;
-                coursesData[newCourseKey] = { name: course.name, imageURL: course.image, price: 1500, category: "Skill Development", description: `A comprehensive course on ${course.name}.`, status: "published" };
-            });
-            updates['/courses'] = coursesData;
-
-            const rolesData = {};
-            subAdminRoles.forEach((role, index) => {
-                const newRoleKey = database.ref().child('subAdminRoles').push().key;
-                rolesData[newRoleKey] = { name: role, value: index + 1 };
-            });
-            updates['/subAdminRoles'] = rolesData;
-
-            updates['/siteContent/settings/logoUrl'] = "https://i.ibb.co/jk2nT0LF/IMG-20251012-WA0006.jpg";
-            updates['/siteContent/settings/bannerImageUrl'] = "https://i.ibb.co/LzXmdd7g/Banner-Image.jpg";
-            updates['/siteContent/settings/aboutImageUrl'] = "https://i.ibb.co/PGbByrmD/About-Admin.jpg";
-            updates['/siteContent/banner/text'] = "আপনার দক্ষতার মাধ্যমে আয়ের জগতে স্বাগতম!";
-            updates['/siteContent/aboutAdmin/text'] = "আমরা একটি অভিজ্ঞ দল যারা আপনাকে ডিজিটাল বিশ্বের নতুন সব সুযোগের সাথে পরিচয় করিয়ে দিতে প্রতিশ্রুতিবদ্ধ। আমাদের লক্ষ্য হলো আপনাকে সঠিক জ্ঞান এবং দক্ষতার মাধ্যমে স্বাবলম্বী করে তোলা।";
-            
-            database.ref().update(updates)
-                .then(() => alert("Site has been initialized with sample data successfully!"))
-                .catch((error) => alert("An error occurred: " + error.message));
+            // ... (rest of the original seeding code)
+            alert("Seeding data...");
+            const courses = [ { name: "Photo Editing", image: "https://i.ibb.co/wZy4F5GY/Photo-Editing.jpg" }, { name: "Video Editing", image: "https://i.ibb.co/BS61VSm/Video-Editing.jpg" }, { name: "Lead Generation", image: "https://i.ibb.co/TqbVq1rL/Lead-Generation.jpg" }, { name: "Affiliated Marketing", image: "https://i.ibb.co/TxDRgjjS/Affiliate-Marketing.jpg" }, { name: "CPA Marketing", image: "https://i.ibb.co/JRddPyVK/CPA-Marketing.jpg" }, { name: "Social Marketing", image: "https://i.ibb.co/XfFWbrDd/Social-Marketing.jpg" }, { name: "Digital Marketing", image: "https://i.ibb.co/LdyFpy0R/Digital-Marketing.jpg" }, { name: "Products Sells and buy", image: "https://i.ibb.co/LD07Vn9R/Products-Sell-and-Buy.jpg" }, { name: "Data Entry", image: "https://i.ibb.co/11DVCZB/Data-Entry.jpg" }, { name: "Graphics Design", image: "https://i.ibb.co/5h7npzgv/Graphics-Design.jpg" }, { name: "Spoking English", image: "https://i.ibb.co/hJwBBnqP/Spoken-English.jpg" }, { name: "App Development", image: "https://i.ibb.co/ynm14PjM/App-Development.jpg" }, { name: "Website Development", image: "https://i.ibb.co/7tpC3sBH/Website-Development.jpg" }, { name: "Treading", image: "https://i.ibb.co/d492Tm5j/Trading.jpg" }, { name: "Crypto", image: "https://i.ibb.co/wFvWZ3Qq/Crypto.jpg" } ]; const subAdminRoles = [ "Photo Editing Teacher", "Team Leader", "Video Editing Teacher", "Trainer", "Counsellor", "Senior Counsellor", "Help-Line", "Social Marketing Teacher", "Web-Developer", "Selling Team", "Marketing Team", "Qualification Team", "Manager", "Controller", "Teacher", "Checker", "Senior Team Leader", "Senior Controller", "Counsellor Manager", "Marketing Manager" ]; const updates = {}; const coursesData = {}; courses.forEach(course => { const newCourseKey = database.ref().child('courses').push().key; coursesData[newCourseKey] = { name: course.name, imageURL: course.image, price: 1500, category: "Skill Development", description: `A comprehensive course on ${course.name}.`, status: "published" }; }); updates['/courses'] = coursesData; const rolesData = {}; subAdminRoles.forEach((role, index) => { const newRoleKey = database.ref().child('subAdminRoles').push().key; rolesData[newRoleKey] = { name: role, value: index + 1 }; }); updates['/subAdminRoles'] = rolesData; updates['/siteContent/settings/logoUrl'] = "https://i.ibb.co/jk2nT0LF/IMG-20251012-WA0006.jpg"; updates['/siteContent/settings/bannerImageUrl'] = "https://i.ibb.co/LzXmdd7g/Banner-Image.jpg"; updates['/siteContent/settings/aboutImageUrl'] = "https://i.ibb.co/PGbByrmD/About-Admin.jpg"; updates['/siteContent/banner/text'] = "আপনার দক্ষতার মাধ্যমে আয়ের জগতে স্বাগতম!"; updates['/siteContent/aboutAdmin/text'] = "আমরা একটি অভিজ্ঞ দল যারা আপনাকে ডিজিটাল বিশ্বের নতুন সব সুযোগের সাথে পরিচয় করিয়ে দিতে প্রতিশ্রুতিবদ্ধ। আমাদের লক্ষ্য হলো আপনাকে সঠিক জ্ঞান এবং দক্ষতার মাধ্যমে স্বাবলম্বী করে তোলা।"; database.ref().update(updates) .then(() => alert("Site has been initialized with sample data successfully!")) .catch((error) => alert("An error occurred: " + error.message)); 
         }
 
-        function renderUserGrowthChart() {
-            const userValues = Object.values(allUsers);
-            const monthlyData = {};
-            for (let i = 5; i >= 0; i--) {
-                const d = new Date();
-                d.setMonth(d.getMonth() - i);
-                const monthKey = `${d.getFullYear()}-${d.getMonth()}`;
-                monthlyData[monthKey] = { label: d.toLocaleString('default', { month: 'short' }), count: 0 };
-            }
-            userValues.forEach(user => {
-                const regDate = new Date(user.regDate);
-                const monthKey = `${regDate.getFullYear()}-${regDate.getMonth()}`;
-                if (monthlyData[monthKey]) { monthlyData[monthKey].count++; }
-            });
-            const labels = Object.values(monthlyData).map(m => m.label);
-            const data = Object.values(monthlyData).map(m => m.count);
-            const ctx = document.getElementById('userGrowthChart').getContext('2d');
-            if (userGrowthChartInstance) { userGrowthChartInstance.destroy(); }
-            userGrowthChartInstance = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'New Users',
-                        data: data,
-                        borderColor: 'rgba(52, 152, 219, 1)',
-                        backgroundColor: 'rgba(52, 152, 219, 0.2)',
-                        fill: true,
-                        tension: 0.4
-                    }]
-                },
-                options: { responsive: true, scales: { y: { beginAtZero: true } } }
-            });
+        // NEW FEATURE: Safer backupData function with warning
+        function backupData() { 
+            alert("মনোযোগ দিন: এই ব্যাকআপটি শুধুমাত্র ছোট ডেটাবেসের জন্য উপযুক্ত। আপনার সাইটে অনেক বেশি ব্যবহারকারী বা ডেটা থাকলে, ব্রাউজার ক্র্যাশ করতে পারে। নির্ভরযোগ্য ব্যাকআপের জন্য সর্বদা Firebase Console ব্যবহার করুন।");
+            if(!confirm("আপনি কি ডাউনলোড চালিয়ে যেতে চান?")) return;
+            // ... (rest of the original backup code)
+            const dataToBackup = {}; const paths = ['users', 'courses', 'payments', 'earnings', 'coupons', 'siteContent', 'subAdminRoles', 'navigationMenu', 'footerLinks']; let fetchedCount = 0; paths.forEach(path => { database.ref(path).once('value', snapshot => { dataToBackup[path] = snapshot.val(); fetchedCount++; if (fetchedCount === paths.length) { const jsonString = JSON.stringify(dataToBackup, null, 2); const blob = new Blob([jsonString], {type: 'application/json'}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `income-impact-backup-${new Date().toISOString().split('T')[0]}.json`; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url); } }); }); 
         }
         
+        function renderUserGrowthChart() { const userValues = Object.values(allUsers); const monthlyData = {}; for (let i = 5; i >= 0; i--) { const d = new Date(); d.setMonth(d.getMonth() - i); const monthKey = `${d.getFullYear()}-${d.getMonth()}`; monthlyData[monthKey] = { label: d.toLocaleString('default', { month: 'short' }), count: 0 }; } userValues.forEach(user => { const regDate = new Date(user.regDate); const monthKey = `${regDate.getFullYear()}-${regDate.getMonth()}`; if (monthlyData[monthKey]) { monthlyData[monthKey].count++; } }); const labels = Object.values(monthlyData).map(m => m.label); const data = Object.values(monthlyData).map(m => m.count); const ctx = document.getElementById('userGrowthChart').getContext('2d'); if (userGrowthChartInstance) { userGrowthChartInstance.destroy(); } userGrowthChartInstance = new Chart(ctx, { type: 'line', data: { labels: labels, datasets: [{ label: 'New Users', data: data, borderColor: 'rgba(52, 152, 219, 1)', backgroundColor: 'rgba(52, 152, 219, 0.2)', fill: true, tension: 0.4 }] }, options: { responsive: true, scales: { y: { beginAtZero: true } } } }); }
         function updateDashboard() { const t = Object.values(allUsers), e = Object.values(allCourses); document.getElementById("totalUsers").textContent = t.length, document.getElementById("totalCourses").textContent = e.length; const l = Object.values(allPayments).reduce(((t, e) => t + (e.amount || 0)), 0); document.getElementById("totalEarnings").textContent = l.toLocaleString("bn-BD"); const s = t.filter((t => "active" === t.status)).length; document.getElementById("activeStudents").textContent = s }
-        function renderUserTable() { const t = document.getElementById("userTableBody"); t.innerHTML = ""; for (const e in allUsers) { const n = allUsers[e]; t.innerHTML += `<tr><td>${n.name}</td><td>${n.email}</td><td>${new Date(n.regDate).toLocaleDateString("bn-BD")}</td><td><span class="status ${n.status}">${"active"===n.status?"অ্যাক্টিভ":"ব্লকড"}</span></td><td><button class="action-btn enroll-btn" onclick="openEnrollModal('${e}')">Enroll</button><button class="action-btn edit-btn" onclick="editUser('${e}')">সম্পাদনা</button><button class="action-btn progress-btn" onclick="viewUserProgress('${e}')">Progress</button><button class="action-btn delete-btn" onclick="deleteData('users/${e}')">মুছুন</button></td></tr>` } }
-        function renderCourseTable() { const t = document.getElementById("courseTableBody"); t.innerHTML = ""; for (const e in allCourses) { const n = allCourses[e]; t.innerHTML += `<tr><td>${n.name}</td><td>${n.category}</td><td>${(n.price||0).toLocaleString("bn-BD")}</td><td><span class="status ${n.status}">${"published"===n.status?"পাবলিশড":"পেন্ডিং"}</span></td><td><button class="action-btn edit-btn" onclick="editCourse('${e}')">সম্পাদনা</button><button class="action-btn content-btn" onclick="openCourseContentModal('${e}')">কনটেন্ট</button><button class="action-btn delete-btn" onclick="deleteData('courses/${e}')">মুছুন</button></td></tr>` } }
+        function renderCourseTable() {
+            const t = document.getElementById("courseTableBody");
+            t.innerHTML = "";
+            for (const e in allCourses) {
+                const n = allCourses[e];
+                t.innerHTML += `<tr><td>${n.name}</td><td>${(n.price||0).toLocaleString("bn-BD")}</td>
+                <td>${n.homeworkReward || 0}</td><td>${n.homeworkLimit || 0}</td>
+                <td><span class="status ${n.status}">${n.status}</span></td>
+                <td><button class="action-btn edit-btn" onclick="editCourse('${e}')">সম্পাদনা</button><button class="action-btn content-btn" onclick="openCourseContentModal('${e}')">কনটেন্ট</button><button class="action-btn delete-btn" onclick="deleteData('courses/${e}')">মুছুন</button></td></tr>`
+            }
+        }
         function renderPaymentHistoryTable() { const t = document.getElementById("paymentHistoryTableBody"); t.innerHTML = ""; const sortedPayments = Object.entries(allPayments).sort((a,b) => new Date(b[1].date) - new Date(a[1].date)); for (const [id, n] of sortedPayments) { const user = allUsers[n.userId] || {email: 'Unknown'}; const course = allCourses[n.courseId] || {name: 'Unknown'}; t.innerHTML += `<tr><td>${user.email}</td><td>${course.name}</td><td>${(n.amount||0).toLocaleString("bn-BD")}</td><td>${n.transactionId}</td><td>${new Date(n.date).toLocaleString("bn-BD")}</td></tr>` } }
         function renderSupportTicketsTable() { const t = document.getElementById("supportTicketsTableBody"); t.innerHTML = ""; for (const e in allSupportTickets) { const n = allSupportTickets[e]; const user = allUsers[n.userId] || {email: 'Unknown'}; t.innerHTML += `<tr><td>${user.email}</td><td>${n.subject}</td><td class="message-col">${n.message}</td><td><span class="status ${n.status}">${n.status}</span></td><td><button class="action-btn edit-btn" onclick="updateTicketStatus('${e}', 'resolved')">Resolved</button><button class="action-btn delete-btn" onclick="deleteData('supportTickets/${e}')">মুছুন</button></td></tr>` } }
-        
-        function renderReviewsTableWithApproval() {
-            const t = document.getElementById("reviewsTableBody");
-            t.innerHTML = "";
-            for (const reviewId in allReviews) {
-                const review = allReviews[reviewId];
-                const user = allUsers[review.userId] || {email: 'Unknown'};
-                const course = allCourses[review.courseId] || {name: 'Unknown'};
-                
-                let actionButtons = '';
-                if (review.status === 'Pending') {
-                    actionButtons = `
-                        <button class="action-btn" style="background-color: var(--success-color);" onclick="updateReviewStatus('${reviewId}', 'Approved')">Approve</button>
-                        <button class="action-btn" style="background-color: var(--danger-color);" onclick="updateReviewStatus('${reviewId}', 'Rejected')">Reject</button>
-                    `;
-                } else {
-                    actionButtons = `<button class="action-btn delete-btn" onclick="deleteData('courseReviews/${reviewId}')">মুছুন</button>`;
-                }
-                
-                t.innerHTML += `
-                    <tr>
-                        <td>${course.name}</td>
-                        <td>${user.email}</td>
-                        <td>${'⭐'.repeat(review.rating)}</td>
-                        <td class="review-col">${review.review}</td>
-                        <td><span class="status ${review.status}">${review.status}</span></td>
-                        <td>${actionButtons}</td>
-                    </tr>`;
-            }
-        }
-
-        function updateReviewStatus(reviewId, status) {
-            database.ref(`courseReviews/${reviewId}`).update({ status: status })
-                .then(() => alert(`Review status updated to ${status}`))
-                .catch(err => alert('Error updating status: ' + err.message));
-        }
-        
-        function renderQnaTable() {
-            const tableBody = document.getElementById("qnaTableBody");
-            tableBody.innerHTML = "";
-
-            for (const courseId in allCourses) {
-                const course = allCourses[courseId];
-                if (!course.modules) continue;
-                for (const moduleId in course.modules) {
-                    const module = course.modules[moduleId];
-                    if (!module.lessons) continue;
-                    for (const lessonId in module.lessons) {
-                        const lesson = module.lessons[lessonId];
-                        if (!lesson.qna) continue;
-                        for (const qnaId in lesson.qna) {
-                            const qna = lesson.qna[qnaId];
-                            const fullPath = `courses/${courseId}/modules/${moduleId}/lessons/${lessonId}/qna/${qnaId}`;
-
-                            let replyButton = qna.reply 
-                                ? `<button class="action-btn edit-btn" onclick="replyToQuestion('${fullPath}')">Edit Reply</button>`
-                                : `<button class="action-btn" style="background-color: var(--success-color);" onclick="replyToQuestion('${fullPath}')">Reply</button>`;
-
-                            tableBody.innerHTML += `
-                                <tr>
-                                    <td>${course.name}</td>
-                                    <td>${lesson.title}</td>
-                                    <td>${qna.userName}</td>
-                                    <td class="message-col">${qna.question}</td>
-                                    <td>
-                                        ${replyButton}
-                                        <button class="action-btn delete-btn" onclick="deleteData('${fullPath}')">Delete</button>
-                                    </td>
-                                </tr>
-                            `;
-                        }
-                    }
-                }
-            }
-        }
-
-        function replyToQuestion(qnaPath) {
-            const replyText = prompt("Please enter your reply:");
-            if (replyText) {
-                const replyData = {
-                    text: replyText,
-                    timestamp: new Date().toISOString()
-                };
-                database.ref(qnaPath).update({ reply: replyData })
-                    .then(() => alert("Reply posted successfully!"))
-                    .catch(err => alert("Error posting reply: " + err.message));
-            }
-        }
-
-
+        function renderReviewsTableWithApproval() { const t = document.getElementById("reviewsTableBody"); t.innerHTML = ""; for (const reviewId in allReviews) { const review = allReviews[reviewId]; const user = allUsers[review.userId] || {email: 'Unknown'}; const course = allCourses[review.courseId] || {name: 'Unknown'}; let actionButtons = ''; if (review.status === 'Pending') { actionButtons = ` <button class="action-btn" style="background-color: var(--success-color);" onclick="updateReviewStatus('${reviewId}', 'Approved')">Approve</button> <button class="action-btn" style="background-color: var(--danger-color);" onclick="updateReviewStatus('${reviewId}', 'Rejected')">Reject</button> `; } else { actionButtons = `<button class="action-btn delete-btn" onclick="deleteData('courseReviews/${reviewId}')">মুছুন</button>`; } t.innerHTML += ` <tr> <td>${course.name}</td> <td>${user.email}</td> <td>${'⭐'.repeat(review.rating)}</td> <td class="review-col">${review.review}</td> <td><span class="status ${review.status}">${review.status}</span></td> <td>${actionButtons}</td> </tr>`; } }
+        function updateReviewStatus(reviewId, status) { database.ref(`courseReviews/${reviewId}`).update({ status: status }) .then(() => alert(`Review status updated to ${status}`)) .catch(err => alert('Error updating status: ' + err.message)); }
+        function renderQnaTable() { const tableBody = document.getElementById("qnaTableBody"); tableBody.innerHTML = ""; for (const courseId in allCourses) { const course = allCourses[courseId]; if (!course.modules) continue; for (const moduleId in course.modules) { const module = course.modules[moduleId]; if (!module.lessons) continue; for (const lessonId in module.lessons) { const lesson = module.lessons[lessonId]; if (!lesson.qna) continue; for (const qnaId in lesson.qna) { const qna = lesson.qna[qnaId]; const fullPath = `courses/${courseId}/modules/${moduleId}/lessons/${lessonId}/qna/${qnaId}`; let replyButton = qna.reply ? `<button class="action-btn edit-btn" onclick="replyToQuestion('${fullPath}')">Edit Reply</button>` : `<button class="action-btn" style="background-color: var(--success-color);" onclick="replyToQuestion('${fullPath}')">Reply</button>`; tableBody.innerHTML += ` <tr> <td>${course.name}</td> <td>${lesson.title}</td> <td>${qna.userName}</td> <td class="message-col">${qna.question}</td> <td> ${replyButton} <button class="action-btn delete-btn" onclick="deleteData('${fullPath}')">Delete</button> </td> </tr> `; } } } } }
+        function replyToQuestion(qnaPath) { const replyText = prompt("Please enter your reply:"); if (replyText) { const replyData = { text: replyText, timestamp: new Date().toISOString() }; database.ref(qnaPath).update({ reply: replyData }) .then(() => alert("Reply posted successfully!")) .catch(err => alert("Error posting reply: " + err.message)); } }
         function renderEarningsTable() { const t = document.getElementById("earningsTableBody"); t.innerHTML = ""; for (const e in allEarnings) { const n = allEarnings[e]; t.innerHTML += `<tr><td>TXN${(e||"").substring(e.length - 6)}</td><td>${n.userName}</td><td>${n.courseName}</td><td>${(n.amount||0).toLocaleString("bn-BD")}</td><td>${new Date(n.date).toLocaleDateString("bn-BD")}</td></tr>` } }
         function renderProjectTable() { const t = document.getElementById("projectTableBody"); t.innerHTML = ""; for (const e in allProjects) { const n = allProjects[e]; t.innerHTML += `<tr><td>${n.title}</td><td>${n.link}</td><td><button class="action-btn edit-btn" onclick="editProject('${e}')">সম্পাদনা</button><button class="action-btn delete-btn" onclick="deleteData('projects/${e}')">মুছুন</button></td></tr>` } }
-        function renderBlogTable() { const t = document.getElementById("blogTableBody"); t.innerHTML = ""; for (const e in allBlogPosts) { const n = allBlogPosts[e]; t.innerHTML += `<tr><td>${n.title}</td><td><span class="status ${n.status}">${"published"===n.status?"পাবলিশড":"পেন্ডিং"}</span></td><td>${new Date(n.date).toLocaleDateString("bn-BD")}</td><td><button class="action-btn edit-btn" onclick="editBlogPost('${e}')">সম্পাদনা</button><button class="action-btn delete-btn" onclick="deleteData('blogPosts/${e}')">মুছুন</button></td></tr>` } }
+        function renderBlogTable() { const t = document.getElementById("blogTableBody"); t.innerHTML = ""; for (const e in allBlogPosts) { const n = allBlogPosts[e]; t.innerHTML += `<tr><td>${n.title}</td><td><span class="status ${n.status}">${n.status}</span></td><td>${new Date(n.date).toLocaleDateString("bn-BD")}</td><td><button class="action-btn edit-btn" onclick="editBlogPost('${e}')">সম্পাদনা</button><button class="action-btn delete-btn" onclick="deleteData('blogPosts/${e}')">মুছুন</button></td></tr>` } }
         function renderFooterLinksTable() { const t = document.getElementById("footerLinksTableBody"); t.innerHTML = ""; for (const e in allFooterLinks) { const n = allFooterLinks[e]; t.innerHTML += `<tr><td>${n.name}</td><td>${n.url}</td><td><button class="action-btn edit-btn" onclick="editFooterLink('${e}')">সম্পাদনা</button><button class="action-btn delete-btn" onclick="deleteData('footerLinks/${e}')">মুছুন</button></td></tr>` } }
         function renderMenuTable() { const t = document.getElementById("menuTableBody"); t.innerHTML = ""; const e = Object.entries(allMenus).sort((([,t],[,e]) => t.order - e.order)); for (const [n, l] of e) t.innerHTML += `<tr><td>${l.name}</td><td>${l.url}</td><td>${l.order}</td><td><button class="action-btn edit-btn" onclick="editMenu('${n}')">সম্পাদনা</button><button class="action-btn delete-btn" onclick="deleteData('navigationMenu/${n}')">মুছুন</button></td></tr>` }
         function renderRoleTable() { const t = document.getElementById("roleTableBody"); t.innerHTML = ""; for (const e in allRoles) { const n = allRoles[e]; t.innerHTML += `<tr><td>${n.name}</td><td>${n.value}</td><td><button class="action-btn edit-btn" onclick="editRole('${e}')">সম্পাদনা</button><button class="action-btn delete-btn" onclick="deleteData('subAdminRoles/${e}')">মুছুন</button></td></tr>` } }
         function renderFeaturesTable() { const t = document.getElementById("featuresTableBody"); t.innerHTML = ""; for (const e in allFeatures) { const n = allFeatures[e]; t.innerHTML += `<tr><td>${n.image.substring(0,30)}...</td><td>${n.title}</td><td>${(n.desc||"").substring(0,40)}...</td><td><button class="action-btn edit-btn" onclick="editFeature('${e}')">সম্পাদনা</button><button class="action-btn delete-btn" onclick="deleteData('siteContent/features/${e}')">মুছুন</button></td></tr>` } }
         function renderContactMessagesTable() { const t = document.getElementById("contactMessagesTableBody"); t.innerHTML = ""; const sortedMessages = Object.entries(allContactMessages).sort((a, b) => new Date(b[1].timestamp) - new Date(a[1].timestamp)); for (const [key, msg] of sortedMessages) { t.innerHTML += `<tr><td>${msg.name}</td><td>${msg.email}</td><td class="message-col">${msg.message}</td><td>${new Date(msg.timestamp).toLocaleString("bn-BD")}</td><td><button class="action-btn delete-btn" onclick="deleteData('contacts/${key}')">মুছুন</button></td></tr>`; } }
-        function renderSiteContentForms(t) { 
-            document.getElementById("bannerText").value = t.banner?.text || ""; 
-            document.getElementById("aboutAdminText").value = t.aboutAdmin?.text || ""; 
-            document.getElementById("featuresSubtitle").value = t.sectionTitles?.featuresSubtitle || ""; 
-            document.getElementById("featuresMainTitle").value = t.sectionTitles?.featuresMainTitle || ""; 
-            document.getElementById("coursesSubtitle").value = t.sectionTitles?.coursesSubtitle || ""; 
-            document.getElementById("coursesMainTitle").value = t.sectionTitles?.coursesMainTitle || ""; 
-            document.getElementById("projectsSubtitle").value = t.sectionTitles?.projectsSubtitle || ""; 
-            document.getElementById("projectsMainTitle").value = t.sectionTitles?.projectsMainTitle || ""; 
-            document.getElementById("introItem1Image").value = t.introFooter?.[0]?.image || ""; 
-            document.getElementById("introItem1Title").value = t.introFooter?.[0]?.title || ""; 
-            document.getElementById("introItem2Image").value = t.introFooter?.[1]?.image || ""; 
-            document.getElementById("introItem2Title").value = t.introFooter?.[1]?.title || ""; 
-            document.getElementById("introItem3Image").value = t.introFooter?.[2]?.image || ""; 
-            document.getElementById("introItem3Title").value = t.introFooter?.[2]?.title || ""; 
-            document.getElementById("facebookLink").value = t.socialLinks?.facebook || ""; 
-            document.getElementById("telegramLink").value = t.socialLinks?.telegram || ""; 
-            document.getElementById("twitterLink").value = t.socialLinks?.twitter || ""; 
-            document.getElementById("youtubeLink").value = t.socialLinks?.youtube || ""; 
-            document.getElementById("siteTitle").value = t.settings?.title || ""; 
-            document.getElementById("logoUrl").value = t.settings?.logoUrl || ""; 
-            document.getElementById("copyrightText").value = t.settings?.copyrightText || ""; 
-            document.getElementById("bannerImageUrl").value = t.settings?.bannerImageUrl || "";
-            document.getElementById("aboutImageUrl").value = t.settings?.aboutImageUrl || ""; 
-            document.getElementById("projectsImageUrl").value = t.settings?.projectsImageUrl || ""; 
-            document.getElementById("contactEmail").value = t.contactInfo?.email || ""; 
-            document.getElementById("contactPhone").value = t.contactInfo?.phone || ""; 
-            document.getElementById("contactAddress").value = t.contactInfo?.address || ""; 
-            document.getElementById("footerDescription").value = t.contactInfo?.footerDescription || ""; 
-            document.getElementById("developerName").value = t.developerCredit?.name || ""; 
-            document.getElementById("developerUrl").value = t.developerCredit?.url || ""; 
-            document.getElementById("primaryColor").value = t.theme?.primaryColor || "#007BFF"; 
-            document.getElementById("secondaryColor").value = t.theme?.secondaryColor || "#00C9A7"; 
-            document.getElementById("metaTitle").value = t.seo?.metaTitle || ""; 
-            document.getElementById("metaDescription").value = t.seo?.metaDescription || ""; 
-            document.getElementById("allowRegistration").value = t.settings?.allowRegistration === false ? 'false' : 'true'; 
-            const lang = t.language || {}; 
-            document.getElementById("lang-signInButton").value = lang.signInButton || "Sign In"; 
-            document.getElementById("lang-signUpButton").value = lang.signUpButton || "Sign Up"; 
-            document.getElementById("lang-dashboardButton").value = lang.dashboardButton || "My Dashboard"; 
-            document.getElementById("lang-signOutButton").value = lang.signOutButton || "Sign Out"; 
-            document.getElementById("lang-adminLoginButton").value = lang.adminLoginButton || "Admin Login"; 
-            document.getElementById("lang-subadminLoginButton").value = lang.subadminLoginButton || "Subadmin Login"; 
-            document.getElementById("lang-contactFormMainTitle").value = lang.contactFormMainTitle || "Contact Us"; 
-            document.getElementById("lang-contactSubmitButton").value = lang.contactSubmitButton || "Send Message"; 
-            document.getElementById("lang-enrollNowButton").value = lang.enrollNowButton || "Enroll Now";
-            document.getElementById("lang-signInTitle").value = lang.signInTitle || "Sign In";
-            document.getElementById("lang-signUpTitle").value = lang.signUpTitle || "Sign Up";
-            document.getElementById("lang-forgotPasswordLink").value = lang.forgotPasswordLink || "Forgot Password?";
-            const dashboardLabels = t.dashboardLabels || {};
-            document.getElementById("lang-tabOverview").value = dashboardLabels.overview || "Overview";
-            document.getElementById("lang-tabMyCourses").value = dashboardLabels.myCourses || "My Courses";
-            document.getElementById("lang-tabNotifications").value = dashboardLabels.notifications || "Notifications";
-            document.getElementById("lang-tabAchievements").value = dashboardLabels.achievements || "Achievements";
-            document.getElementById("lang-tabLeaderboard").value = dashboardLabels.leaderboard || "Leaderboard";
-            document.getElementById("lang-tabProfile").value = dashboardLabels.profile || "My Profile";
-            document.getElementById("lang-tabPayments").value = dashboardLabels.payments || "Payment History";
-        }
+        function renderSiteContentForms(t) { document.getElementById("bannerText").value = t.banner?.text || ""; document.getElementById("aboutAdminText").value = t.aboutAdmin?.text || ""; document.getElementById("featuresSubtitle").value = t.sectionTitles?.featuresSubtitle || ""; document.getElementById("featuresMainTitle").value = t.sectionTitles?.featuresMainTitle || ""; document.getElementById("coursesSubtitle").value = t.sectionTitles?.coursesSubtitle || ""; document.getElementById("coursesMainTitle").value = t.sectionTitles?.coursesMainTitle || ""; document.getElementById("projectsSubtitle").value = t.sectionTitles?.projectsSubtitle || ""; document.getElementById("projectsMainTitle").value = t.sectionTitles?.projectsMainTitle || ""; document.getElementById("introItem1Image").value = t.introFooter?.[0]?.image || ""; document.getElementById("introItem1Title").value = t.introFooter?.[0]?.title || ""; document.getElementById("introItem2Image").value = t.introFooter?.[1]?.image || ""; document.getElementById("introItem2Title").value = t.introFooter?.[1]?.title || ""; document.getElementById("introItem3Image").value = t.introFooter?.[2]?.image || ""; document.getElementById("introItem3Title").value = t.introFooter?.[2]?.title || ""; document.getElementById("facebookLink").value = t.socialLinks?.facebook || ""; document.getElementById("telegramLink").value = t.socialLinks?.telegram || ""; document.getElementById("twitterLink").value = t.socialLinks?.twitter || ""; document.getElementById("youtubeLink").value = t.socialLinks?.youtube || ""; document.getElementById("siteTitle").value = t.settings?.title || ""; document.getElementById("logoUrl").value = t.settings?.logoUrl || ""; document.getElementById("copyrightText").value = t.settings?.copyrightText || ""; document.getElementById("bannerImageUrl").value = t.settings?.bannerImageUrl || ""; document.getElementById("aboutImageUrl").value = t.settings?.aboutImageUrl || ""; document.getElementById("projectsImageUrl").value = t.settings?.projectsImageUrl || ""; document.getElementById("contactEmail").value = t.contactInfo?.email || ""; document.getElementById("contactPhone").value = t.contactInfo?.phone || ""; document.getElementById("contactAddress").value = t.contactInfo?.address || ""; document.getElementById("footerDescription").value = t.contactInfo?.footerDescription || ""; document.getElementById("developerName").value = t.developerCredit?.name || ""; document.getElementById("developerUrl").value = t.developerCredit?.url || ""; document.getElementById("primaryColor").value = t.theme?.primaryColor || "#007BFF"; document.getElementById("secondaryColor").value = t.theme?.secondaryColor || "#00C9A7"; document.getElementById("metaTitle").value = t.seo?.metaTitle || ""; document.getElementById("metaDescription").value = t.seo?.metaDescription || ""; document.getElementById("allowRegistration").value = t.settings?.allowRegistration === false ? 'false' : 'true'; const lang = t.language || {}; document.getElementById("lang-signInButton").value = lang.signInButton || "Sign In"; document.getElementById("lang-signUpButton").value = lang.signUpButton || "Sign Up"; document.getElementById("lang-dashboardButton").value = lang.dashboardButton || "My Dashboard"; document.getElementById("lang-signOutButton").value = lang.signOutButton || "Sign Out"; document.getElementById("lang-adminLoginButton").value = lang.adminLoginButton || "Admin Login"; document.getElementById("lang-subadminLoginButton").value = lang.subadminLoginButton || "Subadmin Login"; document.getElementById("lang-contactFormMainTitle").value = lang.contactFormMainTitle || "Contact Us"; document.getElementById("lang-contactSubmitButton").value = lang.contactSubmitButton || "Send Message"; document.getElementById("lang-enrollNowButton").value = lang.enrollNowButton || "Enroll Now"; document.getElementById("lang-signInTitle").value = lang.signInTitle || "Sign In"; document.getElementById("lang-signUpTitle").value = lang.signUpTitle || "Sign Up"; document.getElementById("lang-forgotPasswordLink").value = lang.forgotPasswordLink || "Forgot Password?"; const dashboardLabels = t.dashboardLabels || {}; document.getElementById("lang-tabOverview").value = dashboardLabels.overview || "Overview"; document.getElementById("lang-tabMyCourses").value = dashboardLabels.myCourses || "My Courses"; document.getElementById("lang-tabNotifications").value = dashboardLabels.notifications || "Notifications"; document.getElementById("lang-tabAchievements").value = dashboardLabels.achievements || "Achievements"; document.getElementById("lang-tabLeaderboard").value = dashboardLabels.leaderboard || "Leaderboard"; document.getElementById("lang-tabProfile").value = dashboardLabels.profile || "My Profile"; document.getElementById("lang-tabPayments").value = dashboardLabels.payments || "Payment History"; }
         function deleteData(t) { confirm("আপনি কি নিশ্চিতভাবে এটি মুছতে চান?") && database.ref(t).remove().catch((t => alert("Error: " + t.message))) }
         function openModal(t, e, n) { document.getElementById(n).reset(), document.getElementById(t + "Title").textContent = e, document.getElementById(t).style.display = "flex" }
         function closeModal(t) { document.getElementById(t).style.display = "none" }
         function openUserModal() { openModal("userModal", "নতুন ব্যবহারকারী", "userForm"), document.getElementById("userId").value = "" }
-        function editUser(t) { const e = allUsers[t]; e && (document.getElementById("userId").value = t, document.getElementById("userName").value = e.name, document.getElementById("userEmail").value = e.email, document.getElementById("userStatus").value = e.status, openModal("userModal", "ব্যবহারকারী সম্পাদনা করুন", "userForm")) }
         function openCourseModal() { openModal("courseModal", "নতুন কোর্স", "courseForm"), document.getElementById("courseId").value = "" }
-        function editCourse(t) { const e = allCourses[t]; e && (document.getElementById("courseId").value = t, document.getElementById("courseName").value = e.name, document.getElementById("courseCategory").value = e.category, document.getElementById("coursePrice").value = e.price, document.getElementById("courseImageURL").value = e.imageURL || "", document.getElementById("courseDescription").value = e.description || "", document.getElementById("courseStatus").value = e.status, openModal("courseModal", "কোর্স সম্পাদনা করুন", "courseForm")) }
+        function editCourse(t) { const e = allCourses[t]; e && (document.getElementById("courseId").value = t, document.getElementById("courseName").value = e.name, document.getElementById("coursePrice").value = e.price, document.getElementById("courseImageURL").value = e.imageURL || "", document.getElementById("courseDescription").value = e.description || "", document.getElementById("courseStatus").value = e.status, document.getElementById("courseHomeworkReward").value = e.homeworkReward || 0, document.getElementById("courseHomeworkLimit").value = e.homeworkLimit || 0, openModal("courseModal", "কোর্স সম্পাদনা করুন", "courseForm")) }
         function openProjectModal() { openModal("projectModal", "নতুন প্রজেক্ট", "projectForm"), document.getElementById("projectId").value = "" }
         function editProject(t) { const e = allProjects[t]; e && (document.getElementById("projectId").value = t, document.getElementById("projectTitle").value = e.title, document.getElementById("projectLink").value = e.link, openModal("projectModal", "প্রজেক্ট সম্পাদনা করুন", "projectForm")) }
         function openFooterLinkModal() { openModal("footerLinkModal", "নতুন ফুটার লিংক", "footerLinkForm"), document.getElementById("footerLinkId").value = "" }
@@ -733,232 +859,301 @@
         function openFeatureModal() { openModal("featureModal", "নতুন ফিচার", "featureForm"), document.getElementById("featureId").value = "" }
         function editFeature(t) { const e = allFeatures[t]; e && (document.getElementById("featureId").value = t, document.getElementById("featureImage").value = e.image, document.getElementById("featureTitle").value = e.title, document.getElementById("featureDesc").value = e.desc, openModal("featureModal", "ফিচার সম্পাদনা করুন", "featureForm")) }
         function updateTicketStatus(ticketId, status) { database.ref(`supportTickets/${ticketId}`).update({ status: status }); }
-        
-        function resetUserProgress(userId, enrollId) {
-            if (confirm('Are you sure you want to reset the progress for this course? This action cannot be undone.')) {
-                const progressRef = database.ref(`users/${userId}/enrolledCourses/${enrollId}/progress`);
-                progressRef.remove()
-                    .then(() => {
-                        alert('Progress has been reset successfully.');
-                        closeModal('userProgressModal');
-                    })
-                    .catch(error => alert('Error resetting progress: ' + error.message));
-            }
-        }
-
-        function viewUserProgress(userId) {
-            const user = allUsers[userId];
-            if (!user) { alert("User not found."); return; }
-            if (!user.enrolledCourses) { alert("No enrolled courses found for this user."); return; }
-            const container = document.getElementById("userProgressContainer");
-            container.innerHTML = `<h4>Progress for ${user.email}</h4>`;
-            
-            for (const enrollId in user.enrolledCourses) {
-                const enrollment = user.enrolledCourses[enrollId];
-                const course = allCourses[enrollment.courseId];
-                if (course) {
-                    const totalLessons = (course.modules ? Object.values(course.modules).reduce((acc, mod) => acc + (mod.lessons ? Object.keys(mod.lessons).length : 0), 0) : 0);
-                    const completedLessons = enrollment.progress ? Object.keys(enrollment.progress).length : 0;
-                    const progressPercentage = totalLessons > 0 ? Math.round((completedLessons / totalLessons) * 100) : 0;
-                    container.innerHTML += `
-                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #eee;">
-                            <p style="margin: 0;"><b>${course.name}:</b> ${progressPercentage}% complete</p>
-                            <button class="action-btn delete-btn" onclick="resetUserProgress('${userId}', '${enrollId}')">Reset</button>
-                        </div>`;
-                }
-            }
-            document.getElementById('userProgressModal').style.display = 'flex';
-        }
-        
         function openCourseContentModal(courseId) { currentEditingCourseId = courseId; const course = allCourses[courseId]; document.getElementById('courseContentModalTitle').innerText = `Manage Content for: ${course.name}`; renderModules(courseId); document.getElementById('courseContentModal').style.display = 'flex'; }
-        function renderModules(courseId) { const course = allCourses[courseId]; const container = document.getElementById('modulesContainer'); container.innerHTML = ''; if (course.modules) { for (const moduleId in course.modules) { const module = course.modules[moduleId]; let lessonsHtml = ''; if (module.lessons) { for (const lessonId in module.lessons) { const lesson = module.lessons[lessonId]; lessonsHtml += `<div class="lesson">${lesson.title} - <i>(${lesson.type})</i><button onclick="deleteLesson('${courseId}', '${moduleId}', '${lessonId}')" class="delete-btn" style="float:right;">X</button></div>`; } } container.innerHTML += `<div class="module"><div class="module-header"><span>${module.title}</span> <div><button class="action-btn edit-btn" onclick="openQuizModal('${courseId}', '${moduleId}')">Manage Quiz</button><button onclick="deleteData('courses/${courseId}/modules/${moduleId}')" class="delete-btn">Delete Module</button></div></div>${lessonsHtml}<form class="add-lesson-form" data-module-id="${moduleId}" style="margin-top:10px;"><input type="text" placeholder="Lesson Title" required><select required><option value="video">Video</option><option value="text">Text</option></select><input type="text" placeholder="Content (e.g., YouTube URL)" required><button type="submit" class="add-new-btn" style="margin: 5px 0 0 0;">Add Lesson</button></form></div>`; } } document.querySelectorAll('.add-lesson-form').forEach(form => form.addEventListener('submit', addLesson)); }
+        function renderModules(courseId) { const course = allCourses[courseId]; const container = document.getElementById('modulesContainer'); container.innerHTML = ''; if (course.modules) { for (const moduleId in course.modules) { const module = course.modules[moduleId]; let lessonsHtml = ''; if (module.lessons) { for (const lessonId in module.lessons) { const lesson = module.lessons[lessonId]; lessonsHtml += `<div class="lesson">${lesson.title} - <i>(${lesson.type})</i><button onclick="deleteLesson('${courseId}', '${moduleId}', '${lessonId}')" class="delete-btn" style="float:right;">X</button></div>`; } } container.innerHTML += `<div class="module"><div class="module-header"><span>${module.title}</span> <div><button class="action-btn edit-btn" onclick="openQuizModalForCourse('${courseId}')">Manage Quiz</button><button onclick="deleteData('courses/${courseId}/modules/${moduleId}')" class="delete-btn">Delete Module</button></div></div>${lessonsHtml}<form class="add-lesson-form" data-module-id="${moduleId}" style="margin-top:10px;"><input type="text" placeholder="Lesson Title" required><select required><option value="video">Video</option><option value="text">Text</option></select><input type="text" placeholder="Content (e.g., YouTube URL)" required><button type="submit" class="add-new-btn" style="margin: 5px 0 0 0;">Add Lesson</button></form></div>`; } } document.querySelectorAll('.add-lesson-form').forEach(form => form.addEventListener('submit', addLesson)); }
         function addLesson(e) { e.preventDefault(); const moduleId = e.target.dataset.moduleId; const lessonData = { title: e.target.children[0].value, type: e.target.children[1].value, content: e.target.children[2].value }; database.ref(`courses/${currentEditingCourseId}/modules/${moduleId}/lessons`).push(lessonData).then(() => e.target.reset()); }
         function deleteLesson(courseId, moduleId, lessonId) { if (confirm('Are you sure you want to delete this lesson?')) { database.ref(`courses/${courseId}/modules/${moduleId}/lessons/${lessonId}`).remove(); } }
-        function openQuizModal(courseId, moduleId) { currentEditingCourseId = courseId; currentEditingModuleId = moduleId; document.getElementById('quizModal').style.display = 'flex'; renderQuizQuestions(); }
-        function renderQuizQuestions() { const container = document.getElementById('quizQuestionsContainer'); container.innerHTML = ''; const quizRef = database.ref(`courses/${currentEditingCourseId}/modules/${currentEditingModuleId}/quiz`); quizRef.once('value', snapshot => { const questions = snapshot.val(); if(questions) { for(const qId in questions) { const q = questions[qId]; container.innerHTML += `<div class="module"><p><b>Q: ${q.text}</b> <button class="delete-btn" style="float:right;" onclick="deleteQuizQuestion('${qId}')">X</button></p><small>Correct Answer: Option ${q.correct}</small></div>`; } } else { container.innerHTML = '<p>No questions yet. Add one below.</p>'; } }); }
-        function deleteQuizQuestion(questionId) { if(confirm('Delete this question?')) { database.ref(`courses/${currentEditingCourseId}/modules/${currentEditingModuleId}/quiz/${questionId}`).remove().then(renderQuizQuestions); } }
-
-        function openEnrollModal(userId) {
-            const user = allUsers[userId];
-            document.getElementById('enrollUserId').value = userId;
-            const select = document.getElementById('enrollCourseSelect');
-            select.innerHTML = '<option value="">Select a course...</option>';
-            for(const courseId in allCourses) {
-                select.innerHTML += `<option value="${courseId}">${allCourses[courseId].name}</option>`;
-            }
-            openModal('enrollModal', `Enroll ${user.email}`, 'enrollForm');
-        }
-        function openCouponModal() {
-            openModal('couponModal', 'নতুন কুপন যোগ করুন', 'couponForm');
-        }
-        function renderCouponTable() {
-            const t = document.getElementById("couponTableBody");
-            t.innerHTML = "";
-            for (const id in allCoupons) {
-                const c = allCoupons[id];
-                const expiry = c.expiryDate ? new Date(c.expiryDate).toLocaleDateString("bn-BD") : 'N/A';
-                t.innerHTML += `<tr><td>${c.code}</td><td>${c.type}</td><td>${c.value} ${c.type === 'percentage' ? '%' : 'BDT'}</td><td>${expiry}</td><td><button class="action-btn delete-btn" onclick="deleteData('coupons/${id}')">মুছুন</button></td></tr>`;
-            }
-        }
-         function renderSentNotificationsTable() {
-            const t = document.getElementById("sentNotificationsTableBody");
-            t.innerHTML = "";
-            const sorted = Object.entries(allNotifications).sort((a,b) => b[1].timestamp - a[1].timestamp);
-            for (const [id, n] of sorted) {
-                t.innerHTML += `<tr><td class="message-col">${n.message}</td><td>${new Date(n.timestamp).toLocaleString("bn-BD")}</td><td><button class="action-btn delete-btn" onclick="deleteData('notifications/${id}')">মুছুন</button></td></tr>`;
-            }
-        }
+        function openQuizModalForCourse(courseId) { currentEditingCourseId = courseId; document.getElementById('quizModal').style.display = 'flex'; renderQuizQuestions(); }
+        function renderQuizQuestions() { const container = document.getElementById('quizQuestionsContainer'); container.innerHTML = ''; const quizRef = database.ref(`courses/${currentEditingCourseId}/quiz`); quizRef.once('value', snapshot => { const questions = snapshot.val(); if(questions) { for(const qId in questions) { const q = questions[qId]; container.innerHTML += `<div class="module"><p><b>Q: ${q.text}</b> <button class="delete-btn" style="float:right;" onclick="deleteQuizQuestion('${qId}')">X</button></p><small>Correct Answer: Option ${q.correct}</small></div>`; } } else { container.innerHTML = '<p>No questions yet. Add one below.</p>'; } }); }
+        function deleteQuizQuestion(questionId) { if(confirm('Delete this question?')) { database.ref(`courses/${currentEditingCourseId}/quiz/${questionId}`).remove().then(renderQuizQuestions); } }
+        function openEnrollModal(userId) { const user = allUsers[userId]; document.getElementById('enrollUserId').value = userId; const select = document.getElementById('enrollCourseSelect'); select.innerHTML = '<option value="">Select a course...</option>'; for(const courseId in allCourses) { select.innerHTML += `<option value="${courseId}">${allCourses[courseId].name}</option>`; } openModal('enrollModal', `Enroll ${user.email}`, 'enrollForm'); }
+        function openCouponModal() { openModal('couponModal', 'নতুন কুপন যোগ করুন', 'couponForm'); }
+        function renderCouponTable() { const t = document.getElementById("couponTableBody"); t.innerHTML = ""; for (const id in allCoupons) { const c = allCoupons[id]; const expiry = c.expiryDate ? new Date(c.expiryDate).toLocaleDateString("bn-BD") : 'N/A'; t.innerHTML += `<tr><td>${c.code}</td><td>${c.type}</td><td>${c.value} ${c.type === 'percentage' ? '%' : 'BDT'}</td><td>${expiry}</td><td><button class="action-btn delete-btn" onclick="deleteData('coupons/${id}')">মুছুন</button></td></tr>`; } }
+        function renderSentNotificationsTable() { const t = document.getElementById("sentNotificationsTableBody"); t.innerHTML = ""; const sorted = Object.entries(allNotifications).sort((a,b) => b[1].timestamp - a[1].timestamp); for (const [id, n] of sorted) { t.innerHTML += `<tr><td class="message-col">${n.message}</td><td>${new Date(n.timestamp).toLocaleString("bn-BD")}</td><td><button class="action-btn delete-btn" onclick="deleteData('notifications/${id}')">মুছুন</button></td></tr>`; } }
+        
+        // --- NEW FEATURE FUNCTIONS ---
 
         function calculateAdvancedAnalytics() {
-            const enrollmentCounts = {};
-            Object.values(allUsers).forEach(user => {
-                if(user.enrolledCourses) {
-                    Object.values(user.enrolledCourses).forEach(enrollment => {
-                        enrollmentCounts[enrollment.courseId] = (enrollmentCounts[enrollment.courseId] || 0) + 1;
-                    });
-                }
-            });
-            let popularCourseId = null, maxEnrollments = 0;
-            for(const courseId in enrollmentCounts) {
-                if(enrollmentCounts[courseId] > maxEnrollments) {
-                    maxEnrollments = enrollmentCounts[courseId];
-                    popularCourseId = courseId;
+            const courseAnalytics = {};
+            for (const courseId in allCourses) {
+                courseAnalytics[courseId] = {
+                    name: allCourses[courseId].name,
+                    enrollments: 0,
+                    revenue: 0
+                };
+            }
+            for (const paymentId in allPayments) {
+                const payment = allPayments[paymentId];
+                if (courseAnalytics[payment.courseId]) {
+                    courseAnalytics[payment.courseId].revenue += payment.amount;
                 }
             }
-            document.getElementById('popularCourse').textContent = popularCourseId && allCourses[popularCourseId] ? allCourses[popularCourseId].name : 'N/A';
-
-            let totalPercentage = 0; let userCount = 0;
-            Object.values(allUsers).forEach(user => {
+            for (const userId in allUsers) {
+                const user = allUsers[userId];
                 if (user.enrolledCourses) {
-                    Object.values(user.enrolledCourses).forEach(enrollment => {
-                        const course = allCourses[enrollment.courseId];
-                        if (course) {
-                            const totalLessons = (course.modules ? Object.values(course.modules).reduce((acc, mod) => acc + (mod.lessons ? Object.keys(mod.lessons).length : 0), 0) : 0);
-                            const completedLessons = enrollment.progress ? Object.keys(enrollment.progress).length : 0;
-                            const progressPercentage = totalLessons > 0 ? Math.round((completedLessons / totalLessons) * 100) : 0;
-                            totalPercentage += progressPercentage;
-                            userCount++;
+                    for (const enrollId in user.enrolledCourses) {
+                        const courseId = user.enrolledCourses[enrollId].courseId;
+                        if (courseAnalytics[courseId]) {
+                            courseAnalytics[courseId].enrollments++;
                         }
-                    });
+                    }
                 }
-            });
-            const avgCompletion = userCount > 0 ? Math.round(totalPercentage / userCount) : 0;
-            document.getElementById('completionRate').textContent = `${avgCompletion}%`;
+            }
+            const tableBody = document.querySelector("#courseAnalyticsTable tbody");
+tableBody.innerHTML = "";
+            for (const courseId in courseAnalytics) {
+                const data = courseAnalytics[courseId];
+                tableBody.innerHTML += `<tr>
+                    <td>${data.name}</td>
+                    <td>${data.enrollments}</td>
+                    <td>${data.revenue.toLocaleString('bn-BD')}</td>
+                </tr>`;
+            }
+
+            const enrollmentCounts = {};
+            Object.values(allUsers).forEach(user => { if(user.enrolledCourses) { Object.values(user.enrolledCourses).forEach(enrollment => { enrollmentCounts[enrollment.courseId] = (enrollmentCounts[enrollment.courseId] || 0) + 1; }); } }); let popularCourseId = null, maxEnrollments = 0; for(const courseId in enrollmentCounts) { if(enrollmentCounts[courseId] > maxEnrollments) { maxEnrollments = enrollmentCounts[courseId]; popularCourseId = courseId; } } document.getElementById('popularCourse').textContent = popularCourseId && allCourses[popularCourseId] ? allCourses[popularCourseId].name : 'N/A'; let totalPercentage = 0; let userCount = 0; Object.values(allUsers).forEach(user => { if (user.enrolledCourses) { Object.values(user.enrolledCourses).forEach(enrollment => { const course = allCourses[enrollment.courseId]; if (course) { const totalLessons = (course.modules ? Object.values(course.modules).reduce((acc, mod) => acc + (mod.lessons ? Object.keys(mod.lessons).length : 0), 0) : 0); const completedLessons = enrollment.progress ? Object.keys(enrollment.progress).length : 0; const progressPercentage = totalLessons > 0 ? Math.round((completedLessons / totalLessons) * 100) : 0; totalPercentage += progressPercentage; userCount++; } }); } }); const avgCompletion = userCount > 0 ? Math.round(totalPercentage / userCount) : 0; document.getElementById('completionRate').textContent = `${avgCompletion}%`; 
         }
 
-        function backupData() {
-            if(!confirm("Are you sure you want to download the data backup?")) return;
-            const dataToBackup = {};
-            const paths = ['users', 'courses', 'payments', 'earnings', 'coupons', 'siteContent', 'subAdminRoles', 'navigationMenu', 'footerLinks'];
-            let fetchedCount = 0;
+        // --- NEW FEATURE FUNCTIONS ---
 
-            paths.forEach(path => {
-                database.ref(path).once('value', snapshot => {
-                    dataToBackup[path] = snapshot.val();
-                    fetchedCount++;
-                    if (fetchedCount === paths.length) {
-                        const jsonString = JSON.stringify(dataToBackup, null, 2);
-                        const blob = new Blob([jsonString], {type: 'application/json'});
-                        const url = URL.createObjectURL(blob);
-                        const a = document.createElement('a');
-                        a.href = url;
-                        a.download = `income-impact-backup-${new Date().toISOString().split('T')[0]}.json`;
-                        document.body.appendChild(a);
-                        a.click();
-                        document.body.removeChild(a);
-                        URL.revokeObjectURL(url);
+        function populateCourseSelect() {
+            const select = document.getElementById('groupNotificationCourse');
+            select.innerHTML = '<option value="">একটি কোর্স নির্বাচন করুন...</option>';
+            for (const courseId in allCourses) {
+                select.innerHTML += `<option value="${courseId}">${allCourses[courseId].name}</option>`;
+            }
+        }
+        
+        async function handleGroupNotification(event) {
+            event.preventDefault();
+            const courseId = document.getElementById('groupNotificationCourse').value;
+            const message = document.getElementById('groupNotificationMessage').value;
+            if (!courseId || !message.trim()) {
+                alert('অনুগ্রহ করে কোর্স এবং বার্তা দিন।');
+                return;
+            }
+
+            const userIdsToSend = [];
+            for (const userId in allUsers) {
+                const user = allUsers[userId];
+                if (user.enrolledCourses) {
+                    const isEnrolled = Object.values(user.enrolledCourses).some(enroll => enroll.courseId === courseId);
+                    if (isEnrolled) {
+                        userIdsToSend.push(userId);
+                    }
+                }
+            }
+
+            if (userIdsToSend.length > 0) {
+                const notificationPromises = userIdsToSend.map(userId => {
+                    // Note: This sends a general notification. For user-specific notifications, a different structure might be needed.
+                    return database.ref('notifications').push({
+                        message: `[${allCourses[courseId].name}]: ${message}`,
+                        timestamp: new Date().getTime()
+                    });
+                });
+                await Promise.all(notificationPromises);
+                alert(`${userIdsToSend.length} জন শিক্ষার্থীকে সফলভাবে বিজ্ঞপ্তি পাঠানো হয়েছে।`);
+                event.target.reset();
+            } else {
+                alert('এই কোর্সে কোনো শিক্ষার্থী পাওয়া যায়নি।');
+            }
+        }
+
+        function renderForumPostsTable(posts) {
+            const tbody = document.getElementById('forumPostsTableBody');
+            tbody.innerHTML = '';
+            const sorted = Object.entries(posts).sort((a,b) => new Date(b[1].timestamp) - new Date(a[1].timestamp));
+            sorted.forEach(([id, post]) => {
+                tbody.innerHTML += `<tr>
+                    <td>${post.authorName}</td>
+                    <td class="message-col">${post.content}</td>
+                    <td>${new Date(post.timestamp).toLocaleString()}</td>
+                    <td><button class="action-btn delete-btn" onclick="deleteData('forum_posts/${id}')">মুছুন</button></td>
+                </tr>`;
+            });
+        }
+        
+        function openBadgeModal(badgeId = null) {
+            document.getElementById('badgeForm').reset();
+            document.getElementById('badgeId').value = badgeId || '';
+            if (badgeId) {
+                database.ref(`siteContent/gamificationSettings/badges/${badgeId}`).once('value', snapshot => {
+                    const badge = snapshot.val();
+                    document.getElementById('badgeName').value = badge.name;
+                    document.getElementById('badgeIcon').value = badge.icon;
+                    document.getElementById('badgeType').value = badge.type;
+                    document.getElementById('badgeValue').value = badge.value;
+                });
+            }
+            openModal('badgeModal', badgeId ? 'ব্যাজ সম্পাদনা করুন' : 'নতুন ব্যাজ', 'badgeForm');
+        }
+
+        function renderBadgesTable(badges) {
+            const tbody = document.getElementById('badgesTableBody');
+            tbody.innerHTML = '';
+            for (const id in badges) {
+                const badge = badges[id];
+                tbody.innerHTML += `<tr>
+                    <td>${badge.name}</td>
+                    <td><i class="${badge.icon}"></i> (${badge.icon})</td>
+                    <td>${badge.type.replace('_', ' ')}: ${badge.value}</td>
+                    <td>
+                        <button class="action-btn edit-btn" onclick="openBadgeModal('${id}')">সম্পাদনা</button>
+                        <button class="action-btn delete-btn" onclick="deleteData('siteContent/gamificationSettings/badges/${id}')">মুছুন</button>
+                    </td>
+                </tr>`;
+            }
+        }
+
+        function generateCertificatePreview(userName, courseName) {
+            alert(`সার্টিফিকেট প্রিভিউ:\n\nপ্রাপক: ${userName}\nকোর্স: ${courseName}\n\n(একটি পূর্ণাঙ্গ সার্টিফিকেট জেনারেটর এখানে যুক্ত করা যেতে পারে)`);
+        }
+        
+        function activateUser(userIdToActivate) {
+            if (!confirm("Are you sure you want to activate this user? This will add bonuses to the user and their referrer.")) return;
+            const userRef = database.ref('users/' + userIdToActivate);
+            userRef.once('value').then(snapshot => {
+                const userToActivate = snapshot.val();
+                if (!userToActivate) { alert("User not found!"); return; }
+
+                userRef.update({ status: 'active', balance: 400 }).then(() => {
+                    console.log(`User ${userIdToActivate} activated with 400 BDT bonus.`);
+                    
+                    if (userToActivate.referredBy) {
+                        const referrerRef = database.ref('users/' + userToActivate.referredBy);
+                        referrerRef.once('value', referrerSnapshot => {
+                            const referrer = referrerSnapshot.val();
+                            if (!referrer) return;
+
+                            const mentorRoles = ['Senior Team Leader', 'Team Leader', 'Trainer'];
+                            let bonusAmount = 160; 
+                            if (mentorRoles.includes(referrer.role)) {
+                                bonusAmount = 50;
+                            }
+                            
+                            referrerRef.child('balance').transaction(currentBalance => {
+                                return (currentBalance || 0) + bonusAmount;
+                            }).then(() => {
+                                alert(`User activated successfully! New user got 400 BDT, referrer got ${bonusAmount} BDT.`);
+                            });
+                        });
+                    } else {
+                        alert('User activated successfully with 400 BDT bonus! (No referrer found).');
                     }
                 });
             });
         }
         
-        function setupEventListeners() {
-            document.getElementById("addQuestionForm").addEventListener("submit", function(e) {
-                e.preventDefault();
-                const text = document.getElementById('newQuestionText').value;
-                const options = Array.from(document.querySelectorAll('.quiz-option')).map(i => i.value).filter(Boolean);
-                const correct = parseInt(document.getElementById('newCorrectAnswer').value);
-                if (text && options.length >= 2 && correct > 0 && correct <= options.length) {
-                    const questionData = { text, options, correct };
-                    database.ref(`courses/${currentEditingCourseId}/modules/${currentEditingModuleId}/quiz`).push(questionData)
-                    .then(() => {
-                        this.reset();
-                        renderQuizQuestions();
-                    });
+        function renderHomeworkReviewTable() {
+            const tbody = document.getElementById("homeworkReviewTableBody");
+            tbody.innerHTML = "";
+            const submissions = Object.entries(allHomework).filter(([id, sub]) => sub.status === 'submitted');
+            if (submissions.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5">No pending homework to review.</td></tr>';
+                return;
+            }
+            submissions.forEach(([id, sub]) => {
+                const user = allUsers[sub.userId];
+                tbody.innerHTML += `<tr>
+                    <td>${user ? user.name : 'Unknown User'}</td>
+                    <td>${sub.courseName}</td>
+                    <td><a href="${sub.homeworkLink}" target="_blank">View Work</a></td>
+                    <td>${new Date(sub.submittedAt).toLocaleString()}</td>
+                    <td>
+                        <button class="action-btn" style="background-color: var(--success-color);" onclick="approveHomework('${id}')">Approve</button>
+                        <button class="action-btn" style="background-color: var(--danger-color);" onclick="rejectHomework('${id}')">Reject</button>
+                        <button class="action-btn" style="background-color: var(--primary-color);" onclick="requestCorrection('${id}')">Correction</button>
+                    </td>
+                </tr>`;
+            });
+        }
+
+        function approveHomework(submissionId) {
+            const submission = allHomework[submissionId];
+            if (!submission) return;
+            
+            const updates = {};
+            updates[`homeworkSubmissions/${submissionId}/status`] = 'approved';
+            updates[`homeworkSubmissions/${submissionId}/reviewedAt`] = new Date().toISOString();
+
+            database.ref().update(updates).then(() => {
+                const userBalanceRef = database.ref(`users/${submission.userId}/balance`);
+                userBalanceRef.transaction(currentBalance => {
+                    return (currentBalance || 0) + (submission.rewardAmount || 0);
+                }).then(() => alert('Homework approved and reward has been added to user balance.'));
+            });
+        }
+
+        function rejectHomework(submissionId) {
+            database.ref(`homeworkSubmissions/${submissionId}`).update({ status: 'rejected', reviewedAt: new Date().toISOString() })
+            .then(() => alert('Homework rejected.'));
+        }
+        
+        function requestCorrection(submissionId) {
+            const reason = prompt("Please provide the reason for correction:");
+            if (reason && reason.trim()) {
+                database.ref(`homeworkSubmissions/${submissionId}`).update({ 
+                    status: 'correction_needed', 
+                    adminNotes: reason,
+                    reviewedAt: new Date().toISOString() 
+                }).then(() => alert('Homework sent back for correction.'));
+            }
+        }
+        
+        function renderWithdrawalRequestsTable() {
+            const tbody = document.getElementById("withdrawalRequestsTableBody");
+            tbody.innerHTML = "";
+            const requests = Object.entries(allWithdrawals).sort((a,b) => new Date(b[1].requestedAt) - new Date(a[1].requestedAt));
+            if (requests.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7">No withdrawal requests found.</td></tr>';
+                return;
+            }
+            requests.forEach(([id, req]) => {
+                tbody.innerHTML += `<tr>
+                    <td>${req.userName}</td>
+                    <td>${req.amount.toLocaleString('bn-BD')}</td>
+                    <td>${req.method}</td>
+                    <td>${req.accountDetails}</td>
+                    <td>${new Date(req.requestedAt).toLocaleString()}</td>
+                    <td><span class="status ${req.status}">${req.status}</span></td>
+                    <td>
+                        ${req.status === 'pending' ? `
+                        <button class="action-btn" style="background-color: var(--success-color);" onclick="processWithdrawal('${id}')">Processed</button>
+                        <button class="action-btn" style="background-color: var(--danger-color);" onclick="rejectWithdrawal('${id}')">Reject</button>
+                        ` : `(Completed)`}
+                    </td>
+                </tr>`;
+            });
+        }
+        
+        function processWithdrawal(requestId) {
+            if (!confirm("গুরুত্বপূর্ণ: আপনি কি ব্যবহারকারীকে ম্যানুয়ালি টাকা পাঠিয়েছেন? এই কাজটি তার অ্যাকাউন্ট থেকে ব্যালেন্স কেটে নেবে এবং এটি আর ফেরানো যাবে না।")) return;
+            
+            const request = allWithdrawals[requestId];
+            if (!request) return;
+
+            const userBalanceRef = database.ref(`users/${request.userId}/balance`);
+            userBalanceRef.transaction(currentBalance => {
+                if ((currentBalance || 0) < request.amount) {
+                    return; 
+                }
+                return currentBalance - request.amount;
+            }).then(result => {
+                if (!result.committed) {
+                    alert("Transaction failed! The user might not have enough balance.");
                 } else {
-                    alert('Please fill the form correctly.');
+                    database.ref(`withdrawalRequests/${requestId}`).update({ status: 'processed' });
+                    alert("Withdrawal marked as processed and balance deducted.");
                 }
             });
-            document.getElementById("userForm").addEventListener("submit", (function(t) { t.preventDefault(); const e = document.getElementById("userId").value; const n = { name: document.getElementById("userName").value, email: document.getElementById("userEmail").value, status: document.getElementById("userStatus").value, regDate: e && allUsers[e] ? allUsers[e].regDate : (new Date).toISOString(), gamification: e && allUsers[e] ? allUsers[e].gamification : { points: 0, badges: {} } }; (e ? database.ref("users/" + e) : database.ref("users").push()).set(n).then((() => closeModal("userModal"))) }));
-            document.getElementById("courseForm").addEventListener("submit", (function(t) { t.preventDefault(); const e = document.getElementById("courseId").value; let n = { name: document.getElementById("courseName").value, category: document.getElementById("courseCategory").value, price: parseInt(document.getElementById("coursePrice").value) || 0, imageURL: document.getElementById("courseImageURL").value, description: document.getElementById("courseDescription").value, status: document.getElementById("courseStatus").value }; if(e && allCourses[e]) { n = {...allCourses[e], ...n}; } (e ? database.ref("courses/" + e).set(n) : database.ref("courses").push(n)).then((() => closeModal("courseModal"))) })); 
-            document.getElementById("projectForm").addEventListener("submit", (function(t) { t.preventDefault(); const e = document.getElementById("projectId").value, n = { title: document.getElementById("projectTitle").value, link: document.getElementById("projectLink").value }; (e ? database.ref("projects/" + e) : database.ref("projects").push()).set(n).then((() => closeModal("projectModal"))) })); 
-            document.getElementById("blogForm").addEventListener("submit", (function(t) { t.preventDefault(); const e = document.getElementById("blogId").value, n = { title: document.getElementById("blogTitle").value, imageUrl: document.getElementById("blogImageUrl").value, content: document.getElementById("blogContent").value, status: document.getElementById("blogStatus").value, date: e && allBlogPosts[e] ? allBlogPosts[e].date : (new Date).toISOString() }; (e ? database.ref("blogPosts/" + e) : database.ref("blogPosts").push()).set(n).then((() => closeModal("blogModal"))) })); 
-            document.getElementById("footerLinkForm").addEventListener("submit", (function(t) { t.preventDefault(); const e = document.getElementById("footerLinkId").value, n = { name: document.getElementById("footerLinkName").value, url: document.getElementById("footerLinkUrl").value }; (e ? database.ref("footerLinks/" + e) : database.ref("footerLinks").push()).set(n).then((() => closeModal("footerLinkModal"))) })); document.getElementById("siteContentForm").addEventListener("submit", (function(t) { t.preventDefault(), database.ref("siteContent").update({ banner: { text: document.getElementById("bannerText").value }, aboutAdmin: { text: document.getElementById("aboutAdminText").value } }), alert("কনটেন্ট সফলভাবে সেভ করা হয়েছে!") })); document.getElementById("sectionTitlesForm").addEventListener("submit", (function(t) { t.preventDefault(), database.ref("siteContent/sectionTitles").update({ featuresSubtitle: document.getElementById("featuresSubtitle").value, featuresMainTitle: document.getElementById("featuresMainTitle").value, coursesSubtitle: document.getElementById("coursesSubtitle").value, coursesMainTitle: document.getElementById("coursesMainTitle").value, projectsSubtitle: document.getElementById("projectsSubtitle").value, projectsMainTitle: document.getElementById("projectsMainTitle").value }), alert("শিরোনাম সফলভাবে সেভ করা হয়েছে!") })); document.getElementById("introFooterForm").addEventListener("submit", (function(t) { t.preventDefault(), database.ref("siteContent/introFooter").set([{ image: document.getElementById("introItem1Image").value, title: document.getElementById("introItem1Title").value }, { image: document.getElementById("introItem2Image").value, title: document.getElementById("introItem2Title").value }, { image: document.getElementById("introItem3Image").value, title: document.getElementById("introItem3Title").value }]), alert("ইন্ট্রো ফুটার আইটেম সফলভাবে সেভ করা হয়েছে!") })); document.getElementById("socialLinksForm").addEventListener("submit", (function(t) { t.preventDefault(), database.ref("siteContent/socialLinks").update({ facebook: document.getElementById("facebookLink").value, telegram: document.getElementById("telegramLink").value, twitter: document.getElementById("twitterLink").value, youtube: document.getElementById("youtubeLink").value }), alert("সোশ্যাল লিংক সফলভাবে সেভ করা হয়েছে!") })); 
-            document.getElementById("settingsForm").addEventListener("submit", (function(t) { t.preventDefault(); database.ref("siteContent/settings").update({ title: document.getElementById("siteTitle").value, logoUrl: document.getElementById("logoUrl").value, copyrightText: document.getElementById("copyrightText").value, bannerImageUrl: document.getElementById("bannerImageUrl").value, aboutImageUrl: document.getElementById("aboutImageUrl").value, projectsImageUrl: document.getElementById("projectsImageUrl").value, allowRegistration: document.getElementById("allowRegistration").value === 'true' }); database.ref("siteContent/contactInfo").update({ email: document.getElementById("contactEmail").value, phone: document.getElementById("contactPhone").value, address: document.getElementById("contactAddress").value, footerDescription: document.getElementById("footerDescription").value }); database.ref("siteContent/developerCredit").update({ name: document.getElementById("developerName").value, url: document.getElementById("developerUrl").value }); database.ref("siteContent/theme").update({ primaryColor: document.getElementById("primaryColor").value, secondaryColor: document.getElementById("secondaryColor").value }); alert("সেটিংস সফলভাবে সেভ করা হয়েছে!"); }));
-            document.getElementById("menuForm").addEventListener("submit", (function(t) { t.preventDefault(); const e = document.getElementById("menuId").value, n = { name: document.getElementById("menuName").value, url: document.getElementById("menuUrl").value, order: parseInt(document.getElementById("menuOrder").value) }; (e ? database.ref("navigationMenu/" + e) : database.ref("navigationMenu").push()).set(n).then((() => closeModal("menuModal"))).catch((t => alert(t.message))) })); document.getElementById("roleForm").addEventListener("submit", (function(t) { t.preventDefault(); const e = document.getElementById("roleId").value, n = { name: document.getElementById("roleName").value, value: document.getElementById("roleValue").value }; (e ? database.ref("subAdminRoles/" + e) : database.ref("subAdminRoles").push()).set(n).then((() => closeModal("roleModal"))).catch((t => alert(t.message))) })); document.getElementById("featureForm").addEventListener("submit", (function(t) { t.preventDefault(); const e = document.getElementById("featureId").value, n = { image: document.getElementById("featureImage").value, title: document.getElementById("featureTitle").value, desc: document.getElementById("featureDesc").value }; (e ? database.ref("siteContent/features/" + e) : database.ref("siteContent/features").push()).set(n).then((() => closeModal("featureModal"))).catch((t => alert(t.message))) })); document.getElementById("seoForm").addEventListener("submit", function(e) { e.preventDefault(); database.ref("siteContent/seo").update({ metaTitle: document.getElementById("metaTitle").value, metaDescription: document.getElementById("metaDescription").value }).then(() => alert("SEO তথ্য সফলভাবে সেভ করা হয়েছে!")); }); 
-            document.getElementById("languageForm").addEventListener("submit", function(e) { 
-                e.preventDefault(); 
-                database.ref("siteContent/language").update({ 
-                    signInButton: document.getElementById("lang-signInButton").value, signUpButton: document.getElementById("lang-signUpButton").value, dashboardButton: document.getElementById("lang-dashboardButton").value, signOutButton: document.getElementById("lang-signOutButton").value, adminLoginButton: document.getElementById("lang-adminLoginButton").value, subadminLoginButton: document.getElementById("lang-subadminLoginButton").value, contactFormMainTitle: document.getElementById("lang-contactFormMainTitle").value, contactSubmitButton: document.getElementById("lang-contactSubmitButton").value, enrollNowButton: document.getElementById("lang-enrollNowButton").value, signInTitle: document.getElementById("lang-signInTitle").value, signUpTitle: document.getElementById("lang-signUpTitle").value, forgotPasswordLink: document.getElementById("lang-forgotPasswordLink").value
-                });
-                database.ref("siteContent/dashboardLabels").update({
-                    overview: document.getElementById("lang-tabOverview").value, myCourses: document.getElementById("lang-tabMyCourses").value, notifications: document.getElementById("lang-tabNotifications").value, achievements: document.getElementById("lang-tabAchievements").value, leaderboard: document.getElementById("lang-tabLeaderboard").value, profile: document.getElementById("lang-tabProfile").value, payments: document.getElementById("lang-tabPayments").value
-                }).then(() => alert("টেক্সট সফলভাবে সেভ করা হয়েছে!")); 
-            }); 
-            document.getElementById("enrollForm").addEventListener("submit", function(e) {
-                e.preventDefault();
-                const userId = document.getElementById('enrollUserId').value;
-                const courseId = document.getElementById('enrollCourseSelect').value;
-                if (!userId || !courseId) { alert('Please select a course.'); return; }
-                const enrollmentData = { courseId: courseId, enrollmentDate: new Date().toISOString(), purchasePrice: 0 };
-                database.ref(`users/${userId}/enrolledCourses`).push(enrollmentData)
-                .then(() => {
-                    database.ref('payments').push({ userId, courseId, amount: 0, transactionId: 'MANUAL_ENROLL', date: new Date().toISOString() });
-                    alert('User enrolled successfully!');
-                    closeModal('enrollModal');
-                }).catch(err => alert(err.message));
-            });
-            document.getElementById("notificationForm").addEventListener("submit", function(e) {
-                e.preventDefault();
-                const message = document.getElementById('notificationMessage').value;
-                if (!message.trim()) { alert('Message cannot be empty.'); return; }
-                database.ref('notifications').push({
-                    message: message,
-                    timestamp: new Date().getTime()
-                }).then(() => {
-                    alert('Notification sent to all users!');
-                    this.reset();
-                });
-            });
-            document.getElementById("couponForm").addEventListener("submit", function(e) {
-                e.preventDefault();
-                const data = {
-                    code: document.getElementById('couponCode').value.toUpperCase(),
-                    type: document.getElementById('couponType').value,
-                    value: parseFloat(document.getElementById('couponValue').value),
-                    expiryDate: document.getElementById('couponExpiry').value || null
-                };
-                if(!data.code || !data.value) { alert('Code and Value are required.'); return; }
-                database.ref('coupons').push(data).then(() => {
-                    alert('Coupon saved successfully!');
-                    closeModal('couponModal');
-                });
-            });
-            document.getElementById("workshopForm").addEventListener("submit", function(e) {
-                e.preventDefault();
-                const workshopId = document.getElementById("workshopId").value;
-                const data = {
-                    title: document.getElementById("workshopTitle").value,
-                    date: document.getElementById("workshopDate").value,
-                    description: document.getElementById("workshopDescription").value,
-                    regLink: document.getElementById("workshopRegLink").value,
-                    status: document.getElementById("workshopStatus").value
-                };
-                database.ref(`workshops/${workshopId}`).set(data)
-                    .then(() => alert("ওয়ার্কশপের তথ্য সফলভাবে সেভ করা হয়েছে!"))
-                    .catch(err => alert("Error: " + err.message));
-            });
-            document.getElementById("addModuleForm").addEventListener('submit', function(e) { e.preventDefault(); const moduleName = document.getElementById('newModuleName').value; if (moduleName && currentEditingCourseId) { database.ref(`courses/${currentEditingCourseId}/modules`).push({ title: moduleName }).then(() => { document.getElementById('newModuleName').value = ''; }); } }); }
+        }
+        
+        function rejectWithdrawal(requestId) {
+             if (!confirm("Are you sure you want to reject this request?")) return;
+             database.ref(`withdrawalRequests/${requestId}`).update({ status: 'rejected' })
+             .then(() => alert('Request has been rejected.'));
+        }
     </script>
 </body>
 </html>
