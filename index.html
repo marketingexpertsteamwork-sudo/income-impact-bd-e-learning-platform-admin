@@ -685,6 +685,8 @@
                         ${n.status === 'pending' ? `<button class="action-btn" style="background-color: var(--success-color);" onclick="activateUser('${e}')">Activate</button>` : ''}
                         <button class="action-btn edit-btn" onclick="editUser('${e}')">সম্পাদনা</button>
                         <button class="action-btn" style="background-color: #d35400;" onclick="resetUserPassword('${e}')">পাসওয়ার্ড রিসেট</button>
+                        <button class="action-btn enroll-btn" onclick="openEnrollModal('${e}')">Enroll</button>
+                        <button class="action-btn progress-btn" onclick="viewUserProgress('${e}')">Progress</button>
                         <button class="action-btn delete-btn" onclick="deleteData('users/${e}')">মুছুন</button>
                     </td></tr>`;
             }
@@ -826,7 +828,29 @@
             }
         }
         function renderPaymentHistoryTable() { const t = document.getElementById("paymentHistoryTableBody"); t.innerHTML = ""; const sortedPayments = Object.entries(allPayments).sort((a,b) => new Date(b[1].date) - new Date(a[1].date)); for (const [id, n] of sortedPayments) { const user = allUsers[n.userId] || {email: 'Unknown'}; const course = allCourses[n.courseId] || {name: 'Unknown'}; t.innerHTML += `<tr><td>${user.email}</td><td>${course.name}</td><td>${(n.amount||0).toLocaleString("bn-BD")}</td><td>${n.transactionId}</td><td>${new Date(n.date).toLocaleString("bn-BD")}</td></tr>` } }
-        function renderSupportTicketsTable() { const t = document.getElementById("supportTicketsTableBody"); t.innerHTML = ""; for (const e in allSupportTickets) { const n = allSupportTickets[e]; const user = allUsers[n.userId] || {email: 'Unknown'}; t.innerHTML += `<tr><td>${user.email}</td><td>${n.subject}</td><td class="message-col">${n.message}</td><td><span class="status ${n.status}">${n.status}</span></td><td><button class="action-btn edit-btn" onclick="updateTicketStatus('${e}', 'resolved')">Resolved</button><button class="action-btn delete-btn" onclick="deleteData('supportTickets/${e}')">মুছুন</button></td></tr>` } }
+        
+        function renderSupportTicketsTable() {
+            const t = document.getElementById("supportTicketsTableBody");
+            t.innerHTML = "";
+            const sortedTickets = Object.entries(allSupportTickets).sort((a,b) => new Date(b[1].timestamp) - new Date(a[1].timestamp));
+            for (const [e, n] of sortedTickets) {
+                const user = allUsers[n.userId] || {email: 'Unknown'};
+                let actionButtons = `<button class="action-btn" style="background: #16a085;" onclick="replyToTicket('${e}')">Reply</button>`;
+                if (n.status === 'pending') {
+                    actionButtons += `<button class="action-btn edit-btn" onclick="updateTicketStatus('${e}', 'resolved')">Mark Resolved</button>`;
+                }
+                actionButtons += `<button class="action-btn delete-btn" onclick="deleteData('supportTickets/${e}')">Delete</button>`;
+
+                t.innerHTML += `<tr>
+                    <td>${user.name || user.email}</td>
+                    <td>${n.subject}</td>
+                    <td class="message-col">${n.message} ${n.reply ? `<br><strong>Reply:</strong> ${n.reply}` : ''}</td>
+                    <td><span class="status ${n.status}">${n.status}</span></td>
+                    <td>${actionButtons}</td>
+                </tr>`;
+            }
+        }
+
         function renderReviewsTableWithApproval() { const t = document.getElementById("reviewsTableBody"); t.innerHTML = ""; for (const reviewId in allReviews) { const review = allReviews[reviewId]; const user = allUsers[review.userId] || {email: 'Unknown'}; const course = allCourses[review.courseId] || {name: 'Unknown'}; let actionButtons = ''; if (review.status === 'Pending') { actionButtons = ` <button class="action-btn" style="background-color: var(--success-color);" onclick="updateReviewStatus('${reviewId}', 'Approved')">Approve</button> <button class="action-btn" style="background-color: var(--danger-color);" onclick="updateReviewStatus('${reviewId}', 'Rejected')">Reject</button> `; } else { actionButtons = `<button class="action-btn delete-btn" onclick="deleteData('courseReviews/${reviewId}')">মুছুন</button>`; } t.innerHTML += ` <tr> <td>${course.name}</td> <td>${user.email}</td> <td>${'⭐'.repeat(review.rating)}</td> <td class="review-col">${review.review}</td> <td><span class="status ${review.status}">${review.status}</span></td> <td>${actionButtons}</td> </tr>`; } }
         function updateReviewStatus(reviewId, status) { database.ref(`courseReviews/${reviewId}`).update({ status: status }) .then(() => alert(`Review status updated to ${status}`)) .catch(err => alert('Error updating status: ' + err.message)); }
         function renderQnaTable() { const tableBody = document.getElementById("qnaTableBody"); tableBody.innerHTML = ""; for (const courseId in allCourses) { const course = allCourses[courseId]; if (!course.modules) continue; for (const moduleId in course.modules) { const module = course.modules[moduleId]; if (!module.lessons) continue; for (const lessonId in module.lessons) { const lesson = module.lessons[lessonId]; if (!lesson.qna) continue; for (const qnaId in lesson.qna) { const qna = lesson.qna[qnaId]; const fullPath = `courses/${courseId}/modules/${moduleId}/lessons/${lessonId}/qna/${qnaId}`; let replyButton = qna.reply ? `<button class="action-btn edit-btn" onclick="replyToQuestion('${fullPath}')">Edit Reply</button>` : `<button class="action-btn" style="background-color: var(--success-color);" onclick="replyToQuestion('${fullPath}')">Reply</button>`; tableBody.innerHTML += ` <tr> <td>${course.name}</td> <td>${lesson.title}</td> <td>${qna.userName}</td> <td class="message-col">${qna.question}</td> <td> ${replyButton} <button class="action-btn delete-btn" onclick="deleteData('${fullPath}')">Delete</button> </td> </tr> `; } } } } }
@@ -860,18 +884,36 @@
         function editFeature(t) { const e = allFeatures[t]; e && (document.getElementById("featureId").value = t, document.getElementById("featureImage").value = e.image, document.getElementById("featureTitle").value = e.title, document.getElementById("featureDesc").value = e.desc, openModal("featureModal", "ফিচার সম্পাদনা করুন", "featureForm")) }
         function updateTicketStatus(ticketId, status) { database.ref(`supportTickets/${ticketId}`).update({ status: status }); }
         function openCourseContentModal(courseId) { currentEditingCourseId = courseId; const course = allCourses[courseId]; document.getElementById('courseContentModalTitle').innerText = `Manage Content for: ${course.name}`; renderModules(courseId); document.getElementById('courseContentModal').style.display = 'flex'; }
-        function renderModules(courseId) { const course = allCourses[courseId]; const container = document.getElementById('modulesContainer'); container.innerHTML = ''; if (course.modules) { for (const moduleId in course.modules) { const module = course.modules[moduleId]; let lessonsHtml = ''; if (module.lessons) { for (const lessonId in module.lessons) { const lesson = module.lessons[lessonId]; lessonsHtml += `<div class="lesson">${lesson.title} - <i>(${lesson.type})</i><button onclick="deleteLesson('${courseId}', '${moduleId}', '${lessonId}')" class="delete-btn" style="float:right;">X</button></div>`; } } container.innerHTML += `<div class="module"><div class="module-header"><span>${module.title}</span> <div><button class="action-btn edit-btn" onclick="openQuizModalForCourse('${courseId}')">Manage Quiz</button><button onclick="deleteData('courses/${courseId}/modules/${moduleId}')" class="delete-btn">Delete Module</button></div></div>${lessonsHtml}<form class="add-lesson-form" data-module-id="${moduleId}" style="margin-top:10px;"><input type="text" placeholder="Lesson Title" required><select required><option value="video">Video</option><option value="text">Text</option></select><input type="text" placeholder="Content (e.g., YouTube URL)" required><button type="submit" class="add-new-btn" style="margin: 5px 0 0 0;">Add Lesson</button></form></div>`; } } document.querySelectorAll('.add-lesson-form').forEach(form => form.addEventListener('submit', addLesson)); }
+        function renderModules(courseId) {
+            const course = allCourses[courseId];
+            const container = document.getElementById('modulesContainer');
+            container.innerHTML = '';
+            if (course.modules) {
+                for (const moduleId in course.modules) {
+                    const module = course.modules[moduleId];
+                    let lessonsHtml = '';
+                    if (module.lessons) {
+                        for (const lessonId in module.lessons) {
+                            const lesson = module.lessons[lessonId];
+                            lessonsHtml += `<div class="lesson">${lesson.title} - <i>(${lesson.type})</i><button onclick="deleteLesson('${courseId}', '${moduleId}', '${lessonId}')" class="delete-btn" style="float:right;">X</button></div>`;
+                        }
+                    }
+                    container.innerHTML += `<div class="module"><div class="module-header"><span>${module.title}</span> <div><button class="action-btn edit-btn" onclick="openQuizModalForCourse('${courseId}')">Manage Quiz</button><button onclick="deleteData('courses/${courseId}/modules/${moduleId}')" class="delete-btn">Delete Module</button></div></div>${lessonsHtml}<form class="add-lesson-form" data-module-id="${moduleId}" style="margin-top:10px;"><input type="text" placeholder="Lesson Title" required><select required><option value="video">Video</option><option value="text">Text</option></select><input type="text" placeholder="Content (e.g., YouTube URL)" required><button type="submit" class="add-new-btn" style="margin: 5px 0 0 0;">Add Lesson</button></form></div>`;
+                }
+            }
+            document.querySelectorAll('.add-lesson-form').forEach(form => form.addEventListener('submit', addLesson));
+        }
         function addLesson(e) { e.preventDefault(); const moduleId = e.target.dataset.moduleId; const lessonData = { title: e.target.children[0].value, type: e.target.children[1].value, content: e.target.children[2].value }; database.ref(`courses/${currentEditingCourseId}/modules/${moduleId}/lessons`).push(lessonData).then(() => e.target.reset()); }
         function deleteLesson(courseId, moduleId, lessonId) { if (confirm('Are you sure you want to delete this lesson?')) { database.ref(`courses/${courseId}/modules/${moduleId}/lessons/${lessonId}`).remove(); } }
         function openQuizModalForCourse(courseId) { currentEditingCourseId = courseId; document.getElementById('quizModal').style.display = 'flex'; renderQuizQuestions(); }
         function renderQuizQuestions() { const container = document.getElementById('quizQuestionsContainer'); container.innerHTML = ''; const quizRef = database.ref(`courses/${currentEditingCourseId}/quiz`); quizRef.once('value', snapshot => { const questions = snapshot.val(); if(questions) { for(const qId in questions) { const q = questions[qId]; container.innerHTML += `<div class="module"><p><b>Q: ${q.text}</b> <button class="delete-btn" style="float:right;" onclick="deleteQuizQuestion('${qId}')">X</button></p><small>Correct Answer: Option ${q.correct}</small></div>`; } } else { container.innerHTML = '<p>No questions yet. Add one below.</p>'; } }); }
         function deleteQuizQuestion(questionId) { if(confirm('Delete this question?')) { database.ref(`courses/${currentEditingCourseId}/quiz/${questionId}`).remove().then(renderQuizQuestions); } }
-        function openEnrollModal(userId) { const user = allUsers[userId]; document.getElementById('enrollUserId').value = userId; const select = document.getElementById('enrollCourseSelect'); select.innerHTML = '<option value="">Select a course...</option>'; for(const courseId in allCourses) { select.innerHTML += `<option value="${courseId}">${allCourses[courseId].name}</option>`; } openModal('enrollModal', `Enroll ${user.email}`, 'enrollForm'); }
+        function openEnrollModal(userId) { const user = allUsers[userId]; document.getElementById('enrollUserId').value = userId; const select = document.getElementById('enrollCourseSelect'); select.innerHTML = '<option value="">Select a course...</option>'; for(const courseId in allCourses) { select.innerHTML += `<option value="${courseId}">${allCourses[courseId].name}</option>`; } openModal('enrollModal', `Enroll ${user.name || user.email}`, 'enrollForm'); }
         function openCouponModal() { openModal('couponModal', 'নতুন কুপন যোগ করুন', 'couponForm'); }
         function renderCouponTable() { const t = document.getElementById("couponTableBody"); t.innerHTML = ""; for (const id in allCoupons) { const c = allCoupons[id]; const expiry = c.expiryDate ? new Date(c.expiryDate).toLocaleDateString("bn-BD") : 'N/A'; t.innerHTML += `<tr><td>${c.code}</td><td>${c.type}</td><td>${c.value} ${c.type === 'percentage' ? '%' : 'BDT'}</td><td>${expiry}</td><td><button class="action-btn delete-btn" onclick="deleteData('coupons/${id}')">মুছুন</button></td></tr>`; } }
         function renderSentNotificationsTable() { const t = document.getElementById("sentNotificationsTableBody"); t.innerHTML = ""; const sorted = Object.entries(allNotifications).sort((a,b) => b[1].timestamp - a[1].timestamp); for (const [id, n] of sorted) { t.innerHTML += `<tr><td class="message-col">${n.message}</td><td>${new Date(n.timestamp).toLocaleString("bn-BD")}</td><td><button class="action-btn delete-btn" onclick="deleteData('notifications/${id}')">মুছুন</button></td></tr>`; } }
         
-        // --- NEW FEATURE FUNCTIONS ---
+        // --- NEW FEATURE FUNCTIONS (Implemented as per your request) ---
 
         function calculateAdvancedAnalytics() {
             const courseAnalytics = {};
@@ -900,7 +942,7 @@
                 }
             }
             const tableBody = document.querySelector("#courseAnalyticsTable tbody");
-tableBody.innerHTML = "";
+            tableBody.innerHTML = "";
             for (const courseId in courseAnalytics) {
                 const data = courseAnalytics[courseId];
                 tableBody.innerHTML += `<tr>
@@ -913,8 +955,6 @@ tableBody.innerHTML = "";
             const enrollmentCounts = {};
             Object.values(allUsers).forEach(user => { if(user.enrolledCourses) { Object.values(user.enrolledCourses).forEach(enrollment => { enrollmentCounts[enrollment.courseId] = (enrollmentCounts[enrollment.courseId] || 0) + 1; }); } }); let popularCourseId = null, maxEnrollments = 0; for(const courseId in enrollmentCounts) { if(enrollmentCounts[courseId] > maxEnrollments) { maxEnrollments = enrollmentCounts[courseId]; popularCourseId = courseId; } } document.getElementById('popularCourse').textContent = popularCourseId && allCourses[popularCourseId] ? allCourses[popularCourseId].name : 'N/A'; let totalPercentage = 0; let userCount = 0; Object.values(allUsers).forEach(user => { if (user.enrolledCourses) { Object.values(user.enrolledCourses).forEach(enrollment => { const course = allCourses[enrollment.courseId]; if (course) { const totalLessons = (course.modules ? Object.values(course.modules).reduce((acc, mod) => acc + (mod.lessons ? Object.keys(mod.lessons).length : 0), 0) : 0); const completedLessons = enrollment.progress ? Object.keys(enrollment.progress).length : 0; const progressPercentage = totalLessons > 0 ? Math.round((completedLessons / totalLessons) * 100) : 0; totalPercentage += progressPercentage; userCount++; } }); } }); const avgCompletion = userCount > 0 ? Math.round(totalPercentage / userCount) : 0; document.getElementById('completionRate').textContent = `${avgCompletion}%`; 
         }
-
-        // --- NEW FEATURE FUNCTIONS ---
 
         function populateCourseSelect() {
             const select = document.getElementById('groupNotificationCourse');
@@ -945,11 +985,12 @@ tableBody.innerHTML = "";
             }
 
             if (userIdsToSend.length > 0) {
+                alert(`${userIdsToSend.length} জন শিক্ষার্থীকে বিজ্ঞপ্তি পাঠানো হচ্ছে...`);
                 const notificationPromises = userIdsToSend.map(userId => {
-                    // Note: This sends a general notification. For user-specific notifications, a different structure might be needed.
                     return database.ref('notifications').push({
                         message: `[${allCourses[courseId].name}]: ${message}`,
-                        timestamp: new Date().getTime()
+                        timestamp: new Date().getTime(),
+                        userId: userId // Target specific user
                     });
                 });
                 await Promise.all(notificationPromises);
@@ -1153,6 +1194,50 @@ tableBody.innerHTML = "";
              if (!confirm("Are you sure you want to reject this request?")) return;
              database.ref(`withdrawalRequests/${requestId}`).update({ status: 'rejected' })
              .then(() => alert('Request has been rejected.'));
+        }
+
+        function viewUserProgress(userId) {
+            const user = allUsers[userId];
+            if (!user) { alert('User not found!'); return; }
+            
+            const container = document.getElementById('userProgressContainer');
+            container.innerHTML = '';
+            
+            if (!user.enrolledCourses) {
+                container.innerHTML = '<p>This user has not enrolled in any courses yet.</p>';
+            } else {
+                let html = '';
+                for (const enrollId in user.enrolledCourses) {
+                    const enrollment = user.enrolledCourses[enrollId];
+                    const course = allCourses[enrollment.courseId];
+                    if (course) {
+                        const totalLessons = (course.modules ? Object.values(course.modules).reduce((acc, mod) => acc + (mod.lessons ? Object.keys(mod.lessons).length : 0), 0) : 0);
+                        const completedLessons = enrollment.progress ? Object.keys(enrollment.progress).length : 0;
+                        const progressPercentage = totalLessons > 0 ? Math.round((completedLessons / totalLessons) * 100) : 0;
+                        html += `
+                            <div class="module">
+                                <h4>${course.name}</h4>
+                                <p>Progress: ${completedLessons} / ${totalLessons} lessons completed (${progressPercentage}%)</p>
+                                <div style="background: #eee; border-radius: 5px; height: 20px; overflow: hidden;">
+                                    <div style="width: ${progressPercentage}%; background: var(--success-color); height: 100%;"></div>
+                                </div>
+                            </div>
+                        `;
+                    }
+                }
+                container.innerHTML = html;
+            }
+            openModal('userProgressModal', `Progress for ${user.name}`, 'userProgressContainer');
+        }
+
+        function replyToTicket(ticketId) {
+            const reply = prompt("Enter your reply to the user:");
+            if (reply && reply.trim() !== '') {
+                database.ref(`supportTickets/${ticketId}`).update({
+                    reply: reply,
+                    status: 'resolved'
+                }).then(() => alert('Reply sent and ticket marked as resolved.'));
+            }
         }
     </script>
 </body>
