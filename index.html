@@ -32,7 +32,7 @@
         .card h3 { margin-top: 0; font-size: 1.1rem; color: #777; }
         .card .value { font-size: 2.2rem; font-weight: bold; color: var(--text-color); }
         .card .value.small { font-size: 1.5rem; }
-        .chart-container { background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: var(--shadow); }
+        .chart-container { background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: var(--shadow); margin-bottom: 20px; }
         .table-container { background-color: #fff; border-radius: 8px; box-shadow: var(--shadow); overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; }
         th, td { padding: 15px; text-align: left; border-bottom: 1px solid var(--border-color); white-space: nowrap; }
@@ -65,10 +65,17 @@
         .module-header { font-weight: bold; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
         .lesson { border-top: 1px solid #eee; padding: 10px 0; }
         .lesson:first-child { border-top: none; }
+        .filter-controls, .bulk-action-controls { display: flex; gap: 15px; margin-bottom: 20px; padding: 15px; background-color: #fff; border-radius: 8px; box-shadow: var(--shadow); }
+        .filter-controls input, .filter-controls select, .bulk-action-controls select, .bulk-action-controls button { padding: 10px; border: 1px solid var(--border-color); border-radius: 5px; font-size: 1rem; }
+        .filter-controls input { flex-grow: 1; }
+        .pagination-controls { display: flex; justify-content: flex-end; align-items: center; padding: 15px; background-color: #fff; border-radius: 8px; box-shadow: var(--shadow); margin-top: 20px; }
+        .pagination-controls button { background-color: var(--primary-color); color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; margin: 0 5px; }
+        .pagination-controls button:disabled { background-color: #bdc3c7; cursor: not-allowed; }
         @media (max-width: 768px) {
             .sidebar { position: fixed; left: 0; top: 0; height: 100%; z-index: 1000; margin-left: -250px; } .sidebar.show { margin-left: 0; }
             .main-content { padding: 20px; padding-top: 70px; } .menu-toggle { display: block; } .page-header h1 { font-size: 1.8rem; }
             .grid-2-col, .grid-3-col { grid-template-columns: 1fr; }
+            .filter-controls, .bulk-action-controls { flex-direction: column; }
         }
     </style>
 </head>
@@ -80,21 +87,19 @@
         <nav>
             <ul>
                 <li><a href="#dashboard" class="nav-link active">ড্যাশবোর্ড</a></li>
-                <!-- NEW FEATURE: Detailed Analytics Link -->
                 <li><a href="#analytics" class="nav-link">বিস্তারিত অ্যানালিটিক্স</a></li>
                 <li><a href="#user-management" class="nav-link">ব্যবহারকারী ম্যানেজমেন্ট</a></li>
                 <li><a href="#course-management" class="nav-link">কোর্স ম্যানেজমেন্ট</a></li>
+                <li><a href="#category-management" class="nav-link">কোর্স ক্যাটাগরি</a></li>
                 <li><a href="#homework-review" class="nav-link">হোমওয়ার্ক রিভিউ</a></li>
                 <li><a href="#withdrawal-requests" class="nav-link">উইথড্র রিকুয়েস্ট</a></li>
                 <li><a href="#coupon-management" class="nav-link">কুপন ম্যানেজমেন্ট</a></li>
                 <li><a href="#liveclass-management" class="nav-link">লাইভ ক্লাস ম্যানেজমেন্ট</a></li>
                 <li><a href="#certificate-management" class="nav-link">সার্টিফিকেট ম্যানেজমেন্ট</a></li>
                 <li><a href="#notifications" class="nav-link">বিজ্ঞপ্তি পাঠান</a></li>
-                <!-- NEW FEATURE: Group Messaging Link -->
                 <li><a href="#group-messaging" class="nav-link">গ্রুপ মেসেজিং</a></li>
                 <li><a href="#qna-management" class="nav-link">প্রশ্নোত্তর ম্যানেজমেন্ট</a></li>
                 <li><a href="#course-reviews" class="nav-link">কোর্স রিভিউ</a></li>
-                 <!-- NEW FEATURE: Community Forum Management Link -->
                 <li><a href="#community-management" class="nav-link">কমিউনিটি ম্যানেজমেন্ট</a></li>
                 <li><a href="#payment-history" class="nav-link">পেমেন্ট হিস্ট্রি</a></li>
                 <li><a href="#support-tickets" class="nav-link">সাপোর্ট টিকেট</a></li>
@@ -107,6 +112,7 @@
                 <li><a href="#text-seo-management" class="nav-link">টেক্সট ও SEO</a></li>
                 <li><a href="#menu-management" class="nav-link">ন্যাভিগেশন মেনু</a></li>
                 <li><a href="#role-management" class="nav-link">সাব-অ্যাডমিন রোল</a></li>
+                <li><a href="#mentor-management" class="nav-link">মেন্টর ম্যানেজমেন্ট</a></li>
                 <li><a href="#footer-management" class="nav-link">ফুটার ম্যানেজমেন্ট</a></li>
                 <li><a href="#gamification-settings" class="nav-link">গ্যামিফিকেশন সেটিংস</a></li>
                 <li><a href="#settings" class="nav-link">সেটিংস ও থিম</a></li>
@@ -128,10 +134,17 @@
             <div class="chart-container"><canvas id="userGrowthChart"></canvas></div>
         </section>
 
-        <!-- NEW FEATURE: Detailed Analytics Section -->
         <section id="analytics" class="content-section">
             <div class="page-header"><h1>বিস্তারিত অ্যানালিটিক্স</h1></div>
-            <div class="settings-card">
+             <div class="dashboard-cards">
+                <div class="card warning"><h3>এই মাসের আয় (BDT)</h3><p class="value" id="monthlyEarnings">0</p></div>
+                <div class="card success"><h3>এই মাসে নতুন ব্যবহারকারী</h3><p class="value" id="monthlyNewUsers">0</p></div>
+            </div>
+            <div class="chart-container">
+                <h3>মাসিক আয় (গত ৬ মাস)</h3>
+                <canvas id="monthlyRevenueChart"></canvas>
+            </div>
+            <div class="settings-card" style="margin-top: 20px;">
                 <h3>কোর্স অনুযায়ী আয় ও এনরোলমেন্ট</h3>
                 <div class="table-container">
                     <table id="courseAnalyticsTable">
@@ -144,22 +157,54 @@
 
         <section id="user-management" class="content-section">
             <div class="page-header"><h1>ব্যবহারকারী ম্যানেজমেন্ট</h1></div>
-            <div class="table-container">
-                <table><thead><tr><th>প্রোফাইল ছবি</th><th>নাম</th><th>ইমেইল</th><th>ব্যালেন্স (BDT)</th><th>স্ট্যাটাস</th><th>অ্যাকশন</th></tr></thead><tbody id="userTableBody"></tbody></table>
+            <button class="add-new-btn" onclick="openCreateUserModal()">নতুন ইউজার তৈরি করুন</button>
+            <div class="filter-controls">
+                <input type="text" id="userSearchInput" placeholder="নাম বা ইমেইল দিয়ে সার্চ করুন...">
+                <select id="userStatusFilter">
+                    <option value="all">সকল স্ট্যাটাস</option>
+                    <option value="active">Active</option>
+                    <option value="pending">Pending</option>
+                    <option value="blocked">Blocked</option>
+                </select>
             </div>
+            <div class="bulk-action-controls">
+                <select id="bulkActionSelect">
+                    <option value="">বাল্ক অ্যাকশন...</option>
+                    <option value="activate">নির্বাচিতদের সক্রিয় করুন</option>
+                    <option value="block">নির্বাচিতদের ব্লক করুন</option>
+                    <option value="delete">নির্বাচিতদের মুছুন</option>
+                </select>
+                <button id="applyBulkActionButton">প্রয়োগ করুন</button>
+            </div>
+            <div class="table-container">
+                <table><thead><tr><th><input type="checkbox" id="selectAllUsersCheckbox"></th><th>প্রোফাইল ছবি</th><th>নাম</th><th>ইমেইল</th><th>ব্যালেন্স (BDT)</th><th>স্ট্যাটাস</th><th>অ্যাকশন</th></tr></thead><tbody id="userTableBody"></tbody></table>
+            </div>
+            <div class="pagination-controls" id="userPaginationControls"></div>
         </section>
         <section id="course-management" class="content-section">
             <div class="page-header"><h1>কোর্স ম্যানেজমেন্ট</h1></div><button class="add-new-btn" onclick="openCourseModal()">নতুন কোর্স যোগ করুন</button>
             <div class="table-container">
-                <table><thead><tr><th>কোর্সের নাম</th><th>মূল্য (BDT)</th><th>হোমওয়ার্ক রিওয়ার্ড</th><th>হোমওয়ার্ক লিমিট</th><th>স্ট্যাটাস</th><th>অ্যাকশন</th></tr></thead><tbody id="courseTableBody"></tbody></table>
+                <table><thead><tr><th>কোর্সের নাম</th><th>ক্যাটাগরি</th><th>মূল্য (BDT)</th><th>হোমওয়ার্ক রিওয়ার্ড</th><th>স্ট্যাটাস</th><th>অ্যাকশন</th></tr></thead><tbody id="courseTableBody"></tbody></table>
+            </div>
+        </section>
+
+        <section id="category-management" class="content-section">
+            <div class="page-header"><h1>কোর্স ক্যাটাগরি ম্যানেজমেন্ট</h1></div>
+            <button class="add-new-btn" onclick="openCategoryModal()">নতুন ক্যাটাগরি যোগ করুন</button>
+            <div class="table-container">
+                <table>
+                    <thead><tr><th>ক্যাটাগরির নাম</th><th>অ্যাকশন</th></tr></thead>
+                    <tbody id="categoryTableBody"></tbody>
+                </table>
             </div>
         </section>
 
         <section id="homework-review" class="content-section">
             <div class="page-header"><h1>হোমওয়ার্ক রিভিউ</h1></div>
+            <button class="add-new-btn" onclick="openHomeworkModal()">ম্যানুয়াল হোমওয়ার্ক যোগ করুন</button>
             <div class="table-container">
                 <table>
-                    <thead><tr><th>ছাত্রের নাম</th><th>কোর্সের নাম</th><th>হোমওয়ার্ক লিংক</th><th>জমা দেওয়ার তারিখ</th><th>অ্যাকশন</th></tr></thead>
+                    <thead><tr><th>ছাত্রের নাম</th><th>কোর্সের নাম</th><th>হোমওয়ার্ক লিংক</th><th>জমা দেওয়ার তারিখ</th><th>স্ট্যাটাস</th><th>অ্যাকশন</th></tr></thead>
                     <tbody id="homeworkReviewTableBody"></tbody>
                 </table>
             </div>
@@ -191,6 +236,7 @@
                 <form id="liveClassForm">
                     <h3>নতুন লাইভ ক্লাস তৈরি করুন</h3>
                     <div class="form-group"><label for="liveClassTitle">ক্লাসের শিরোনাম</label><input type="text" id="liveClassTitle" required></div>
+                    <div class="form-group"><label for="liveClassTeacher">শিক্ষকের নাম</label><input type="text" id="liveClassTeacher" placeholder="e.g., John Doe"></div>
                     <div class="form-group"><label for="liveClassUrl">মিটিং URL (Zoom/Meet)</label><input type="url" id="liveClassUrl" required></div>
                     <div class="form-group"><label for="liveClassDateTime">তারিখ ও সময়</label><input type="datetime-local" id="liveClassDateTime" required></div>
                     <div class="form-group"><label for="liveClassDesc">সংক্ষিপ্ত বিবরণ</label><textarea id="liveClassDesc" rows="3"></textarea></div>
@@ -199,7 +245,7 @@
             </div>
              <div class="table-container" style="margin-top: 30px;">
                 <h3>পূর্ববর্তী লাইভ ক্লাসসমূহ</h3>
-                <table><thead><tr><th>শিরোনাম</th><th>URL</th><th>সময়</th><th>অ্যাকশন</th></tr></thead><tbody id="liveClassTableBody"></tbody></table>
+                <table><thead><tr><th>শিরোনাম</th><th>শিক্ষক</th><th>URL</th><th>সময়</th><th>রেকর্ডিং</th><th>অ্যাকশন</th></tr></thead><tbody id="liveClassTableBody"></tbody></table>
             </div>
         </section>
         <section id="certificate-management" class="content-section">
@@ -228,7 +274,6 @@
             </div>
         </section>
 
-        <!-- NEW FEATURE: Group Messaging Section -->
         <section id="group-messaging" class="content-section">
             <div class="page-header"><h1>গ্রুপ মেসেজিং (কোর্স অনুযায়ী)</h1></div>
             <div class="settings-card">
@@ -273,7 +318,6 @@
             </div>
         </section>
         
-        <!-- NEW FEATURE: Community Management Section -->
         <section id="community-management" class="content-section">
             <div class="page-header"><h1>কমিউনিটি ফোরাম ম্যানেজমেন্ট</h1></div>
             <div class="table-container">
@@ -286,6 +330,7 @@
 
         <section id="payment-history" class="content-section">
             <div class="page-header"><h1>পেমেন্ট হিস্ট্রি</h1></div>
+            <button class="add-new-btn" onclick="openPaymentModal()">ম্যানুয়াল পেমেন্ট যোগ করুন</button>
             <div class="table-container">
                 <table>
                     <thead><tr><th>ব্যবহারকারী</th><th>কোর্স</th><th>পরিমাণ (BDT)</th><th>Transaction ID</th><th>তারিখ</th></tr></thead>
@@ -297,7 +342,7 @@
             <div class="page-header"><h1>সাপোর্ট টিকেট</h1></div>
             <div class="table-container">
                 <table>
-                    <thead><tr><th>ব্যবহারকারী</th><th>বিষয়</th><th>বার্তা</th><th>স্ট্যাটাস</th><th>অ্যাকশন</th></tr></thead>
+                    <thead><tr><th>ব্যবহারকারী</th><th>বিষয়</th><th>বার্তা</th><th>Priority</th><th>Assigned To</th><th>স্ট্যাটাস</th><th>অ্যাকশন</th></tr></thead>
                     <tbody id="supportTicketsTableBody"></tbody>
                 </table>
             </div>
@@ -426,6 +471,16 @@
                         <div class="form-group"><label for="lang-tabProfile">My Profile ট্যাব</label><input type="text" id="lang-tabProfile"></div>
                         <div class="form-group"><label for="lang-tabPayments">Payments ট্যাব</label><input type="text" id="lang-tabPayments"></div>
                     </div>
+                     <hr>
+                    <h4>নতুন যুক্ত করা সেকশনের শিরোনাম</h4>
+                    <div class="grid-2-col">
+                        <div class="form-group"><label for="title-liveClassSubtitle">লাইভ ক্লাস (সাব-টাইটেল)</label><input type="text" id="title-liveClassSubtitle"></div>
+                        <div class="form-group"><label for="title-liveClassMainTitle">লাইভ ক্লাস (প্রধান শিরোনাম)</label><input type="text" id="title-liveClassMainTitle"></div>
+                        <div class="form-group"><label for="title-communitySubtitle">কমিউনিটি (সাব-টাইটেল)</label><input type="text" id="title-communitySubtitle"></div>
+                        <div class="form-group"><label for="title-communityMainTitle">কমিউনিটি (প্রধান শিরোনাম)</label><input type="text" id="title-communityMainTitle"></div>
+                        <div class="form-group"><label for="title-workshopSubtitle">ওয়ার্কশপ (সাব-টাইটেল)</label><input type="text" id="title-workshopSubtitle"></div>
+                        <div class="form-group"><label for="title-workshopMainTitle">ওয়ার্কশপ (প্রধান শিরোনাম)</label><input type="text" id="title-workshopMainTitle"></div>
+                    </div>
                     <button type="submit" class="form-btn">টেক্সট সেভ করুন</button>
                 </form>
             </div>
@@ -440,6 +495,19 @@
             <div class="page-header"><h1>সাব-অ্যাডমিন রোল ম্যানেজমেন্ট</h1></div><button class="add-new-btn" onclick="openRoleModal()">নতুন রোল যোগ করুন</button>
             <div class="table-container">
                 <table><thead><tr><th>রোলের নাম</th><th>ভ্যালু</th><th>অ্যাকশন</th></tr></thead><tbody id="roleTableBody"></tbody></table>
+            </div>
+        </section>
+        <section id="mentor-management" class="content-section">
+            <div class="page-header"><h1>মেন্টর ম্যানেজমেন্ট</h1></div>
+            <div class="settings-card">
+                <form id="mentorRolesForm">
+                    <h3>মেন্টর রোল নির্বাচন করুন</h3>
+                    <p>এখানে যে রোলগুলো নির্বাচন করবেন, শুধুমাত্র সেই রোলের ব্যবহারকারীরাই ইউজার অ্যাপের 'Mentors' ট্যাবে প্রদর্শিত হবে।</p>
+                    <div id="mentorRolesContainer" class="form-group">
+                        <!-- Roles will be loaded here by JavaScript -->
+                    </div>
+                    <button type="submit" class="submit-btn">সেভ করুন</button>
+                </form>
             </div>
         </section>
         <section id="footer-management" class="content-section">
@@ -464,7 +532,6 @@
                      <button type="submit" class="submit-btn">পয়েন্ট সেটিংস সেভ করুন</button>
                 </form>
             </div>
-            <!-- NEW FEATURE: Badge Management -->
             <div class="settings-card">
                 <h3>ব্যাজ ম্যানেজমেন্ট</h3>
                 <button class="add-new-btn" onclick="openBadgeModal()">নতুন ব্যাজ যোগ করুন</button>
@@ -521,8 +588,8 @@
     <form id="userForm"><input type="hidden" id="userId">
         <div class="form-group"><label for="userName">নাম</label><input type="text" id="userName" required></div>
         <div class="form-group"><label for="userEmail">ইমেইল</label><input type="email" id="userEmail" required></div>
+        <div class="form-group"><label for="userProfilePicUrl">প্রোফাইল ছবির URL</label><input type="text" id="userProfilePicUrl"></div>
         <div class="form-group"><label for="userBalance">ব্যালেন্স</label><input type="number" id="userBalance"></div>
-        <!-- NEW FEATURE: Balance adjustment reason -->
         <div class="form-group"><label for="balanceReason">ব্যালেন্স পরিবর্তনের কারণ (ঐচ্ছিক)</label><textarea id="balanceReason" rows="2"></textarea></div>
         <div class="form-group"><label for="userRole">রোল (e.g., Team Leader)</label><input type="text" id="userRole" placeholder="Optional"></div>
         <div class="form-group"><label for="userWhatsapp">হোয়াটসঅ্যাপ নম্বর</label><input type="text" id="userWhatsapp" placeholder="Optional"></div>
@@ -534,16 +601,20 @@
     <div id="courseModal" class="modal"><div class="modal-content" style="max-height: 80vh; overflow-y: auto;"><div class="modal-header"><h2 id="courseModalTitle"></h2><span class="close-btn" onclick="closeModal('courseModal')">&times;</span></div>
     <form id="courseForm"><input type="hidden" id="courseId">
         <div class="form-group"><label for="courseName">কোর্সের নাম</label><input type="text" id="courseName" required></div>
+        <div class="form-group"><label for="courseCategory">ক্যাটাগরি</label><select id="courseCategory" required></select></div>
         <div class="form-group"><label for="coursePrice">মূল্য (BDT)</label><input type="number" id="coursePrice" required></div>
         <div class="form-group"><label for="courseHomeworkReward">হোমওয়ার্ক রিওয়ার্ড (BDT)</label><input type="number" id="courseHomeworkReward" value="0"></div>
         <div class="form-group"><label for="courseHomeworkLimit">হোমওয়ার্ক লিমিট</label><input type="number" id="courseHomeworkLimit" value="0"></div>
         <div class="form-group"><label for="courseImageURL"> ছবির URL</label><input type="text" id="courseImageURL"></div>
+        <div class="form-group"><label for="courseTrailerURL">ট্রেইলার ভিডিও URL (YouTube)</label><input type="text" id="courseTrailerURL" placeholder="https://www.youtube.com/watch?v=..."></div>
+        <div class="form-group"><label for="coursePassMark">কুইজ পাশ মার্ক (%)</label><input type="number" id="coursePassMark" min="0" max="100" value="50"></div>
         <div class="form-group"><label for="courseDescription">বিস্তারিত বিবরণ</label><textarea id="courseDescription" rows="5"></textarea></div>
         <div class="form-group"><label for="courseStatus">স্ট্যাটাস</label><select id="courseStatus"><option value="published">পাবলিশড</option><option value="pending">পেন্ডিং</option></select></div>
         <button type="submit" class="submit-btn">সেভ করুন</button>
     </form></div></div>
+    
+    <div id="categoryModal" class="modal"><div class="modal-content"><div class="modal-header"><h2 id="categoryModalTitle"></h2><span class="close-btn" onclick="closeModal('categoryModal')">&times;</span></div><form id="categoryForm"><input type="hidden" id="categoryId"><div class="form-group"><label for="categoryName">ক্যাটাগরির নাম</label><input type="text" id="categoryName" required></div><button type="submit" class="submit-btn">সেভ করুন</button></form></div></div>
 
-    <!-- NEW FEATURE: Badge Modal -->
     <div id="badgeModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -577,7 +648,14 @@
     <div id="quizModal" class="modal"><div class="modal-content" style="max-width: 800px; max-height: 90vh; overflow-y: auto;"><div class="modal-header"><h2 id="quizModalTitle">Manage Quiz</h2><span class="close-btn" onclick="closeModal('quizModal')">&times;</span></div><div id="quizQuestionsContainer"></div><hr><h4>Add New Question</h4><form id="addQuestionForm"><div class="form-group"><label>Question</label><input type="text" id="newQuestionText" required></div><div class="form-group"><label>Option 1</label><input type="text" class="quiz-option" required></div><div class="form-group"><label>Option 2</label><input type="text" class="quiz-option" required></div><div class="form-group"><label>Option 3</label><input type="text" class="quiz-option"></div><div class="form-group"><label>Option 4</label><input type="text" class="quiz-option"></div><div class="form-group"><label>Correct Answer (1-4)</label><input type="number" id="newCorrectAnswer" min="1" max="4" required></div><button type="submit" class="add-new-btn">Add Question</button></form></div></div>
     <div id="userProgressModal" class="modal"><div class="modal-content"><div class="modal-header"><h2 id="userProgressModalTitle">Student Progress</h2><span class="close-btn" onclick="closeModal('userProgressModal')">&times;</span></div><div id="userProgressContainer"></div></div></div>
     <div id="userNotesModal" class="modal"><div class="modal-content" style="max-width: 700px; max-height: 80vh; overflow-y: auto;"><div class="modal-header"><h2 id="userNotesModalTitle">Student Notes</h2><span class="close-btn" onclick="closeModal('userNotesModal')">&times;</span></div><div id="userNotesContainer"></div></div></div>
-    
+
+    <!-- ======================== NEW MODALS START HERE ======================== -->
+    <div id="createUserModal" class="modal"><div class="modal-content"><div class="modal-header"><h2>নতুন ইউজার তৈরি করুন</h2><span class="close-btn" onclick="closeModal('createUserModal')">&times;</span></div><form id="createUserForm"><div class="form-group"><label for="createUserName">নাম</label><input type="text" id="createUserName" required></div><div class="form-group"><label for="createUserEmail">ইমেইল</label><input type="email" id="createUserEmail" required></div><div class="form-group"><label for="createUserPassword">পাসওয়ার্ড</label><input type="password" id="createUserPassword" required></div><button type="submit" class="submit-btn">ইউজার তৈরি করুন</button></form></div></div>
+    <div id="paymentModal" class="modal"><div class="modal-content"><div class="modal-header"><h2>ম্যানুয়াল পেমেন্ট যোগ করুন</h2><span class="close-btn" onclick="closeModal('paymentModal')">&times;</span></div><form id="paymentForm"><div class="form-group"><label for="paymentUserSelect">ব্যবহারকারী নির্বাচন করুন</label><select id="paymentUserSelect" required></select></div><div class="form-group"><label for="paymentCourseSelect">কোর্স নির্বাচন করুন</label><select id="paymentCourseSelect" required></select></div><div class="form-group"><label for="paymentAmount">টাকার পরিমাণ (BDT)</label><input type="number" id="paymentAmount" required></div><div class="form-group"><label for="paymentDate">পেমেন্টের তারিখ</label><input type="datetime-local" id="paymentDate" required></div><div class="form-group"><label for="paymentTxId">Transaction ID</label><input type="text" id="paymentTxId" value="MANUAL_ENTRY" required></div><button type="submit" class="submit-btn">পেমেন্ট যোগ করুন</button></form></div></div>
+    <div id="homeworkModal" class="modal"><div class="modal-content"><div class="modal-header"><h2>ম্যানুয়াল হোমওয়ার্ক যোগ করুন</h2><span class="close-btn" onclick="closeModal('homeworkModal')">&times;</span></div><form id="homeworkForm"><div class="form-group"><label for="homeworkUserSelect">ব্যবহারকারী নির্বাচন করুন</label><select id="homeworkUserSelect" required></select></div><div class="form-group"><label for="homeworkCourseSelect">কোর্স নির্বাচন করুন</label><select id="homeworkCourseSelect" required></select></div><div class="form-group"><label for="homeworkLink">হোমওয়ার্ক লিংক</label><input type="url" id="homeworkLink" value="https://example.com/manual-submission" required></div><div class="form-group"><label for="homeworkStatus">স্ট্যাটাস</label><select id="homeworkStatus"><option value="submitted">Submitted</option><option value="approved">Approved</option><option value="rejected">Rejected</option><option value="correction_needed">Correction Needed</option></select></div><div class="form-group"><label for="homeworkDate">জমা দেওয়ার তারিখ</label><input type="datetime-local" id="homeworkDate" required></div><button type="submit" class="submit-btn">হোমওয়ার্ক যোগ করুন</button></form></div></div>
+    <div id="viewStudentsModal" class="modal"><div class="modal-content" style="max-width: 800px; max-height: 80vh; overflow-y: auto;"><div class="modal-header"><h2 id="viewStudentsModalTitle"></h2><span class="close-btn" onclick="closeModal('viewStudentsModal')">&times;</span></div><div class="table-container"><table id="studentsTable"><thead><tr><th>নাম</th><th>ইমেইল</th><th>অগ্রগতি</th></tr></thead><tbody id="studentsTableBody"></tbody></table></div></div></div>
+    <!-- ========================= NEW MODALS END HERE ========================= -->
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
@@ -595,24 +673,18 @@
         const database = firebase.database();
         const auth = firebase.auth();
 
-        const adminEmail = "my.admin.email@gmail.com";
-        const adminPassword = "admin@2025jr";
+        // নিরাপত্তা ঝুঁকি: হার্ডকোডেড এডমিন পাসওয়ার্ড মুছে ফেলা হয়েছে।
+        // এখন এডমিনকে অবশ্যই আগে থেকে Firebase Console-এ লগইন করে রাখতে হবে।
         const adminUid = "vcwR2irXaiTNiiOb5o0pBrIqfRV2";
 
+        // নিরাপত্তা আপডেট: নতুন onAuthStateChanged যা স্বয়ংক্রিয় লগইন করে না।
         auth.onAuthStateChanged(user => {
-            if (!user || user.uid !== adminUid) {
-                auth.signInWithEmailAndPassword(adminEmail, adminPassword)
-                    .then((userCredential) => {
-                        console.log("Admin signed in successfully:", userCredential.user.uid);
-                        initializeApp();
-                    })
-                    .catch((error) => {
-                        console.error("Admin auto-login failed:", error);
-                        document.body.innerHTML = `<div style="text-align: center; padding-top: 50px;"><h1>Admin Authentication Failed</h1><p>${error.message}</p></div>`;
-                    });
+            if (user && user.uid === adminUid) {
+                console.log("Admin is signed in.");
+                initializeApp();
             } else {
-                 console.log("Admin already signed in.");
-                 initializeApp();
+                console.error("Access Denied. Please log in as admin.");
+                document.body.innerHTML = `<div style="text-align: center; padding-top: 50px;"><h1>Access Denied</h1><p>You do not have permission to view this page. Please log in with an admin account via the Firebase console or your authentication provider.</p></div>`;
             }
         });
         
@@ -626,10 +698,14 @@
 
         let allUsers = {}, allCourses = {}, allEarnings = {}, allProjects = {}, allFooterLinks = {}, allBlogPosts = {}, allMenus = {}, allRoles = {}, allFeatures = {}, allContactMessages = {};
         let allPayments = {}, allSupportTickets = {}, allReviews = {}, allCoupons = {}, allNotifications = {}, allLiveClasses = {};
-        let allHomework = {}, allWithdrawals = {};
+        let allHomework = {}, allWithdrawals = {}, allCategories = {};
         let currentEditingCourseId = null, currentEditingModuleId = null;
-        let userGrowthChartInstance = null;
+        let userGrowthChartInstance = null, monthlyRevenueChartInstance = null;
         
+        let userCurrentPage = 1;
+        const usersPerPage = 50;
+        let filteredUserKeys = [];
+
         function initializeApp() {
             setupNavigation(); 
             setupEventListeners(); 
@@ -640,9 +716,217 @@
         function setupMobileMenu() { const t = document.getElementById("menuToggle"), e = document.getElementById("sidebar"); t.addEventListener("click", (() => e.classList.toggle("show"))) }
         function setupNavigation() { const t = document.querySelectorAll(".nav-link"), e = document.querySelectorAll(".content-section"), n = document.getElementById("sidebar"); t.forEach((l => { l.addEventListener("click", (s => { s.preventDefault(), t.forEach((t => t.classList.remove("active"))), l.classList.add("active"); const o = l.getAttribute("href").substring(1); e.forEach((t => { t.classList.remove("active"), t.id === o && t.classList.add("active") })), window.innerWidth <= 768 && n.classList.remove("show") })) })) }
         
+        function openCreateUserModal() {
+            openModal("createUserModal", "নতুন ইউজার তৈরি করুন", "createUserForm");
+        }
+
+        function openPaymentModal() {
+            const userSelect = document.getElementById('paymentUserSelect');
+            userSelect.innerHTML = '<option value="">ব্যবহারকারী নির্বাচন...</option>';
+            for (const userId in allUsers) {
+                userSelect.innerHTML += `<option value="${userId}">${allUsers[userId].name} (${allUsers[userId].email})</option>`;
+            }
+            const courseSelect = document.getElementById('paymentCourseSelect');
+            courseSelect.innerHTML = '<option value="">কোর্স নির্বাচন...</option>';
+            for (const courseId in allCourses) {
+                courseSelect.innerHTML += `<option value="${courseId}">${allCourses[courseId].name}</option>`;
+            }
+            openModal("paymentModal", "ম্যানুয়াল পেমেন্ট যোগ করুন", "paymentForm");
+        }
+
+        function openHomeworkModal() {
+            const userSelect = document.getElementById('homeworkUserSelect');
+            userSelect.innerHTML = '<option value="">ব্যবহারকারী নির্বাচন...</option>';
+            for (const userId in allUsers) {
+                userSelect.innerHTML += `<option value="${userId}">${allUsers[userId].name} (${allUsers[userId].email})</option>`;
+            }
+            const courseSelect = document.getElementById('homeworkCourseSelect');
+            courseSelect.innerHTML = '<option value="">কোর্স নির্বাচন...</option>';
+            for (const courseId in allCourses) {
+                courseSelect.innerHTML += `<option value="${courseId}">${allCourses[courseId].name}</option>`;
+            }
+            openModal("homeworkModal", "ম্যানুয়াল হোমওয়ার্ক যোগ করুন", "homeworkForm");
+        }
+
+        function handleCreateUser(event) {
+            event.preventDefault();
+            const name = document.getElementById('createUserName').value;
+            const email = document.getElementById('createUserEmail').value;
+            const password = document.getElementById('createUserPassword').value;
+            const newUserId = database.ref().child('users').push().key;
+            const userData = {
+                name: name,
+                email: email,
+                regDate: new Date().toISOString(),
+                status: 'active',
+                balance: 0,
+                referralCode: 'REF' + Math.random().toString(36).substring(2, 10).toUpperCase(),
+                gamification: { points: 0, badges: {} }
+            };
+            
+            database.ref('users/' + newUserId).set(userData)
+                .then(() => {
+                    alert('ব্যবহারকারী সফলভাবে তৈরি এবং সক্রিয় করা হয়েছে! Note: Password is not set via this form.');
+                    closeModal('createUserModal');
+                })
+                .catch(error => {
+                    alert('ত্রুটি: ' + error.message);
+                });
+        }
+
+        function handleManualPayment(event) {
+            event.preventDefault();
+            const userId = document.getElementById('paymentUserSelect').value;
+            const courseId = document.getElementById('paymentCourseSelect').value;
+            const paymentData = {
+                userId: userId,
+                courseId: courseId,
+                amount: parseFloat(document.getElementById('paymentAmount').value),
+                date: new Date(document.getElementById('paymentDate').value).toISOString(),
+                transactionId: document.getElementById('paymentTxId').value,
+            };
+
+            database.ref('payments').push(paymentData)
+                .then(() => {
+                    alert('পেমেন্ট হিস্ট্রি সফলভাবে যোগ করা হয়েছে!');
+                    closeModal('paymentModal');
+                })
+                .catch(error => alert('ত্রুটি: ' + error.message));
+        }
+
+        function handleManualHomework(event) {
+            event.preventDefault();
+            const userId = document.getElementById('homeworkUserSelect').value;
+            const courseId = document.getElementById('homeworkCourseSelect').value;
+            const course = allCourses[courseId] || {};
+            
+            const homeworkData = {
+                userId: userId,
+                courseId: courseId,
+                courseName: course.name || "Unknown Course",
+                homeworkLink: document.getElementById('homeworkLink').value,
+                status: document.getElementById('homeworkStatus').value,
+                submittedAt: new Date(document.getElementById('homeworkDate').value).toISOString(),
+                rewardAmount: course.homeworkReward || 0
+            };
+
+            database.ref('homeworkSubmissions').push(homeworkData)
+                .then(() => {
+                    alert('হোমওয়ার্ক রেকর্ড সফলভাবে যোগ করা হয়েছে!');
+                    closeModal('homeworkModal');
+                })
+                .catch(error => alert('ত্রুটি: ' + error.message));
+        }
+
+        function applyUserFilters() {
+            const searchTerm = document.getElementById('userSearchInput').value.toLowerCase();
+            const statusFilter = document.getElementById('userStatusFilter').value;
+            
+            filteredUserKeys = Object.keys(allUsers).filter(userId => {
+                const user = allUsers[userId];
+                if (!user) return false;
+
+                const nameMatch = (user.name || '').toLowerCase().includes(searchTerm);
+                const emailMatch = (user.email || '').toLowerCase().includes(searchTerm);
+                const statusMatch = (statusFilter === 'all' || user.status === statusFilter);
+
+                return (nameMatch || emailMatch) && statusMatch;
+            });
+            
+            userCurrentPage = 1;
+            renderPaginatedUsers();
+        }
+
+        function renderPaginatedUsers() {
+            const startIndex = (userCurrentPage - 1) * usersPerPage;
+            const endIndex = startIndex + usersPerPage;
+            const userKeysToShow = filteredUserKeys.slice(startIndex, endIndex);
+
+            const usersToRender = {};
+            userKeysToShow.forEach(key => {
+                usersToRender[key] = allUsers[key];
+            });
+
+            renderUserTable(usersToRender);
+            renderUserPaginationControls();
+        }
+
+        function renderUserPaginationControls() {
+            const container = document.getElementById('userPaginationControls');
+            const totalPages = Math.ceil(filteredUserKeys.length / usersPerPage);
+            if (totalPages <= 1) {
+                container.innerHTML = '';
+                return;
+            }
+
+            container.innerHTML = `
+                <button id="prevUserPage" ${userCurrentPage === 1 ? 'disabled' : ''}>Previous</button>
+                <span>Page ${userCurrentPage} of ${totalPages}</span>
+                <button id="nextUserPage" ${userCurrentPage === totalPages ? 'disabled' : ''}>Next</button>
+            `;
+
+            document.getElementById('prevUserPage')?.addEventListener('click', () => {
+                if (userCurrentPage > 1) {
+                    userCurrentPage--;
+                    renderPaginatedUsers();
+                }
+            });
+
+            document.getElementById('nextUserPage')?.addEventListener('click', () => {
+                if (userCurrentPage < totalPages) {
+                    userCurrentPage++;
+                    renderPaginatedUsers();
+                }
+            });
+        }
+
+        function openViewStudentsModal(courseId) {
+            const course = allCourses[courseId];
+            if (!course) return;
+            document.getElementById('viewStudentsModalTitle').innerText = `"${course.name}" কোর্সের ছাত্রছাত্রী`;
+            const tbody = document.getElementById('studentsTableBody');
+            tbody.innerHTML = '<tr><td colspan="3">ছাত্রছাত্রীর তালিকা লোড হচ্ছে...</td></tr>';
+            
+            const enrolledStudents = [];
+            for (const userId in allUsers) {
+                const user = allUsers[userId];
+                if (user.enrolledCourses) {
+                    for (const enrollId in user.enrolledCourses) {
+                        if (user.enrolledCourses[enrollId].courseId === courseId) {
+                            enrolledStudents.push(user);
+                            break; 
+                        }
+                    }
+                }
+            }
+
+            if (enrolledStudents.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="3">এই কোর্সে কোনো ছাত্রছাত্রী নেই।</td></tr>';
+            } else {
+                let tableHtml = '';
+                enrolledStudents.forEach(user => {
+                    let progressPercentage = 0;
+                    const enrollment = Object.values(user.enrolledCourses).find(e => e.courseId === courseId);
+                    if (enrollment) {
+                         const totalLessons = (course.modules ? Object.values(course.modules).reduce((acc, mod) => acc + (mod.lessons ? Object.keys(mod.lessons).length : 0), 0) : 0);
+                         const completedLessons = enrollment.progress ? Object.keys(enrollment.progress).length : 0;
+                         progressPercentage = totalLessons > 0 ? Math.round((completedLessons / totalLessons) * 100) : 0;
+                    }
+                    tableHtml += `<tr>
+                        <td>${user.name}</td>
+                        <td>${user.email}</td>
+                        <td>${progressPercentage}%</td>
+                    </tr>`;
+                });
+                tbody.innerHTML = tableHtml;
+            }
+            document.getElementById('viewStudentsModal').style.display = 'flex';
+        }
+        
         function listenToFirebaseData() {
-            database.ref("users").on("value", (t => { allUsers = t.val() || {}; renderUserTable(); updateDashboard(); renderUserGrowthChart(); calculateAdvancedAnalytics(); renderCertificateTable(); }));
+            database.ref("users").on("value", (t => { allUsers = t.val() || {}; applyUserFilters(); updateDashboard(); renderUserGrowthChart(); calculateAdvancedAnalytics(); renderCertificateTable(); renderSupportTicketsTable();}));
             database.ref("courses").on("value", (t => { allCourses = t.val() || {}; renderCourseTable(); updateDashboard(); calculateAdvancedAnalytics(); renderQnaTable(); populateCourseSelect();}));
+            database.ref("courseCategories").on("value", (t => { allCategories = t.val() || {}; renderCategoryTable(); }));
             database.ref("liveClasses").on("value", (snapshot) => { allLiveClasses = snapshot.val() || {}; renderLiveClassTable(); });
             database.ref('siteContent/gamificationSettings').on('value', (snapshot) => {
                  const settings = snapshot.val() || {};
@@ -657,9 +941,9 @@
             database.ref("siteContent").on("value", (t => { const e = t.val() || {}; allFeatures = e.features || {}, renderFeaturesTable(), renderSiteContentForms(e) }));
             database.ref("footerLinks").on("value", (t => { allFooterLinks = t.val() || {}, renderFooterLinksTable() }));
             database.ref("navigationMenu").on("value", (t => { allMenus = t.val() || {}, renderMenuTable() }));
-            database.ref("subAdminRoles").on("value", (t => { allRoles = t.val() || {}, renderRoleTable() }));
+            database.ref("subAdminRoles").on("value", (t => { allRoles = t.val() || {}, renderRoleTable(); renderMentorRoleSettings(); renderSupportTicketsTable(); }));
             database.ref("contacts").on("value", (t => { allContactMessages = t.val() || {}, renderContactMessagesTable() }));
-            database.ref("payments").on("value", (t => { allPayments = t.val() || {}, renderPaymentHistoryTable(); calculateAdvancedAnalytics(); }));
+            database.ref("payments").on("value", (t => { allPayments = t.val() || {}; renderPaymentHistoryTable(); calculateAdvancedAnalytics(); }));
             database.ref("supportTickets").on("value", (t => { allSupportTickets = t.val() || {}, renderSupportTicketsTable() }));
             database.ref("courseReviews").on("value", (t => { allReviews = t.val() || {}, renderReviewsTableWithApproval() }));
             database.ref("coupons").on("value", (t => { allCoupons = t.val() || {}, renderCouponTable() }));
@@ -670,15 +954,17 @@
             database.ref("forum_posts").on("value", (t => { renderForumPostsTable(t.val() || {}); }));
         }
 
-        function renderUserTable() {
+        function renderUserTable(usersToRender) {
             const t = document.getElementById("userTableBody");
             t.innerHTML = "";
-            for (const e in allUsers) {
-                const n = allUsers[e];
+            for (const e in usersToRender) {
+                const n = usersToRender[e];
+                if (!n) continue;
                 const profilePic = n.profilePictureUrl ? `<img src="${n.profilePictureUrl}" width="40" height="40" style="border-radius: 50%; object-fit: cover;">` : 'N/A';
                 t.innerHTML += `<tr>
+                    <td><input type="checkbox" class="user-checkbox" data-user-id="${e}"></td>
                     <td>${profilePic}</td>
-                    <td>${n.name}</td><td>${n.email}</td>
+                    <td>${n.name || 'N/A'}</td><td>${n.email || 'N/A'}</td>
                     <td>${(n.balance || 0).toLocaleString('bn-BD')}</td>
                     <td><span class="status ${n.status}">${n.status}</span></td>
                     <td>
@@ -697,19 +983,20 @@
             if (e) {
                 document.getElementById("userId").value = t; 
                 document.getElementById("userName").value = e.name; 
-                document.getElementById("userEmail").value = e.email; 
+                document.getElementById("userEmail").value = e.email;
+                document.getElementById("userProfilePicUrl").value = e.profilePictureUrl || '';
                 document.getElementById("userStatus").value = e.status; 
                 document.getElementById("userBalance").value = e.balance || 0; 
                 document.getElementById("userRole").value = e.role || '';
                 document.getElementById("userWhatsapp").value = e.whatsapp || '';
                 document.getElementById("userPoints").value = e.gamification ? e.gamification.points : 0;
-                document.getElementById("balanceReason").value = ''; // Clear reason field
+                document.getElementById("balanceReason").value = '';
                 openModal("userModal", "ব্যবহারকারী সম্পাদনা করুন", "userForm");
             }
         }
 
         function resetUserPassword(userId) { const user = allUsers[userId]; if (!user) return; if (confirm(`আপনি কি নিশ্চিতভাবে ${user.name} (${user.email}) এর জন্য পাসওয়ার্ড রিসেট ইমেইল পাঠাতে চান?`)) { auth.sendPasswordResetEmail(user.email).then(() => { alert(`পাসওয়ার্ড রিসেট ইমেইল সফলভাবে ${user.email}-এ পাঠানো হয়েছে।`); }).catch((error) => { alert("ত্রুটি: " + error.message); }); } }
-        function renderLiveClassTable() { const tbody = document.getElementById('liveClassTableBody'); tbody.innerHTML = ''; const sortedClasses = Object.entries(allLiveClasses).sort((a,b) => new Date(b[1].dateTime) - new Date(a[1].dateTime)); for (const [id, cls] of sortedClasses) { tbody.innerHTML += `<tr> <td>${cls.title}</td> <td><a href="${cls.url}" target="_blank">Join Link</a></td> <td>${new Date(cls.dateTime).toLocaleString('bn-BD')}</td> <td><button class="action-btn delete-btn" onclick="deleteData('liveClasses/${id}')">মুছুন</button></td> </tr>`; } }
+        
         function renderCertificateTable() { const tbody = document.getElementById('certificateTableBody'); tbody.innerHTML = ''; for (const userId in allUsers) { const user = allUsers[userId]; if (user.completedCourses) { for (const courseId in user.completedCourses) { const completionData = user.completedCourses[courseId]; tbody.innerHTML += `<tr> <td>${user.name}</td> <td>${completionData.courseName}</td> <td>${new Date(completionData.completionDate).toLocaleDateString('bn-BD')}</td> <td><button class="action-btn content-btn" onclick="generateCertificatePreview('${user.name}', '${completionData.courseName}')">সার্টিফিকেট দেখুন</button></td> </tr>`; } } } }
         
         function setupEventListeners() {
@@ -726,6 +1013,7 @@
                     ...existingUser,
                     name: document.getElementById("userName").value,
                     email: document.getElementById("userEmail").value,
+                    profilePictureUrl: document.getElementById("userProfilePicUrl").value,
                     status: document.getElementById("userStatus").value,
                     balance: newBalance,
                     role: document.getElementById("userRole").value || null,
@@ -734,7 +1022,6 @@
                     gamification: { ...existingGamification, points: parseInt(document.getElementById("userPoints").value) || 0 }
                 };
 
-                // NEW FEATURE: Log balance change if reason is provided
                 if (newBalance !== oldBalance && reason) {
                     const logEntry = {
                         userId: userId,
@@ -750,7 +1037,22 @@
                 (userId ? database.ref("users/" + userId).set(userData) : database.ref("users").push(userData))
                     .then(() => closeModal("userModal"));
             }));
-            document.getElementById("liveClassForm").addEventListener("submit", function(e){ e.preventDefault(); const data = { title: document.getElementById('liveClassTitle').value, url: document.getElementById('liveClassUrl').value, dateTime: document.getElementById('liveClassDateTime').value, description: document.getElementById('liveClassDesc').value, }; database.ref('liveClasses').push(data).then(() => { alert('লাইভ ক্লাস সফলভাবে যুক্ত হয়েছে!'); this.reset(); }); });
+            
+            document.getElementById("createUserForm").addEventListener("submit", handleCreateUser);
+            document.getElementById("paymentForm").addEventListener("submit", handleManualPayment);
+            document.getElementById("homeworkForm").addEventListener("submit", handleManualHomework);
+            document.getElementById("userSearchInput").addEventListener("keyup", applyUserFilters);
+            document.getElementById("userStatusFilter").addEventListener("change", applyUserFilters);
+            document.getElementById("mentorRolesForm").addEventListener("submit", handleMentorRoleSave);
+            document.getElementById("categoryForm").addEventListener("submit", handleCategoryForm);
+            document.getElementById("selectAllUsersCheckbox").addEventListener('change', (e) => {
+                document.querySelectorAll('.user-checkbox').forEach(checkbox => {
+                    checkbox.checked = e.target.checked;
+                });
+            });
+            document.getElementById("applyBulkActionButton").addEventListener('click', applyBulkAction);
+
+            document.getElementById("liveClassForm").addEventListener("submit", function(e){ e.preventDefault(); const data = { title: document.getElementById('liveClassTitle').value, teacher: document.getElementById('liveClassTeacher').value, url: document.getElementById('liveClassUrl').value, dateTime: document.getElementById('liveClassDateTime').value, description: document.getElementById('liveClassDesc').value, }; database.ref('liveClasses').push(data).then(() => { alert('লাইভ ক্লাস সফলভাবে যুক্ত হয়েছে!'); this.reset(); }); });
             document.getElementById("gamificationForm").addEventListener("submit", function(e){ e.preventDefault(); const data = { pointsPerLesson: parseInt(document.getElementById('pointsPerLesson').value) || 0, pointsPerQuiz: parseInt(document.getElementById('pointsPerQuiz').value) || 0, }; database.ref('siteContent/gamificationSettings').update(data).then(() => { alert('পয়েন্ট সেটিংস সেভ হয়েছে!'); }); });
             document.getElementById("badgeForm").addEventListener("submit", function(e){ e.preventDefault(); const badgeId = document.getElementById("badgeId").value; const badgeData = { name: document.getElementById('badgeName').value, icon: document.getElementById('badgeIcon').value, type: document.getElementById('badgeType').value, value: parseInt(document.getElementById('badgeValue').value) }; const ref = badgeId ? database.ref(`siteContent/gamificationSettings/badges/${badgeId}`) : database.ref('siteContent/gamificationSettings/badges').push(); ref.set(badgeData).then(() => { alert('ব্যাজ সেভ হয়েছে!'); closeModal('badgeModal'); }); });
             document.getElementById("groupNotificationForm").addEventListener("submit", handleGroupNotification);
@@ -761,10 +1063,13 @@
                 const e = document.getElementById("courseId").value;
                 let n = {
                     name: document.getElementById("courseName").value,
+                    category: document.getElementById("courseCategory").value,
                     price: parseInt(document.getElementById("coursePrice").value) || 0,
                     homeworkReward: parseInt(document.getElementById("courseHomeworkReward").value) || 0,
                     homeworkLimit: parseInt(document.getElementById("courseHomeworkLimit").value) || 0,
                     imageURL: document.getElementById("courseImageURL").value,
+                    trailerUrl: document.getElementById("courseTrailerURL").value,
+                    passMark: parseInt(document.getElementById("coursePassMark").value) || 50,
                     description: document.getElementById("courseDescription").value,
                     status: document.getElementById("courseStatus").value
                 };
@@ -775,7 +1080,19 @@
             document.getElementById("blogForm").addEventListener("submit", (function(t) { t.preventDefault(); const e = document.getElementById("blogId").value, n = { title: document.getElementById("blogTitle").value, imageUrl: document.getElementById("blogImageUrl").value, content: document.getElementById("blogContent").value, status: document.getElementById("blogStatus").value, date: e && allBlogPosts[e] ? allBlogPosts[e].date : (new Date).toISOString() }; (e ? database.ref("blogPosts/" + e) : database.ref("blogPosts").push()).set(n).then((() => closeModal("blogModal"))) })); 
             document.getElementById("footerLinkForm").addEventListener("submit", (function(t) { t.preventDefault(); const e = document.getElementById("footerLinkId").value, n = { name: document.getElementById("footerLinkName").value, url: document.getElementById("footerLinkUrl").value }; (e ? database.ref("footerLinks/" + e) : database.ref("footerLinks").push()).set(n).then((() => closeModal("footerLinkModal"))) })); document.getElementById("siteContentForm").addEventListener("submit", (function(t) { t.preventDefault(), database.ref("siteContent").update({ banner: { text: document.getElementById("bannerText").value }, aboutAdmin: { text: document.getElementById("aboutAdminText").value } }), alert("কনটেন্ট সফলভাবে সেভ করা হয়েছে!") })); document.getElementById("sectionTitlesForm").addEventListener("submit", (function(t) { t.preventDefault(), database.ref("siteContent/sectionTitles").update({ featuresSubtitle: document.getElementById("featuresSubtitle").value, featuresMainTitle: document.getElementById("featuresMainTitle").value, coursesSubtitle: document.getElementById("coursesSubtitle").value, coursesMainTitle: document.getElementById("coursesMainTitle").value, projectsSubtitle: document.getElementById("projectsSubtitle").value, projectsMainTitle: document.getElementById("projectsMainTitle").value }), alert("শিরোনাম সফলভাবে সেভ করা হয়েছে!") })); document.getElementById("introFooterForm").addEventListener("submit", (function(t) { t.preventDefault(), database.ref("siteContent/introFooter").set([{ image: document.getElementById("introItem1Image").value, title: document.getElementById("introItem1Title").value }, { image: document.getElementById("introItem2Image").value, title: document.getElementById("introItem2Title").value }, { image: document.getElementById("introItem3Image").value, title: document.getElementById("introItem3Title").value }]), alert("ইন্ট্রো ফুটার আইটেম সফলভাবে সেভ করা হয়েছে!") })); document.getElementById("socialLinksForm").addEventListener("submit", (function(t) { t.preventDefault(), database.ref("siteContent/socialLinks").update({ facebook: document.getElementById("facebookLink").value, telegram: document.getElementById("telegramLink").value, twitter: document.getElementById("twitterLink").value, youtube: document.getElementById("youtubeLink").value }), alert("সোশ্যাল লিংক সফলভাবে সেভ করা হয়েছে!") })); 
             document.getElementById("menuForm").addEventListener("submit", (function(t) { t.preventDefault(); const e = document.getElementById("menuId").value, n = { name: document.getElementById("menuName").value, url: document.getElementById("menuUrl").value, order: parseInt(document.getElementById("menuOrder").value) }; (e ? database.ref("navigationMenu/" + e) : database.ref("navigationMenu").push()).set(n).then((() => closeModal("menuModal"))).catch((t => alert(t.message))) })); document.getElementById("roleForm").addEventListener("submit", (function(t) { t.preventDefault(); const e = document.getElementById("roleId").value, n = { name: document.getElementById("roleName").value, value: document.getElementById("roleValue").value }; (e ? database.ref("subAdminRoles/" + e) : database.ref("subAdminRoles").push()).set(n).then((() => closeModal("roleModal"))).catch((t => alert(t.message))) })); document.getElementById("featureForm").addEventListener("submit", (function(t) { t.preventDefault(); const e = document.getElementById("featureId").value, n = { image: document.getElementById("featureImage").value, title: document.getElementById("featureTitle").value, desc: document.getElementById("featureDesc").value }; (e ? database.ref("siteContent/features/" + e) : database.ref("siteContent/features").push()).set(n).then((() => closeModal("featureModal"))).catch((t => alert(t.message))) })); document.getElementById("seoForm").addEventListener("submit", function(e) { e.preventDefault(); database.ref("siteContent/seo").update({ metaTitle: document.getElementById("metaTitle").value, metaDescription: document.getElementById("metaDescription").value }).then(() => alert("SEO তথ্য সফলভাবে সেভ করা হয়েছে!")); }); 
-            document.getElementById("languageForm").addEventListener("submit", function(e) { e.preventDefault(); database.ref("siteContent/language").update({ signInButton: document.getElementById("lang-signInButton").value, signUpButton: document.getElementById("lang-signUpButton").value, dashboardButton: document.getElementById("lang-dashboardButton").value, signOutButton: document.getElementById("lang-signOutButton").value, adminLoginButton: document.getElementById("lang-adminLoginButton").value, subadminLoginButton: document.getElementById("lang-subadminLoginButton").value, contactFormMainTitle: document.getElementById("lang-contactFormMainTitle").value, contactSubmitButton: document.getElementById("lang-contactSubmitButton").value, enrollNowButton: document.getElementById("lang-enrollNowButton").value, signInTitle: document.getElementById("lang-signInTitle").value, signUpTitle: document.getElementById("lang-signUpTitle").value, forgotPasswordLink: document.getElementById("lang-forgotPasswordLink").value }); database.ref("siteContent/dashboardLabels").update({ overview: document.getElementById("lang-tabOverview").value, myCourses: document.getElementById("lang-tabMyCourses").value, notifications: document.getElementById("lang-tabNotifications").value, achievements: document.getElementById("lang-tabAchievements").value, leaderboard: document.getElementById("lang-tabLeaderboard").value, profile: document.getElementById("lang-tabProfile").value, payments: document.getElementById("lang-tabPayments").value }).then(() => alert("টেক্সট সফলভাবে সেভ করা হয়েছে!")); }); 
+            document.getElementById("languageForm").addEventListener("submit", function(e) {
+                 e.preventDefault();
+                 database.ref("siteContent/language").update({ signInButton: document.getElementById("lang-signInButton").value, signUpButton: document.getElementById("lang-signUpButton").value, dashboardButton: document.getElementById("lang-dashboardButton").value, signOutButton: document.getElementById("lang-signOutButton").value, adminLoginButton: document.getElementById("lang-adminLoginButton").value, subadminLoginButton: document.getElementById("lang-subadminLoginButton").value, contactFormMainTitle: document.getElementById("lang-contactFormMainTitle").value, contactSubmitButton: document.getElementById("lang-contactSubmitButton").value, enrollNowButton: document.getElementById("lang-enrollNowButton").value, signInTitle: document.getElementById("lang-signInTitle").value, signUpTitle: document.getElementById("lang-signUpTitle").value, forgotPasswordLink: document.getElementById("lang-forgotPasswordLink").value });
+                 database.ref("siteContent/dashboardLabels").update({ overview: document.getElementById("lang-tabOverview").value, myCourses: document.getElementById("lang-tabMyCourses").value, notifications: document.getElementById("lang-tabNotifications").value, achievements: document.getElementById("lang-tabAchievements").value, leaderboard: document.getElementById("lang-tabLeaderboard").value, profile: document.getElementById("lang-tabProfile").value, payments: document.getElementById("lang-tabPayments").value });
+                 database.ref("siteContent/sectionTitles").update({
+                    liveClassSubtitle: document.getElementById("title-liveClassSubtitle").value,
+                    liveClassMainTitle: document.getElementById("title-liveClassMainTitle").value,
+                    communitySubtitle: document.getElementById("title-communitySubtitle").value,
+                    communityMainTitle: document.getElementById("title-communityMainTitle").value,
+                    workshopSubtitle: document.getElementById("title-workshopSubtitle").value,
+                    workshopMainTitle: document.getElementById("title-workshopMainTitle").value
+                 }).then(() => alert("টেক্সট সফলভাবে সেভ করা হয়েছে!"));
+            }); 
             document.getElementById("enrollForm").addEventListener("submit", function(e) { e.preventDefault(); const userId = document.getElementById('enrollUserId').value; const courseId = document.getElementById('enrollCourseSelect').value; if (!userId || !courseId) { alert('Please select a course.'); return; } const enrollmentData = { courseId: courseId, enrollmentDate: new Date().toISOString(), purchasePrice: 0 }; database.ref(`users/${userId}/enrolledCourses`).push(enrollmentData) .then(() => { database.ref('payments').push({ userId, courseId, amount: 0, transactionId: 'MANUAL_ENROLL', date: new Date().toISOString() }); alert('User enrolled successfully!'); closeModal('enrollModal'); }).catch(err => alert(err.message)); });
             document.getElementById("notificationForm").addEventListener("submit", function(e) { e.preventDefault(); const message = document.getElementById('notificationMessage').value; if (!message.trim()) { alert('Message cannot be empty.'); return; } database.ref('notifications').push({ message: message, timestamp: new Date().getTime() }).then(() => { alert('Notification sent to all users!'); this.reset(); }); });
             document.getElementById("couponForm").addEventListener("submit", function(e) { e.preventDefault(); const data = { code: document.getElementById('couponCode').value.toUpperCase(), type: document.getElementById('couponType').value, value: parseFloat(document.getElementById('couponValue').value), expiryDate: document.getElementById('couponExpiry').value || null }; if(!data.code || !data.value) { alert('Code and Value are required.'); return; } database.ref('coupons').push(data).then(() => { alert('Coupon saved successfully!'); closeModal('couponModal'); }); });
@@ -783,7 +1100,6 @@
             document.getElementById("addModuleForm").addEventListener('submit', function(e) { e.preventDefault(); const moduleName = document.getElementById('newModuleName').value; if (moduleName && currentEditingCourseId) { database.ref(`courses/${currentEditingCourseId}/modules`).push({ title: moduleName }).then(() => { document.getElementById('newModuleName').value = ''; }); } });
         }
         
-        // NEW FEATURE: Safer seedDatabaseWithInitialData
         function seedDatabaseWithInitialData() { 
             const confirmation1 = prompt("WARNING: This will overwrite existing data. Type 'PROCEED' to continue.");
             if (confirmation1 !== 'PROCEED') {
@@ -795,36 +1111,39 @@
                 alert("Operation cancelled.");
                 return;
             }
+            const user = auth.currentUser;
             const confirmation3 = prompt("Final confirmation. Please type your admin email to proceed.");
-            if (confirmation3 !== adminEmail) {
+            if (confirmation3 !== user.email) {
                 alert("Incorrect email. Operation cancelled.");
                 return;
             }
 
-            // ... (rest of the original seeding code)
             alert("Seeding data...");
             const courses = [ { name: "Photo Editing", image: "https://i.ibb.co/wZy4F5GY/Photo-Editing.jpg" }, { name: "Video Editing", image: "https://i.ibb.co/BS61VSm/Video-Editing.jpg" }, { name: "Lead Generation", image: "https://i.ibb.co/TqbVq1rL/Lead-Generation.jpg" }, { name: "Affiliated Marketing", image: "https://i.ibb.co/TxDRgjjS/Affiliate-Marketing.jpg" }, { name: "CPA Marketing", image: "https://i.ibb.co/JRddPyVK/CPA-Marketing.jpg" }, { name: "Social Marketing", image: "https://i.ibb.co/XfFWbrDd/Social-Marketing.jpg" }, { name: "Digital Marketing", image: "https://i.ibb.co/LdyFpy0R/Digital-Marketing.jpg" }, { name: "Products Sells and buy", image: "https://i.ibb.co/LD07Vn9R/Products-Sell-and-Buy.jpg" }, { name: "Data Entry", image: "https://i.ibb.co/11DVCZB/Data-Entry.jpg" }, { name: "Graphics Design", image: "https://i.ibb.co/5h7npzgv/Graphics-Design.jpg" }, { name: "Spoking English", image: "https://i.ibb.co/hJwBBnqP/Spoken-English.jpg" }, { name: "App Development", image: "https://i.ibb.co/ynm14PjM/App-Development.jpg" }, { name: "Website Development", image: "https://i.ibb.co/7tpC3sBH/Website-Development.jpg" }, { name: "Treading", image: "https://i.ibb.co/d492Tm5j/Trading.jpg" }, { name: "Crypto", image: "https://i.ibb.co/wFvWZ3Qq/Crypto.jpg" } ]; const subAdminRoles = [ "Photo Editing Teacher", "Team Leader", "Video Editing Teacher", "Trainer", "Counsellor", "Senior Counsellor", "Help-Line", "Social Marketing Teacher", "Web-Developer", "Selling Team", "Marketing Team", "Qualification Team", "Manager", "Controller", "Teacher", "Checker", "Senior Team Leader", "Senior Controller", "Counsellor Manager", "Marketing Manager" ]; const updates = {}; const coursesData = {}; courses.forEach(course => { const newCourseKey = database.ref().child('courses').push().key; coursesData[newCourseKey] = { name: course.name, imageURL: course.image, price: 1500, category: "Skill Development", description: `A comprehensive course on ${course.name}.`, status: "published" }; }); updates['/courses'] = coursesData; const rolesData = {}; subAdminRoles.forEach((role, index) => { const newRoleKey = database.ref().child('subAdminRoles').push().key; rolesData[newRoleKey] = { name: role, value: index + 1 }; }); updates['/subAdminRoles'] = rolesData; updates['/siteContent/settings/logoUrl'] = "https://i.ibb.co/jk2nT0LF/IMG-20251012-WA0006.jpg"; updates['/siteContent/settings/bannerImageUrl'] = "https://i.ibb.co/LzXmdd7g/Banner-Image.jpg"; updates['/siteContent/settings/aboutImageUrl'] = "https://i.ibb.co/PGbByrmD/About-Admin.jpg"; updates['/siteContent/banner/text'] = "আপনার দক্ষতার মাধ্যমে আয়ের জগতে স্বাগতম!"; updates['/siteContent/aboutAdmin/text'] = "আমরা একটি অভিজ্ঞ দল যারা আপনাকে ডিজিটাল বিশ্বের নতুন সব সুযোগের সাথে পরিচয় করিয়ে দিতে প্রতিশ্রুতিবদ্ধ। আমাদের লক্ষ্য হলো আপনাকে সঠিক জ্ঞান এবং দক্ষতার মাধ্যমে স্বাবলম্বী করে তোলা।"; database.ref().update(updates) .then(() => alert("Site has been initialized with sample data successfully!")) .catch((error) => alert("An error occurred: " + error.message)); 
         }
 
-        // NEW FEATURE: Safer backupData function with warning
         function backupData() { 
             alert("মনোযোগ দিন: এই ব্যাকআপটি শুধুমাত্র ছোট ডেটাবেসের জন্য উপযুক্ত। আপনার সাইটে অনেক বেশি ব্যবহারকারী বা ডেটা থাকলে, ব্রাউজার ক্র্যাশ করতে পারে। নির্ভরযোগ্য ব্যাকআপের জন্য সর্বদা Firebase Console ব্যবহার করুন।");
             if(!confirm("আপনি কি ডাউনলোড চালিয়ে যেতে চান?")) return;
-            // ... (rest of the original backup code)
             const dataToBackup = {}; const paths = ['users', 'courses', 'payments', 'earnings', 'coupons', 'siteContent', 'subAdminRoles', 'navigationMenu', 'footerLinks']; let fetchedCount = 0; paths.forEach(path => { database.ref(path).once('value', snapshot => { dataToBackup[path] = snapshot.val(); fetchedCount++; if (fetchedCount === paths.length) { const jsonString = JSON.stringify(dataToBackup, null, 2); const blob = new Blob([jsonString], {type: 'application/json'}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `income-impact-backup-${new Date().toISOString().split('T')[0]}.json`; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url); } }); }); 
         }
         
-        function renderUserGrowthChart() { const userValues = Object.values(allUsers); const monthlyData = {}; for (let i = 5; i >= 0; i--) { const d = new Date(); d.setMonth(d.getMonth() - i); const monthKey = `${d.getFullYear()}-${d.getMonth()}`; monthlyData[monthKey] = { label: d.toLocaleString('default', { month: 'short' }), count: 0 }; } userValues.forEach(user => { const regDate = new Date(user.regDate); const monthKey = `${regDate.getFullYear()}-${regDate.getMonth()}`; if (monthlyData[monthKey]) { monthlyData[monthKey].count++; } }); const labels = Object.values(monthlyData).map(m => m.label); const data = Object.values(monthlyData).map(m => m.count); const ctx = document.getElementById('userGrowthChart').getContext('2d'); if (userGrowthChartInstance) { userGrowthChartInstance.destroy(); } userGrowthChartInstance = new Chart(ctx, { type: 'line', data: { labels: labels, datasets: [{ label: 'New Users', data: data, borderColor: 'rgba(52, 152, 219, 1)', backgroundColor: 'rgba(52, 152, 219, 0.2)', fill: true, tension: 0.4 }] }, options: { responsive: true, scales: { y: { beginAtZero: true } } } }); }
+        function renderUserGrowthChart() { const userValues = Object.values(allUsers); const monthlyData = {}; for (let i = 5; i >= 0; i--) { const d = new Date(); d.setMonth(d.getMonth() - i); const monthKey = `${d.getFullYear()}-${d.getMonth()}`; monthlyData[monthKey] = { label: d.toLocaleString('default', { month: 'short' }), count: 0 }; } userValues.forEach(user => { if (!user || !user.regDate) return; const regDate = new Date(user.regDate); const monthKey = `${regDate.getFullYear()}-${regDate.getMonth()}`; if (monthlyData[monthKey]) { monthlyData[monthKey].count++; } }); const labels = Object.values(monthlyData).map(m => m.label); const data = Object.values(monthlyData).map(m => m.count); const ctx = document.getElementById('userGrowthChart').getContext('2d'); if (userGrowthChartInstance) { userGrowthChartInstance.destroy(); } userGrowthChartInstance = new Chart(ctx, { type: 'line', data: { labels: labels, datasets: [{ label: 'New Users', data: data, borderColor: 'rgba(52, 152, 219, 1)', backgroundColor: 'rgba(52, 152, 219, 0.2)', fill: true, tension: 0.4 }] }, options: { responsive: true, scales: { y: { beginAtZero: true } } } }); }
         function updateDashboard() { const t = Object.values(allUsers), e = Object.values(allCourses); document.getElementById("totalUsers").textContent = t.length, document.getElementById("totalCourses").textContent = e.length; const l = Object.values(allPayments).reduce(((t, e) => t + (e.amount || 0)), 0); document.getElementById("totalEarnings").textContent = l.toLocaleString("bn-BD"); const s = t.filter((t => "active" === t.status)).length; document.getElementById("activeStudents").textContent = s }
         function renderCourseTable() {
             const t = document.getElementById("courseTableBody");
             t.innerHTML = "";
             for (const e in allCourses) {
                 const n = allCourses[e];
-                t.innerHTML += `<tr><td>${n.name}</td><td>${(n.price||0).toLocaleString("bn-BD")}</td>
-                <td>${n.homeworkReward || 0}</td><td>${n.homeworkLimit || 0}</td>
+                t.innerHTML += `<tr><td>${n.name}</td><td>${n.category || 'N/A'}</td><td>${(n.price||0).toLocaleString("bn-BD")}</td>
+                <td>${n.homeworkReward || 0}</td>
                 <td><span class="status ${n.status}">${n.status}</span></td>
-                <td><button class="action-btn edit-btn" onclick="editCourse('${e}')">সম্পাদনা</button><button class="action-btn content-btn" onclick="openCourseContentModal('${e}')">কনটেন্ট</button><button class="action-btn delete-btn" onclick="deleteData('courses/${e}')">মুছুন</button></td></tr>`
+                <td>
+                    <button class="action-btn" style="background-color: #27ae60;" onclick="openViewStudentsModal('${e}')">ছাত্র দেখুন</button>
+                    <button class="action-btn edit-btn" onclick="editCourse('${e}')">সম্পাদনা</button>
+                    <button class="action-btn content-btn" onclick="openCourseContentModal('${e}')">কনটেন্ট</button>
+                    <button class="action-btn delete-btn" onclick="deleteData('courses/${e}')">মুছুন</button>
+                </td></tr>`
             }
         }
         function renderPaymentHistoryTable() { const t = document.getElementById("paymentHistoryTableBody"); t.innerHTML = ""; const sortedPayments = Object.entries(allPayments).sort((a,b) => new Date(b[1].date) - new Date(a[1].date)); for (const [id, n] of sortedPayments) { const user = allUsers[n.userId] || {email: 'Unknown'}; const course = allCourses[n.courseId] || {name: 'Unknown'}; t.innerHTML += `<tr><td>${user.email}</td><td>${course.name}</td><td>${(n.amount||0).toLocaleString("bn-BD")}</td><td>${n.transactionId}</td><td>${new Date(n.date).toLocaleString("bn-BD")}</td></tr>` } }
@@ -832,9 +1151,22 @@
         function renderSupportTicketsTable() {
             const t = document.getElementById("supportTicketsTableBody");
             t.innerHTML = "";
+            if(Object.keys(allSupportTickets).length === 0) return;
+
+            const subAdmins = Object.values(allUsers).filter(u => u.role && u.role.trim() !== '');
             const sortedTickets = Object.entries(allSupportTickets).sort((a,b) => new Date(b[1].timestamp) - new Date(a[1].timestamp));
             for (const [e, n] of sortedTickets) {
                 const user = allUsers[n.userId] || {email: 'Unknown'};
+
+                const priorityOptions = ['Low', 'Medium', 'High'].map(p => `<option value="${p}" ${n.priority === p ? 'selected' : ''}>${p}</option>`).join('');
+                const prioritySelect = `<select onchange="updateTicketPriority('${e}', this.value)">${priorityOptions}</select>`;
+                
+                let assigneeOptions = '<option value="">Unassigned</option>';
+                subAdmins.forEach(admin => {
+                    assigneeOptions += `<option value="${admin.email}" ${n.assignedTo === admin.email ? 'selected' : ''}>${admin.name}</option>`;
+                });
+                const assigneeSelect = `<select onchange="assignTicket('${e}', this.value)">${assigneeOptions}</select>`;
+
                 let actionButtons = `<button class="action-btn" style="background: #16a085;" onclick="replyToTicket('${e}')">Reply</button>`;
                 if (n.status === 'pending') {
                     actionButtons += `<button class="action-btn edit-btn" onclick="updateTicketStatus('${e}', 'resolved')">Mark Resolved</button>`;
@@ -845,6 +1177,8 @@
                     <td>${user.name || user.email}</td>
                     <td>${n.subject}</td>
                     <td class="message-col">${n.message} ${n.reply ? `<br><strong>Reply:</strong> ${n.reply}` : ''}</td>
+                    <td>${prioritySelect}</td>
+                    <td>${assigneeSelect}</td>
                     <td><span class="status ${n.status}">${n.status}</span></td>
                     <td>${actionButtons}</td>
                 </tr>`;
@@ -863,13 +1197,86 @@
         function renderRoleTable() { const t = document.getElementById("roleTableBody"); t.innerHTML = ""; for (const e in allRoles) { const n = allRoles[e]; t.innerHTML += `<tr><td>${n.name}</td><td>${n.value}</td><td><button class="action-btn edit-btn" onclick="editRole('${e}')">সম্পাদনা</button><button class="action-btn delete-btn" onclick="deleteData('subAdminRoles/${e}')">মুছুন</button></td></tr>` } }
         function renderFeaturesTable() { const t = document.getElementById("featuresTableBody"); t.innerHTML = ""; for (const e in allFeatures) { const n = allFeatures[e]; t.innerHTML += `<tr><td>${n.image.substring(0,30)}...</td><td>${n.title}</td><td>${(n.desc||"").substring(0,40)}...</td><td><button class="action-btn edit-btn" onclick="editFeature('${e}')">সম্পাদনা</button><button class="action-btn delete-btn" onclick="deleteData('siteContent/features/${e}')">মুছুন</button></td></tr>` } }
         function renderContactMessagesTable() { const t = document.getElementById("contactMessagesTableBody"); t.innerHTML = ""; const sortedMessages = Object.entries(allContactMessages).sort((a, b) => new Date(b[1].timestamp) - new Date(a[1].timestamp)); for (const [key, msg] of sortedMessages) { t.innerHTML += `<tr><td>${msg.name}</td><td>${msg.email}</td><td class="message-col">${msg.message}</td><td>${new Date(msg.timestamp).toLocaleString("bn-BD")}</td><td><button class="action-btn delete-btn" onclick="deleteData('contacts/${key}')">মুছুন</button></td></tr>`; } }
-        function renderSiteContentForms(t) { document.getElementById("bannerText").value = t.banner?.text || ""; document.getElementById("aboutAdminText").value = t.aboutAdmin?.text || ""; document.getElementById("featuresSubtitle").value = t.sectionTitles?.featuresSubtitle || ""; document.getElementById("featuresMainTitle").value = t.sectionTitles?.featuresMainTitle || ""; document.getElementById("coursesSubtitle").value = t.sectionTitles?.coursesSubtitle || ""; document.getElementById("coursesMainTitle").value = t.sectionTitles?.coursesMainTitle || ""; document.getElementById("projectsSubtitle").value = t.sectionTitles?.projectsSubtitle || ""; document.getElementById("projectsMainTitle").value = t.sectionTitles?.projectsMainTitle || ""; document.getElementById("introItem1Image").value = t.introFooter?.[0]?.image || ""; document.getElementById("introItem1Title").value = t.introFooter?.[0]?.title || ""; document.getElementById("introItem2Image").value = t.introFooter?.[1]?.image || ""; document.getElementById("introItem2Title").value = t.introFooter?.[1]?.title || ""; document.getElementById("introItem3Image").value = t.introFooter?.[2]?.image || ""; document.getElementById("introItem3Title").value = t.introFooter?.[2]?.title || ""; document.getElementById("facebookLink").value = t.socialLinks?.facebook || ""; document.getElementById("telegramLink").value = t.socialLinks?.telegram || ""; document.getElementById("twitterLink").value = t.socialLinks?.twitter || ""; document.getElementById("youtubeLink").value = t.socialLinks?.youtube || ""; document.getElementById("siteTitle").value = t.settings?.title || ""; document.getElementById("logoUrl").value = t.settings?.logoUrl || ""; document.getElementById("copyrightText").value = t.settings?.copyrightText || ""; document.getElementById("bannerImageUrl").value = t.settings?.bannerImageUrl || ""; document.getElementById("aboutImageUrl").value = t.settings?.aboutImageUrl || ""; document.getElementById("projectsImageUrl").value = t.settings?.projectsImageUrl || ""; document.getElementById("contactEmail").value = t.contactInfo?.email || ""; document.getElementById("contactPhone").value = t.contactInfo?.phone || ""; document.getElementById("contactAddress").value = t.contactInfo?.address || ""; document.getElementById("footerDescription").value = t.contactInfo?.footerDescription || ""; document.getElementById("developerName").value = t.developerCredit?.name || ""; document.getElementById("developerUrl").value = t.developerCredit?.url || ""; document.getElementById("primaryColor").value = t.theme?.primaryColor || "#007BFF"; document.getElementById("secondaryColor").value = t.theme?.secondaryColor || "#00C9A7"; document.getElementById("metaTitle").value = t.seo?.metaTitle || ""; document.getElementById("metaDescription").value = t.seo?.metaDescription || ""; document.getElementById("allowRegistration").value = t.settings?.allowRegistration === false ? 'false' : 'true'; const lang = t.language || {}; document.getElementById("lang-signInButton").value = lang.signInButton || "Sign In"; document.getElementById("lang-signUpButton").value = lang.signUpButton || "Sign Up"; document.getElementById("lang-dashboardButton").value = lang.dashboardButton || "My Dashboard"; document.getElementById("lang-signOutButton").value = lang.signOutButton || "Sign Out"; document.getElementById("lang-adminLoginButton").value = lang.adminLoginButton || "Admin Login"; document.getElementById("lang-subadminLoginButton").value = lang.subadminLoginButton || "Subadmin Login"; document.getElementById("lang-contactFormMainTitle").value = lang.contactFormMainTitle || "Contact Us"; document.getElementById("lang-contactSubmitButton").value = lang.contactSubmitButton || "Send Message"; document.getElementById("lang-enrollNowButton").value = lang.enrollNowButton || "Enroll Now"; document.getElementById("lang-signInTitle").value = lang.signInTitle || "Sign In"; document.getElementById("lang-signUpTitle").value = lang.signUpTitle || "Sign Up"; document.getElementById("lang-forgotPasswordLink").value = lang.forgotPasswordLink || "Forgot Password?"; const dashboardLabels = t.dashboardLabels || {}; document.getElementById("lang-tabOverview").value = dashboardLabels.overview || "Overview"; document.getElementById("lang-tabMyCourses").value = dashboardLabels.myCourses || "My Courses"; document.getElementById("lang-tabNotifications").value = dashboardLabels.notifications || "Notifications"; document.getElementById("lang-tabAchievements").value = dashboardLabels.achievements || "Achievements"; document.getElementById("lang-tabLeaderboard").value = dashboardLabels.leaderboard || "Leaderboard"; document.getElementById("lang-tabProfile").value = dashboardLabels.profile || "My Profile"; document.getElementById("lang-tabPayments").value = dashboardLabels.payments || "Payment History"; }
+        function renderSiteContentForms(t) { 
+            document.getElementById("bannerText").value = t.banner?.text || ""; 
+            document.getElementById("aboutAdminText").value = t.aboutAdmin?.text || ""; 
+            document.getElementById("featuresSubtitle").value = t.sectionTitles?.featuresSubtitle || ""; 
+            document.getElementById("featuresMainTitle").value = t.sectionTitles?.featuresMainTitle || ""; 
+            document.getElementById("coursesSubtitle").value = t.sectionTitles?.coursesSubtitle || ""; 
+            document.getElementById("coursesMainTitle").value = t.sectionTitles?.coursesMainTitle || ""; 
+            document.getElementById("projectsSubtitle").value = t.sectionTitles?.projectsSubtitle || ""; 
+            document.getElementById("projectsMainTitle").value = t.sectionTitles?.projectsMainTitle || ""; 
+            document.getElementById("introItem1Image").value = t.introFooter?.[0]?.image || ""; 
+            document.getElementById("introItem1Title").value = t.introFooter?.[0]?.title || ""; 
+            document.getElementById("introItem2Image").value = t.introFooter?.[1]?.image || ""; 
+            document.getElementById("introItem2Title").value = t.introFooter?.[1]?.title || ""; 
+            document.getElementById("introItem3Image").value = t.introFooter?.[2]?.image || ""; 
+            document.getElementById("introItem3Title").value = t.introFooter?.[2]?.title || ""; 
+            document.getElementById("facebookLink").value = t.socialLinks?.facebook || ""; 
+            document.getElementById("telegramLink").value = t.socialLinks?.telegram || ""; 
+            document.getElementById("twitterLink").value = t.socialLinks?.twitter || ""; 
+            document.getElementById("youtubeLink").value = t.socialLinks?.youtube || ""; 
+            document.getElementById("siteTitle").value = t.settings?.title || ""; 
+            document.getElementById("logoUrl").value = t.settings?.logoUrl || ""; 
+            document.getElementById("copyrightText").value = t.settings?.copyrightText || ""; 
+            document.getElementById("bannerImageUrl").value = t.settings?.bannerImageUrl || ""; 
+            document.getElementById("aboutImageUrl").value = t.settings?.aboutImageUrl || ""; 
+            document.getElementById("projectsImageUrl").value = t.settings?.projectsImageUrl || ""; 
+            document.getElementById("contactEmail").value = t.contactInfo?.email || ""; 
+            document.getElementById("contactPhone").value = t.contactInfo?.phone || ""; 
+            document.getElementById("contactAddress").value = t.contactInfo?.address || ""; 
+            document.getElementById("footerDescription").value = t.contactInfo?.footerDescription || ""; 
+            document.getElementById("developerName").value = t.developerCredit?.name || ""; 
+            document.getElementById("developerUrl").value = t.developerCredit?.url || ""; 
+            document.getElementById("primaryColor").value = t.theme?.primaryColor || "#007BFF"; 
+            document.getElementById("secondaryColor").value = t.theme?.secondaryColor || "#00C9A7"; 
+            document.getElementById("metaTitle").value = t.seo?.metaTitle || ""; 
+            document.getElementById("metaDescription").value = t.seo?.metaDescription || ""; 
+            document.getElementById("allowRegistration").value = t.settings?.allowRegistration === false ? 'false' : 'true'; 
+            
+            const titles = t.sectionTitles || {};
+            document.getElementById("title-liveClassSubtitle").value = titles.liveClassSubtitle || "লাইভ কার্যক্রম";
+            document.getElementById("title-liveClassMainTitle").value = titles.liveClassMainTitle || "আমাদের আসন্ন লাইভ ক্লাস";
+            document.getElementById("title-communitySubtitle").value = titles.communitySubtitle || "আলোচনা";
+            document.getElementById("title-communityMainTitle").value = titles.communityMainTitle || "কমিউনিটি ফোরাম";
+            document.getElementById("title-workshopSubtitle").value = titles.workshopSubtitle || "আমাদের কার্যক্রম";
+            document.getElementById("title-workshopMainTitle").value = titles.workshopMainTitle || "আসন্ন ওয়ার্কশপ";
+
+            const lang = t.language || {}; document.getElementById("lang-signInButton").value = lang.signInButton || "Sign In"; document.getElementById("lang-signUpButton").value = lang.signUpButton || "Sign Up"; document.getElementById("lang-dashboardButton").value = lang.dashboardButton || "My Dashboard"; document.getElementById("lang-signOutButton").value = lang.signOutButton || "Sign Out"; document.getElementById("lang-adminLoginButton").value = lang.adminLoginButton || "Admin Login"; document.getElementById("lang-subadminLoginButton").value = lang.subadminLoginButton || "Subadmin Login"; document.getElementById("lang-contactFormMainTitle").value = lang.contactFormMainTitle || "Contact Us"; document.getElementById("lang-contactSubmitButton").value = lang.contactSubmitButton || "Send Message"; document.getElementById("lang-enrollNowButton").value = lang.enrollNowButton || "Enroll Now"; document.getElementById("lang-signInTitle").value = lang.signInTitle || "Sign In"; document.getElementById("lang-signUpTitle").value = lang.signUpTitle || "Sign Up"; document.getElementById("lang-forgotPasswordLink").value = lang.forgotPasswordLink || "Forgot Password?"; const dashboardLabels = t.dashboardLabels || {}; document.getElementById("lang-tabOverview").value = dashboardLabels.overview || "Overview"; document.getElementById("lang-tabMyCourses").value = dashboardLabels.myCourses || "My Courses"; document.getElementById("lang-tabNotifications").value = dashboardLabels.notifications || "Notifications"; document.getElementById("lang-tabAchievements").value = dashboardLabels.achievements || "Achievements"; document.getElementById("lang-tabLeaderboard").value = dashboardLabels.leaderboard || "Leaderboard"; document.getElementById("lang-tabProfile").value = dashboardLabels.profile || "My Profile"; document.getElementById("lang-tabPayments").value = dashboardLabels.payments || "Payment History"; 
+        }
         function deleteData(t) { confirm("আপনি কি নিশ্চিতভাবে এটি মুছতে চান?") && database.ref(t).remove().catch((t => alert("Error: " + t.message))) }
-        function openModal(t, e, n) { document.getElementById(n).reset(), document.getElementById(t + "Title").textContent = e, document.getElementById(t).style.display = "flex" }
+        function openModal(t, e, n) { if(n) { document.getElementById(n).reset(); } document.getElementById(t + "Title").textContent = e; document.getElementById(t).style.display = "flex" }
         function closeModal(t) { document.getElementById(t).style.display = "none" }
         function openUserModal() { openModal("userModal", "নতুন ব্যবহারকারী", "userForm"), document.getElementById("userId").value = "" }
-        function openCourseModal() { openModal("courseModal", "নতুন কোর্স", "courseForm"), document.getElementById("courseId").value = "" }
-        function editCourse(t) { const e = allCourses[t]; e && (document.getElementById("courseId").value = t, document.getElementById("courseName").value = e.name, document.getElementById("coursePrice").value = e.price, document.getElementById("courseImageURL").value = e.imageURL || "", document.getElementById("courseDescription").value = e.description || "", document.getElementById("courseStatus").value = e.status, document.getElementById("courseHomeworkReward").value = e.homeworkReward || 0, document.getElementById("courseHomeworkLimit").value = e.homeworkLimit || 0, openModal("courseModal", "কোর্স সম্পাদনা করুন", "courseForm")) }
+        function openCourseModal() { 
+            const categorySelect = document.getElementById('courseCategory');
+            categorySelect.innerHTML = '<option value="">ক্যাটাগরি নির্বাচন করুন</option>';
+            for(const catId in allCategories) {
+                categorySelect.innerHTML += `<option value="${allCategories[catId].name}">${allCategories[catId].name}</option>`;
+            }
+            openModal("courseModal", "নতুন কোর্স", "courseForm"), document.getElementById("courseId").value = "";
+        }
+        function editCourse(t) { 
+            const e = allCourses[t]; 
+            if (e) {
+                const categorySelect = document.getElementById('courseCategory');
+                categorySelect.innerHTML = '<option value="">ক্যাটাগরি নির্বাচন করুন</option>';
+                for(const catId in allCategories) {
+                    categorySelect.innerHTML += `<option value="${allCategories[catId].name}" ${allCategories[catId].name === e.category ? 'selected' : ''}>${allCategories[catId].name}</option>`;
+                }
+                document.getElementById("courseId").value = t;
+                document.getElementById("courseName").value = e.name; 
+                document.getElementById("coursePrice").value = e.price; 
+                document.getElementById("courseImageURL").value = e.imageURL || ""; 
+                document.getElementById("courseTrailerURL").value = e.trailerUrl || "";
+                document.getElementById("coursePassMark").value = e.passMark || 50;
+                document.getElementById("courseDescription").value = e.description || ""; 
+                document.getElementById("courseStatus").value = e.status; 
+                document.getElementById("courseHomeworkReward").value = e.homeworkReward || 0; 
+                document.getElementById("courseHomeworkLimit").value = e.homeworkLimit || 0; 
+                openModal("courseModal", "কোর্স সম্পাদনা করুন", "courseForm");
+            }
+        }
         function openProjectModal() { openModal("projectModal", "নতুন প্রজেক্ট", "projectForm"), document.getElementById("projectId").value = "" }
         function editProject(t) { const e = allProjects[t]; e && (document.getElementById("projectId").value = t, document.getElementById("projectTitle").value = e.title, document.getElementById("projectLink").value = e.link, openModal("projectModal", "প্রজেক্ট সম্পাদনা করুন", "projectForm")) }
         function openFooterLinkModal() { openModal("footerLinkModal", "নতুন ফুটার লিংক", "footerLinkForm"), document.getElementById("footerLinkId").value = "" }
@@ -913,23 +1320,28 @@
         function renderCouponTable() { const t = document.getElementById("couponTableBody"); t.innerHTML = ""; for (const id in allCoupons) { const c = allCoupons[id]; const expiry = c.expiryDate ? new Date(c.expiryDate).toLocaleDateString("bn-BD") : 'N/A'; t.innerHTML += `<tr><td>${c.code}</td><td>${c.type}</td><td>${c.value} ${c.type === 'percentage' ? '%' : 'BDT'}</td><td>${expiry}</td><td><button class="action-btn delete-btn" onclick="deleteData('coupons/${id}')">মুছুন</button></td></tr>`; } }
         function renderSentNotificationsTable() { const t = document.getElementById("sentNotificationsTableBody"); t.innerHTML = ""; const sorted = Object.entries(allNotifications).sort((a,b) => b[1].timestamp - a[1].timestamp); for (const [id, n] of sorted) { t.innerHTML += `<tr><td class="message-col">${n.message}</td><td>${new Date(n.timestamp).toLocaleString("bn-BD")}</td><td><button class="action-btn delete-btn" onclick="deleteData('notifications/${id}')">মুছুন</button></td></tr>`; } }
         
-        // --- NEW FEATURE FUNCTIONS (Implemented as per your request) ---
-
         function calculateAdvancedAnalytics() {
             const courseAnalytics = {};
+            const now = new Date();
+            const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+            let monthlyRevenue = 0;
+            let monthlyUsers = 0;
+
             for (const courseId in allCourses) {
-                courseAnalytics[courseId] = {
-                    name: allCourses[courseId].name,
-                    enrollments: 0,
-                    revenue: 0
-                };
+                courseAnalytics[courseId] = { name: allCourses[courseId].name, enrollments: 0, revenue: 0 };
             }
+
             for (const paymentId in allPayments) {
                 const payment = allPayments[paymentId];
                 if (courseAnalytics[payment.courseId]) {
                     courseAnalytics[payment.courseId].revenue += payment.amount;
                 }
+                if (new Date(payment.date) >= firstDayOfMonth) {
+                    monthlyRevenue += payment.amount;
+                }
             }
+            document.getElementById('monthlyEarnings').textContent = monthlyRevenue.toLocaleString('bn-BD');
+
             for (const userId in allUsers) {
                 const user = allUsers[userId];
                 if (user.enrolledCourses) {
@@ -940,21 +1352,69 @@
                         }
                     }
                 }
+                if (user.regDate && new Date(user.regDate) >= firstDayOfMonth) {
+                    monthlyUsers++;
+                }
             }
+            document.getElementById('monthlyNewUsers').textContent = monthlyUsers;
+
             const tableBody = document.querySelector("#courseAnalyticsTable tbody");
             tableBody.innerHTML = "";
             for (const courseId in courseAnalytics) {
                 const data = courseAnalytics[courseId];
-                tableBody.innerHTML += `<tr>
-                    <td>${data.name}</td>
-                    <td>${data.enrollments}</td>
-                    <td>${data.revenue.toLocaleString('bn-BD')}</td>
-                </tr>`;
+                tableBody.innerHTML += `<tr><td>${data.name}</td><td>${data.enrollments}</td><td>${data.revenue.toLocaleString('bn-BD')}</td></tr>`;
             }
+
+            renderMonthlyRevenueChart();
 
             const enrollmentCounts = {};
             Object.values(allUsers).forEach(user => { if(user.enrolledCourses) { Object.values(user.enrolledCourses).forEach(enrollment => { enrollmentCounts[enrollment.courseId] = (enrollmentCounts[enrollment.courseId] || 0) + 1; }); } }); let popularCourseId = null, maxEnrollments = 0; for(const courseId in enrollmentCounts) { if(enrollmentCounts[courseId] > maxEnrollments) { maxEnrollments = enrollmentCounts[courseId]; popularCourseId = courseId; } } document.getElementById('popularCourse').textContent = popularCourseId && allCourses[popularCourseId] ? allCourses[popularCourseId].name : 'N/A'; let totalPercentage = 0; let userCount = 0; Object.values(allUsers).forEach(user => { if (user.enrolledCourses) { Object.values(user.enrolledCourses).forEach(enrollment => { const course = allCourses[enrollment.courseId]; if (course) { const totalLessons = (course.modules ? Object.values(course.modules).reduce((acc, mod) => acc + (mod.lessons ? Object.keys(mod.lessons).length : 0), 0) : 0); const completedLessons = enrollment.progress ? Object.keys(enrollment.progress).length : 0; const progressPercentage = totalLessons > 0 ? Math.round((completedLessons / totalLessons) * 100) : 0; totalPercentage += progressPercentage; userCount++; } }); } }); const avgCompletion = userCount > 0 ? Math.round(totalPercentage / userCount) : 0; document.getElementById('completionRate').textContent = `${avgCompletion}%`; 
         }
+
+        function renderMonthlyRevenueChart() {
+            const monthlyData = {};
+            for (let i = 5; i >= 0; i--) {
+                const d = new Date();
+                d.setMonth(d.getMonth() - i);
+                const monthKey = `${d.getFullYear()}-${d.getMonth()}`;
+                monthlyData[monthKey] = { label: d.toLocaleString('default', { month: 'short' }), revenue: 0 };
+            }
+
+            Object.values(allPayments).forEach(payment => {
+                if (payment.date) {
+                    const paymentDate = new Date(payment.date);
+                    const monthKey = `${paymentDate.getFullYear()}-${paymentDate.getMonth()}`;
+                    if (monthlyData[monthKey]) {
+                        monthlyData[monthKey].revenue += payment.amount;
+                    }
+                }
+            });
+
+            const labels = Object.values(monthlyData).map(m => m.label);
+            const data = Object.values(monthlyData).map(m => m.revenue);
+            const ctx = document.getElementById('monthlyRevenueChart').getContext('2d');
+            if (monthlyRevenueChartInstance) {
+                monthlyRevenueChartInstance.destroy();
+            }
+            monthlyRevenueChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Monthly Revenue (BDT)',
+                        data: data,
+                        backgroundColor: 'rgba(243, 156, 18, 0.6)',
+                        borderColor: 'rgba(243, 156, 18, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
+        }
+
 
         function populateCourseSelect() {
             const select = document.getElementById('groupNotificationCourse');
@@ -990,7 +1450,7 @@
                     return database.ref('notifications').push({
                         message: `[${allCourses[courseId].name}]: ${message}`,
                         timestamp: new Date().getTime(),
-                        userId: userId // Target specific user
+                        userId: userId
                     });
                 });
                 await Promise.all(notificationPromises);
@@ -999,20 +1459,6 @@
             } else {
                 alert('এই কোর্সে কোনো শিক্ষার্থী পাওয়া যায়নি।');
             }
-        }
-
-        function renderForumPostsTable(posts) {
-            const tbody = document.getElementById('forumPostsTableBody');
-            tbody.innerHTML = '';
-            const sorted = Object.entries(posts).sort((a,b) => new Date(b[1].timestamp) - new Date(a[1].timestamp));
-            sorted.forEach(([id, post]) => {
-                tbody.innerHTML += `<tr>
-                    <td>${post.authorName}</td>
-                    <td class="message-col">${post.content}</td>
-                    <td>${new Date(post.timestamp).toLocaleString()}</td>
-                    <td><button class="action-btn delete-btn" onclick="deleteData('forum_posts/${id}')">মুছুন</button></td>
-                </tr>`;
-            });
         }
         
         function openBadgeModal(badgeId = null) {
@@ -1089,23 +1535,27 @@
         function renderHomeworkReviewTable() {
             const tbody = document.getElementById("homeworkReviewTableBody");
             tbody.innerHTML = "";
-            const submissions = Object.entries(allHomework).filter(([id, sub]) => sub.status === 'submitted');
+            const submissions = Object.entries(allHomework).sort((a, b) => new Date(b[1].submittedAt) - new Date(a[1].submittedAt));
+
             if (submissions.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5">No pending homework to review.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="6">No homework submissions found.</td></tr>';
                 return;
             }
+
             submissions.forEach(([id, sub]) => {
                 const user = allUsers[sub.userId];
+                const actionButtons = sub.status === 'submitted' ? `
+                    <button class="action-btn" style="background-color: var(--success-color);" onclick="approveHomework('${id}')">Approve</button>
+                    <button class="action-btn" style="background-color: var(--danger-color);" onclick="rejectHomework('${id}')">Reject</button>
+                    <button class="action-btn" style="background-color: var(--primary-color);" onclick="requestCorrection('${id}')">Correction</button>
+                ` : '(Reviewed)';
                 tbody.innerHTML += `<tr>
                     <td>${user ? user.name : 'Unknown User'}</td>
                     <td>${sub.courseName}</td>
                     <td><a href="${sub.homeworkLink}" target="_blank">View Work</a></td>
                     <td>${new Date(sub.submittedAt).toLocaleString()}</td>
-                    <td>
-                        <button class="action-btn" style="background-color: var(--success-color);" onclick="approveHomework('${id}')">Approve</button>
-                        <button class="action-btn" style="background-color: var(--danger-color);" onclick="rejectHomework('${id}')">Reject</button>
-                        <button class="action-btn" style="background-color: var(--primary-color);" onclick="requestCorrection('${id}')">Correction</button>
-                    </td>
+                    <td><span class="status ${sub.status}">${sub.status.replace('_',' ')}</span></td>
+                    <td>${actionButtons}</td>
                 </tr>`;
             });
         }
@@ -1127,8 +1577,14 @@
         }
 
         function rejectHomework(submissionId) {
-            database.ref(`homeworkSubmissions/${submissionId}`).update({ status: 'rejected', reviewedAt: new Date().toISOString() })
-            .then(() => alert('Homework rejected.'));
+            const reason = prompt("Please provide the reason for rejection:");
+            if (reason && reason.trim()) {
+                 database.ref(`homeworkSubmissions/${submissionId}`).update({ 
+                    status: 'rejected', 
+                    adminNotes: reason,
+                    reviewedAt: new Date().toISOString() 
+                }).then(() => alert('Homework rejected.'));
+            }
         }
         
         function requestCorrection(submissionId) {
@@ -1227,7 +1683,7 @@
                 }
                 container.innerHTML = html;
             }
-            openModal('userProgressModal', `Progress for ${user.name}`, 'userProgressContainer');
+            openModal('userProgressModal', `Progress for ${user.name}`, null);
         }
 
         function replyToTicket(ticketId) {
@@ -1239,6 +1695,196 @@
                 }).then(() => alert('Reply sent and ticket marked as resolved.'));
             }
         }
+        
+        function renderMentorRoleSettings() {
+            const container = document.getElementById('mentorRolesContainer');
+            container.innerHTML = '';
+            database.ref('siteContent/settings/mentorRoles').once('value', snapshot => {
+                const selectedRoles = snapshot.val() || [];
+                for (const roleId in allRoles) {
+                    const role = allRoles[roleId];
+                    const isChecked = selectedRoles.includes(role.name);
+                    container.innerHTML += `
+                        <div>
+                            <input type="checkbox" id="role_${roleId}" value="${role.name}" ${isChecked ? 'checked' : ''}>
+                            <label for="role_${roleId}">${role.name}</label>
+                        </div>
+                    `;
+                }
+            });
+        }
+        
+        function handleMentorRoleSave(event) {
+            event.preventDefault();
+            const selectedRoles = [];
+            const checkboxes = document.querySelectorAll('#mentorRolesContainer input[type="checkbox"]:checked');
+            checkboxes.forEach(cb => selectedRoles.push(cb.value));
+            
+            database.ref('siteContent/settings/mentorRoles').set(selectedRoles)
+                .then(() => alert('মেন্টর রোল সফলভাবে সেভ করা হয়েছে!'))
+                .catch(err => alert('ত্রুটি: ' + err.message));
+        }
+
+        function renderLiveClassTable() {
+            const tbody = document.getElementById('liveClassTableBody');
+            tbody.innerHTML = '';
+            const sortedClasses = Object.entries(allLiveClasses).sort((a,b) => new Date(b[1].dateTime) - new Date(a[1].dateTime));
+            for (const [id, cls] of sortedClasses) {
+                const recordingLink = cls.recordingUrl ? `<a href="${cls.recordingUrl}" target="_blank">View</a>` : 'N/A';
+                tbody.innerHTML += `<tr>
+                    <td>${cls.title}</td>
+                    <td>${cls.teacher || 'N/A'}</td>
+                    <td><a href="${cls.url}" target="_blank">Join Link</a></td>
+                    <td>${new Date(cls.dateTime).toLocaleString('bn-BD')}</td>
+                    <td>${recordingLink}</td>
+                    <td>
+                        <button class="action-btn edit-btn" onclick="addRecordingToLiveClass('${id}')">Recording</button>
+                        <button class="action-btn delete-btn" onclick="deleteData('liveClasses/${id}')">মুছুন</button>
+                    </td>
+                </tr>`;
+            }
+        }
+
+        function addRecordingToLiveClass(classId) {
+            const url = prompt("Enter the recording URL for this class:");
+            if (url) {
+                database.ref(`liveClasses/${classId}`).update({ recordingUrl: url })
+                    .then(() => alert("Recording link added successfully."));
+            }
+        }
+
+        function renderForumPostsTable(posts) {
+            const tbody = document.getElementById('forumPostsTableBody');
+            tbody.innerHTML = '';
+            const sorted = Object.entries(posts).sort((a,b) => {
+                if (a[1].pinned && !b[1].pinned) return -1;
+                if (!a[1].pinned && b[1].pinned) return 1;
+                return new Date(b[1].timestamp) - new Date(a[1].timestamp);
+            });
+            sorted.forEach(([id, post]) => {
+                const postContent = post.pinned ? `<strong>[PINNED]</strong> ${post.content}` : post.content;
+                const adminReply = post.adminReply ? `<br><br><div style="border-left: 3px solid #3498db; padding-left: 10px; font-style: italic;"><strong>Admin Reply:</strong> ${post.adminReply}</div>` : '';
+                tbody.innerHTML += `<tr>
+                    <td>${post.authorName}</td>
+                    <td class="message-col">${postContent} ${adminReply}</td>
+                    <td>${new Date(post.timestamp).toLocaleString()}</td>
+                    <td>
+                        <button class="action-btn edit-btn" onclick="editForumPost('${id}', \`${post.content}\`)">Edit</button>
+                        <button class="action-btn" style="background-color: #f39c12;" onclick="togglePinPost('${id}', ${post.pinned || false})">${post.pinned ? 'Unpin' : 'Pin'}</button>
+                        <button class="action-btn" style="background-color: #16a085;" onclick="replyToForumPost('${id}')">Reply</button>
+                        <button class="action-btn delete-btn" onclick="deleteData('forum_posts/${id}')">মুছুন</button>
+                    </td>
+                </tr>`;
+            });
+        }
+
+        function editForumPost(postId, currentContent) {
+            const newContent = prompt("Edit the post content:", currentContent);
+            if (newContent && newContent.trim() !== "") {
+                database.ref(`forum_posts/${postId}`).update({ content: newContent });
+            }
+        }
+
+        function togglePinPost(postId, isPinned) {
+            database.ref(`forum_posts/${postId}`).update({ pinned: !isPinned });
+        }
+
+        function replyToForumPost(postId) {
+            const reply = prompt("Enter your reply as Admin:");
+            if (reply && reply.trim() !== "") {
+                database.ref(`forum_posts/${postId}`).update({ adminReply: reply });
+            }
+        }
+
+        function renderCategoryTable() {
+            const tbody = document.getElementById('categoryTableBody');
+            tbody.innerHTML = '';
+            for(const id in allCategories) {
+                const category = allCategories[id];
+                tbody.innerHTML += `<tr>
+                    <td>${category.name}</td>
+                    <td>
+                        <button class="action-btn edit-btn" onclick="editCategory('${id}')">Edit</button>
+                        <button class="action-btn delete-btn" onclick="deleteData('courseCategories/${id}')">Delete</button>
+                    </td>
+                </tr>`;
+            }
+        }
+
+        function openCategoryModal() {
+            openModal('categoryModal', 'নতুন ক্যাটাগরি', 'categoryForm');
+            document.getElementById('categoryId').value = '';
+        }
+
+        function editCategory(id) {
+            const category = allCategories[id];
+            document.getElementById('categoryId').value = id;
+            document.getElementById('categoryName').value = category.name;
+            openModal('categoryModal', 'ক্যাটাগরি সম্পাদনা করুন', null);
+        }
+
+        function handleCategoryForm(event) {
+            event.preventDefault();
+            const id = document.getElementById('categoryId').value;
+            const name = document.getElementById('categoryName').value;
+            if (!name) return;
+
+            const data = { name: name };
+            const ref = id ? database.ref(`courseCategories/${id}`) : database.ref('courseCategories').push();
+            ref.set(data).then(() => {
+                closeModal('categoryModal');
+            });
+        }
+        
+        function applyBulkAction() {
+            const action = document.getElementById('bulkActionSelect').value;
+            const selectedCheckboxes = document.querySelectorAll('.user-checkbox:checked');
+            if (!action || selectedCheckboxes.length === 0) {
+                alert('অনুগ্রহ করে একটি অ্যাকশন এবং至少 একজন ব্যবহারকারী নির্বাচন করুন।');
+                return;
+            }
+            
+            const userIds = Array.from(selectedCheckboxes).map(cb => cb.dataset.userId);
+            const confirmationText = `আপনি কি নিশ্চিত যে আপনি ${userIds.length} জন ব্যবহারকারীর উপর "${action}" অ্যাকশন প্রয়োগ করতে চান?`;
+
+            if (!confirm(confirmationText)) return;
+
+            const promises = userIds.map(userId => {
+                const userRef = database.ref('users/' + userId);
+                switch (action) {
+                    case 'activate':
+                        return userRef.update({ status: 'active' });
+                    case 'block':
+                        return userRef.update({ status: 'blocked' });
+                    case 'delete':
+                        return userRef.remove();
+                    default:
+                        return Promise.resolve();
+                }
+            });
+
+            Promise.all(promises)
+                .then(() => {
+                    alert('বাল্ক অ্যাকশন সফলভাবে সম্পন্ন হয়েছে!');
+                    document.getElementById('selectAllUsersCheckbox').checked = false;
+                })
+                .catch(err => {
+                    alert('একটি ত্রুটি ঘটেছে: ' + err.message);
+                });
+        }
+
+        function updateTicketPriority(ticketId, priority) {
+            database.ref(`supportTickets/${ticketId}`).update({ priority: priority })
+                .then(() => console.log(`Ticket ${ticketId} priority updated to ${priority}`))
+                .catch(err => alert('Failed to update priority: ' + err.message));
+        }
+
+        function assignTicket(ticketId, assigneeEmail) {
+            database.ref(`supportTickets/${ticketId}`).update({ assignedTo: assigneeEmail })
+                .then(() => console.log(`Ticket ${ticketId} assigned to ${assigneeEmail}`))
+                .catch(err => alert('Failed to assign ticket: ' + err.message));
+        }
+
     </script>
 </body>
 </html>
