@@ -703,7 +703,7 @@
     <div id="mentorLeadsModal" class="modal"><div class="modal-content" style="max-width: 800px; max-height: 80vh; overflow-y: auto;"><div class="modal-header"><h2 id="mentorLeadsModalTitle">মেন্টরের লিডসমূহ</h2><span class="close-btn" onclick="closeModal('mentorLeadsModal')">&times;</span></div><div id="mentorLeadsContainer"></div></div></div>
     <!-- ========================= NEW MODALS END HERE ========================= -->
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
@@ -1234,7 +1234,7 @@
                     subAdmins.forEach(admin => {
                         assigneeOptions += `<option value="${admin.email}" ${n.assignedTo === admin.email ? 'selected' : ''}>${admin.name}</option>`;
                     });
-                    const assigneeSelect = `<select onchange="assignTicket('${e}', this.value)">${assigneeOptions}</select>`;
+                    assigneeSelect = `<select onchange="assignTicket('${e}', this.value)">${assigneeOptions}</select>`;
 
                     let actionButtons = `<button class="action-btn" style="background: #16a085;" onclick="replyToTicket('${e}')">Reply</button>`;
                     if (n.status === 'pending') {
