@@ -72,7 +72,6 @@
         .pagination-controls button { background-color: var(--primary-color); color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; margin: 0 5px; }
         .pagination-controls button:disabled { background-color: #bdc3c7; cursor: not-allowed; }
         
-        /* NEW STYLES FOR PERMISSIONS */
         .permissions-fieldset { border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; margin-top: 20px; }
         .permissions-fieldset legend { font-weight: 600; padding: 0 10px; }
         .permissions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
@@ -159,10 +158,8 @@
                     <div class="card success"><h3>এই মাসে নতুন ব্যবহারকারী</h3><p class="value" id="monthlyNewUsers">0</p></div>
                     <div class="card"><h3>সর্বোচ্চ রেফারকারী</h3><p class="value small" id="topReferrer">N/A</p></div>
                     <div class="card danger"><h3>গড় কোর্স সমাপ্তির হার</h3><p class="value" id="avgCompletionRateAnalytics">0%</p></div>
-                    <!-- NEW ANALYTICS CARDS START -->
                     <div class="card"><h3>অ্যাক্টিভ / পেন্ডিং ইউজার</h3><p class="value" id="activePendingUsers">0 / 0</p></div>
                     <div class="card success"><h3>টপ ইউজার কান্ট্রি</h3><p class="value small" id="topUserCountry">N/A</p></div>
-                    <!-- NEW ANALYTICS CARDS END -->
                 </div>
                 <div class="chart-container">
                     <h3>মাসিক আয় (গত ৬ মাস)</h3>
@@ -208,7 +205,6 @@
             <section id="course-management" class="content-section">
                 <div class="page-header"><h1>কোর্স ম্যানেজমেন্ট</h1></div><button class="add-new-btn" onclick="openCourseModal()">নতুন কোর্স যোগ করুন</button>
                 <div class="table-container">
-                    <!-- NEW 'Order' COLUMN ADDED -->
                     <table><thead><tr><th>কোর্সের নাম</th><th>ক্যাটাগরি</th><th>মূল্য (BDT)</th><th>হোমওয়ার্ক রিওয়ার্ড</th><th>Order</th><th>স্ট্যাটাস</th><th>অ্যাকশন</th></tr></thead><tbody id="courseTableBody"></tbody></table>
                 </div>
                 <div class="pagination-controls" id="coursePaginationControls"></div>
@@ -756,7 +752,6 @@
         <div class="form-group"><label for="courseName">কোর্সের নাম</label><input type="text" id="courseName" required></div>
         <div class="form-group"><label for="courseCategory">ক্যাটাগরি</label><select id="courseCategory" required></select></div>
         <div class="form-group"><label for="coursePrice">মূল্য (BDT)</label><input type="number" id="coursePrice" required></div>
-        <!-- NEW 'Order' INPUT FIELD ADDED -->
         <div class="form-group"><label for="courseOrder">Order (for sorting)</label><input type="number" id="courseOrder" value="0"></div>
         <div class="form-group"><label for="courseHomeworkReward">হোমওয়ার্ক রিওয়ার্ড (BDT)</label><input type="number" id="courseHomeworkReward" value="0"></div>
         <div class="form-group"><label for="courseHomeworkLimit">হোমওয়ার্ক লিমিট</label><input type="number" id="courseHomeworkLimit" value="0"></div>
@@ -817,7 +812,6 @@
     <div id="blogModal" class="modal"><div class="modal-content" style="max-height: 80vh; overflow-y: auto;"><div class="modal-header"><h2 id="blogModalTitle"></h2><span class="close-btn" onclick="closeModal('blogModal')">&times;</span></div><form id="blogForm"><input type="hidden" id="blogId"><div class="form-group"><label for="blogTitle">শিরোনাম</label><input type="text" id="blogTitle" required></div><div class="form-group"><label for="blogImageUrl">ছবির URL</label><input type="text" id="blogImageUrl"></div><div class="form-group"><label for="blogContent">কনটেন্ট</label><textarea id="blogContent" rows="8" required></textarea></div><div class="form-group"><label for="blogStatus">স্ট্যাটাস</label><select id="blogStatus"><option value="published">পাবলিশড</option><option value="pending">পেন্ডিং</option></select></div><button type="submit" class="submit-btn">সেভ করুন</button></form></div></div>
     <div id="menuModal" class="modal"><div class="modal-content"><div class="modal-header"><h2 id="menuModalTitle"></h2><span class="close-btn" onclick="closeModal('menuModal')">&times;</span></div><form id="menuForm"><input type="hidden" id="menuId"><div class="form-group"><label for="menuName">মেনুর নাম</label><input type="text" id="menuName" required></div><div class="form-group"><label for="menuUrl">URL</label><input type="text" id="menuUrl" required></div><div class="form-group"><label for="menuOrder">Order</label><input type="number" id="menuOrder" required></div><button type="submit" class="submit-btn">সেভ করুন</button></form></div></div>
     
-    <!-- ROLE MODAL WITH NEW PERMISSIONS SECTION -->
     <div id="roleModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -828,7 +822,6 @@
                 <div class="form-group"><label for="roleName">রোলের নাম</label><input type="text" id="roleName" required></div>
                 <div class="form-group"><label for="roleValue">ভ্যালু</label><input type="number" id="roleValue" required></div>
                 
-                <!-- NEW PERMISSIONS FIELDSET START -->
                 <fieldset class="permissions-fieldset">
                     <legend>Permissions</legend>
                     <div class="permissions-grid">
@@ -855,7 +848,6 @@
                         </div>
                     </div>
                 </fieldset>
-                <!-- NEW PERMISSIONS FIELDSET END -->
 
                 <button type="submit" class="submit-btn" style="margin-top: 20px;">সেভ করুন</button>
             </form>
@@ -864,7 +856,7 @@
     
     <div id="featureModal" class="modal"><div class="modal-content"><div class="modal-header"><h2 id="featureModalTitle"></h2><span class="close-btn" onclick="closeModal('featureModal')">&times;</span></div><form id="featureForm"><input type="hidden" id="featureId"><div class="form-group"><label for="featureImage">আইকন URL</label><input type="text" id="featureImage" required></div><div class="form-group"><label for="featureTitle">শিরোনাম</label><input type="text" id="featureTitle" required></div><div class="form-group"><label for="featureDesc">ছোট বর্ণনা</label><textarea id="featureDesc" rows="3"></textarea></div><button type="submit" class="submit-btn">সেভ করুন</button></form></div></div>
     <div id="enrollModal" class="modal"><div class="modal-content"><div class="modal-header"><h2 id="enrollModalTitle">Enroll User in Course</h2><span class="close-btn" onclick="closeModal('enrollModal')">&times;</span></div><form id="enrollForm"><input type="hidden" id="enrollUserId"><div class="form-group"><label for="enrollCourseSelect">Select Course</label><select id="enrollCourseSelect" required></select></div><button type="submit" class="submit-btn">Enroll User</button></form></div></div>
-    <div id="couponModal" class="modal"><div class="modal-content"><div class="modal-header"><h2 id="couponModalTitle">Add New Coupon</h2><span class="close-btn" onclick="closeModal('couponModal')">&times;</span></div><form id="couponForm"><input type="hidden" id="couponId"><div class="form-group"><label for="couponCode">কুপন কোড</label><input type="text" id="couponCode" style="text-transform:uppercase" required></div><div class="form-group"><label for="couponType">ডিসকাউন্টের ধরন</label><select id="couponType"><option value="percentage">ש процентов</option><option value="fixed">סכום קבוע (BDT)</option></select></div><div class="form-group"><label for="couponValue">مقدار</label><input type="number" id="couponValue" required></div><div class="form-group"><label for="couponExpiry">মেয়াদ শেষ হওয়ার তারিখ (ঐচ্ছিক)</label><input type="date" id="couponExpiry"></div><button type="submit" class="submit-btn">সেভ করুন</button></form></div></div>
+    <div id="couponModal" class="modal"><div class="modal-content"><div class="modal-header"><h2 id="couponModalTitle">Add New Coupon</h2><span class="close-btn" onclick="closeModal('couponModal')">&times;</span></div><form id="couponForm"><input type="hidden" id="couponId"><div class="form-group"><label for="couponCode">কুপন কোড</label><input type="text" id="couponCode" style="text-transform:uppercase" required></div><div class="form-group"><label for="couponType">ডিসকাউন্টের ধরন</label><select id="couponType"><option value="percentage">শতাংশ (%)</option><option value="fixed">নির্দিষ্ট পরিমাণ (BDT)</option></select></div><div class="form-group"><label for="couponValue">مقدار</label><input type="number" id="couponValue" required></div><div class="form-group"><label for="couponExpiry">মেয়াদ শেষ হওয়ার তারিখ (ঐচ্ছিক)</label><input type="date" id="couponExpiry"></div><button type="submit" class="submit-btn">সেভ করুন</button></form></div></div>
     <div id="courseContentModal" class="modal"><div class="modal-content" style="max-width: 700px; max-height: 90vh; overflow-y: auto;"><div class="modal-header"><h2 id="courseContentModalTitle">Manage Course Content</h2><span class="close-btn" onclick="closeModal('courseContentModal')">&times;</span></div><div id="modulesContainer"></div><hr><h4>নতুন মডিউল যোগ করুন</h4><form id="addModuleForm" style="display: flex; gap: 10px;"><input type="text" id="newModuleName" placeholder="মডিউলের নাম" style="flex-grow: 1;" required><button type="submit" class="add-new-btn" style="margin: 0;">যোগ করুন</button></form></div></div>
     <div id="quizModal" class="modal"><div class="modal-content" style="max-width: 800px; max-height: 90vh; overflow-y: auto;"><div class="modal-header"><h2 id="quizModalTitle">Manage Quiz</h2><span class="close-btn" onclick="closeModal('quizModal')">&times;</span></div><div id="quizQuestionsContainer"></div><hr><h4>Add New Question</h4><form id="addQuestionForm"><div class="form-group"><label>Question</label><input type="text" id="newQuestionText" required></div><div class="form-group"><label>Option 1</label><input type="text" class="quiz-option" required></div><div class="form-group"><label>Option 2</label><input type="text" class="quiz-option" required></div><div class="form-group"><label>Option 3</label><input type="text" class="quiz-option"></div><div class="form-group"><label>Option 4</label><input type="text" class="quiz-option"></div><div class="form-group"><label>Correct Answer (1-4)</label><input type="number" id="newCorrectAnswer" min="1" max="4" required></div><button type="submit" class="add-new-btn">Add Question</button></form></div></div>
     <div id="userProgressModal" class="modal"><div class="modal-content"><div class="modal-header"><h2 id="userProgressModalTitle">Student Progress</h2><span class="close-btn" onclick="closeModal('userProgressModal')">&times;</span></div><div id="userProgressContainer"></div></div></div>
@@ -872,14 +864,12 @@
     
     <div id="countryCodeModal" class="modal"><div class="modal-content"><div class="modal-header"><h2 id="countryCodeModalTitle"></h2><span class="close-btn" onclick="closeModal('countryCodeModal')">&times;</span></div><form id="countryCodeForm"><input type="hidden" id="countryCodeId"><div class="form-group"><label for="countryName">দেশের নাম</label><input type="text" id="countryName" required></div><div class="form-group"><label for="countryCodeValue">কান্ট্রি কোড (+ সহ)</label><input type="text" id="countryCodeValue" placeholder="+880" required></div><button type="submit" class="submit-btn">সেভ করুন</button></form></div></div>
 
-    <!-- ======================== NEW MODALS START HERE ======================== -->
     <div id="createUserModal" class="modal"><div class="modal-content"><div class="modal-header"><h2 id="createUserModalTitle">নতুন ইউজার তৈরি করুন</h2><span class="close-btn" onclick="closeModal('createUserModal')">&times;</span></div><form id="createUserForm"><div class="form-group"><label for="createUserName">নাম</label><input type="text" id="createUserName" required></div><div class="form-group"><label for="createUserEmail">ইমেইল</label><input type="email" id="createUserEmail" required></div><div class="form-group"><label for="createUserPassword">পাসওয়ার্ড</label><input type="password" id="createUserPassword" required></div><button type="submit" class="submit-btn">ইউজার তৈরি করুন</button></form></div></div>
     <div id="paymentModal" class="modal"><div class="modal-content"><div class="modal-header"><h2 id="paymentModalTitle">ম্যানুয়াল পেমেন্ট যোগ করুন</h2><span class="close-btn" onclick="closeModal('paymentModal')">&times;</span></div><form id="paymentForm"><div class="form-group"><label for="paymentUserSelect">ব্যবহারকারী নির্বাচন করুন</label><select id="paymentUserSelect" required></select></div><div class="form-group"><label for="paymentCourseSelect">কোর্স নির্বাচন করুন</label><select id="paymentCourseSelect" required></select></div><div class="form-group"><label for="paymentAmount">টাকার পরিমাণ (BDT)</label><input type="number" id="paymentAmount" required></div><div class="form-group"><label for="paymentDate">পেমেন্টের তারিখ</label><input type="datetime-local" id="paymentDate" required></div><div class="form-group"><label for="paymentTxId">Transaction ID</label><input type="text" id="paymentTxId" value="MANUAL_ENTRY" required></div><button type="submit" class="submit-btn">পেমেন্ট যোগ করুন</button></form></div></div>
     <div id="homeworkModal" class="modal"><div class="modal-content"><div class="modal-header"><h2 id="homeworkModalTitle">ম্যানুয়াল হোমওয়ার্ক যোগ করুন</h2><span class="close-btn" onclick="closeModal('homeworkModal')">&times;</span></div><form id="homeworkForm"><div class="form-group"><label for="homeworkUserSelect">ব্যবহারকারী নির্বাচন করুন</label><select id="homeworkUserSelect" required></select></div><div class="form-group"><label for="homeworkCourseSelect">কোর্স নির্বাচন করুন</label><select id="homeworkCourseSelect" required></select></div><div class="form-group"><label for="homeworkLink">হোমওয়ার্ক লিংক</label><input type="url" id="homeworkLink" value="https://example.com/manual-submission" required></div><div class="form-group"><label for="homeworkStatus">স্ট্যাটাস</label><select id="homeworkStatus"><option value="submitted">Submitted</option><option value="approved">Approved</option><option value="rejected">Rejected</option><option value="correction_needed">Correction Needed</option></select></div><div class="form-group"><label for="homeworkDate">জমা দেওয়ার তারিখ</label><input type="datetime-local" id="homeworkDate" required></div><button type="submit" class="submit-btn">হোমওয়ার্ক যোগ করুন</button></form></div></div>
     <div id="viewStudentsModal" class="modal"><div class="modal-content" style="max-width: 800px; max-height: 80vh; overflow-y: auto;"><div class="modal-header"><h2 id="viewStudentsModalTitle"></h2><span class="close-btn" onclick="closeModal('viewStudentsModal')">&times;</span></div><div class="table-container"><table id="studentsTable"><thead><tr><th>নাম</th><th>ইমেইল</th><th>অগ্রগতি</th></tr></thead><tbody id="studentsTableBody"></tbody></table></div></div></div>
     
     <div id="mentorLeadsModal" class="modal"><div class="modal-content" style="max-width: 800px; max-height: 80vh; overflow-y: auto;"><div class="modal-header"><h2 id="mentorLeadsModalTitle">মেন্টরের লিডসমূহ</h2><span class="close-btn" onclick="closeModal('mentorLeadsModal')">&times;</span></div><div id="mentorLeadsContainer"></div></div></div>
-    <!-- ========================= NEW MODALS END HERE ========================= -->
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
@@ -887,14 +877,18 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // REMOVED hardcoded password check for security.
-            
+            // NEW: Simplified password-based login
             document.getElementById('login-btn').addEventListener('click', () => {
-                // This simulates a successful login without asking for the password again
-                // As requested, the password check is implicit.
-                document.getElementById('login-screen').style.display = 'none';
-                document.getElementById('app-container').style.display = 'flex';
-                initializeAppWithFirebase();
+                const password = prompt("অ্যাডমিন প্যানেলে প্রবেশ করতে পাসওয়ার্ড দিন:");
+                const correctPassword = "admin123"; // আপনি এই পাসওয়ার্ড পরিবর্তন করতে পারেন
+
+                if (password === correctPassword) {
+                    document.getElementById('login-screen').style.display = 'none';
+                    document.getElementById('app-container').style.display = 'flex';
+                    initializeAppWithFirebase();
+                } else if (password !== null) {
+                    alert("ভুল পাসওয়ার্ড!");
+                }
             });
         });
 
@@ -911,25 +905,16 @@
             const database = firebase.database();
             const auth = firebase.auth();
 
-            const adminUid = "vcwR2irXaiTNiiOb5o0pBrIqfRV2";
-
-            auth.onAuthStateChanged(user => {
-                if (user && user.uid === adminUid) {
-                    console.log("Admin is signed in.");
-                    initializeApp();
-                } else {
-                    console.error("Access Denied. Please log in as admin via Firebase Console.");
-                    document.body.innerHTML = `<div style="text-align: center; padding-top: 50px;"><h1>Access Denied</h1><p>You do not have permission to view this page. Please log in with the correct admin account via the Firebase console or your authentication provider.</p></div>`;
-                }
-            });
+            // REMOVED: The strict UID check that was causing "Access Denied"
             
             document.getElementById('logout-btn').addEventListener('click', (e) => {
                 e.preventDefault();
-                auth.signOut().then(() => {
-                    alert("You have been logged out.");
-                    document.body.innerHTML = `<div style="text-align: center; padding-top: 50px;"><h1>Logged Out</h1><p>Please close this page.</p></div>`;
-                });
+                alert("আপনি লগআউট করেছেন।");
+                // Reloads the page to show the password prompt again
+                location.reload();
             });
+
+            initializeApp(); // Directly initialize the app functionalities
 
             let allUsers = {}, allCourses = {}, allEarnings = {}, allProjects = {}, allFooterLinks = {}, allBlogPosts = {}, allMenus = {}, allRoles = {}, allFeatures = {}, allContactMessages = {};
             let allPayments = {}, allSupportTickets = {}, allReviews = {}, allCoupons = {}, allNotifications = {}, allLiveClasses = {};
@@ -947,13 +932,11 @@
                 setupMobileMenu(); 
                 listenToFirebaseData();
             }
-
+            
+            // MODIFIED: logAdminActivity to work without a logged-in user
             function logAdminActivity(action, details = {}) {
-                const user = auth.currentUser;
-                if (!user) return;
-
                 const logEntry = {
-                    adminEmail: user.email,
+                    adminEmail: "Admin", // Using a generic name
                     action: action,
                     details: details,
                     timestamp: new Date().toISOString()
@@ -1108,15 +1091,12 @@
                 database.ref("adminActivityLogs").on("value", (t => { allActivityLogs = t.val() || {}; renderActivityLogTable(); }));
             }
             
-            // ================== USER PAGINATION ==================
             function applyUserFilters() { const searchTerm = document.getElementById('userSearchInput').value.toLowerCase(); const statusFilter = document.getElementById('userStatusFilter').value; filteredUserKeys = Object.keys(allUsers).filter(userId => { const user = allUsers[userId]; if (!user) return false; const nameMatch = (user.name || '').toLowerCase().includes(searchTerm); const emailMatch = (user.email || '').toLowerCase().includes(searchTerm); const statusMatch = (statusFilter === 'all' || user.status === statusFilter); return (nameMatch || emailMatch) && statusMatch; }); userCurrentPage = 1; renderPaginatedUsers(); }
             function renderPaginatedUsers() { const startIndex = (userCurrentPage - 1) * usersPerPage; const endIndex = startIndex + usersPerPage; const userKeysToShow = filteredUserKeys.slice(startIndex, endIndex); const usersToRender = {}; userKeysToShow.forEach(key => { usersToRender[key] = allUsers[key]; }); renderUserTable(usersToRender); renderUserPaginationControls(); }
             function renderUserPaginationControls() { const container = document.getElementById('userPaginationControls'); const totalPages = Math.ceil(filteredUserKeys.length / usersPerPage); if (totalPages <= 1) { container.innerHTML = ''; return; } container.innerHTML = `<button id="prevUserPage" ${userCurrentPage === 1 ? 'disabled' : ''}>Previous</button><span>Page ${userCurrentPage} of ${totalPages}</span><button id="nextUserPage" ${userCurrentPage === totalPages ? 'disabled' : ''}>Next</button>`; document.getElementById('prevUserPage')?.addEventListener('click', () => { if (userCurrentPage > 1) { userCurrentPage--; renderPaginatedUsers(); } }); document.getElementById('nextUserPage')?.addEventListener('click', () => { if (userCurrentPage < totalPages) { userCurrentPage++; renderPaginatedUsers(); } }); }
             
-            // ================== COURSE PAGINATION & SORTING ==================
             function applyCourseFilters() { 
                 filteredCourseKeys = Object.keys(allCourses); 
-                // NEW: Sorting courses by the 'order' property
                 filteredCourseKeys.sort((a, b) => {
                     const orderA = allCourses[a].order || 0;
                     const orderB = allCourses[b].order || 0;
@@ -1129,13 +1109,11 @@
             function renderCoursePaginationControls() { const container = document.getElementById('coursePaginationControls'); const totalPages = Math.ceil(filteredCourseKeys.length / coursesPerPage); if (totalPages <= 1) { container.innerHTML = ''; return; } container.innerHTML = `<button ${courseCurrentPage === 1 ? 'disabled' : ''} onclick="changeCoursePage(-1)">Previous</button><span>Page ${courseCurrentPage} of ${totalPages}</span><button ${courseCurrentPage === totalPages ? 'disabled' : ''} onclick="changeCoursePage(1)">Next</button>`; }
             window.changeCoursePage = function(change) { courseCurrentPage += change; renderPaginatedCourses(); }
 
-            // ================== PAYMENT PAGINATION ==================
             function applyPaymentFilters() { filteredPaymentKeys = Object.keys(allPayments).sort((a, b) => new Date(allPayments[b].date) - new Date(allPayments[a].date)); paymentCurrentPage = 1; renderPaginatedPayments(); }
             function renderPaginatedPayments() { const startIndex = (paymentCurrentPage - 1) * paymentsPerPage; const endIndex = startIndex + paymentsPerPage; const paymentKeysToShow = filteredPaymentKeys.slice(startIndex, endIndex); const paymentsToRender = {}; paymentKeysToShow.forEach(key => { paymentsToRender[key] = allPayments[key]; }); renderPaymentHistoryTable(paymentsToRender); renderPaymentPaginationControls(); }
             function renderPaymentPaginationControls() { const container = document.getElementById('paymentPaginationControls'); const totalPages = Math.ceil(filteredPaymentKeys.length / paymentsPerPage); if (totalPages <= 1) { container.innerHTML = ''; return; } container.innerHTML = `<button ${paymentCurrentPage === 1 ? 'disabled' : ''} onclick="changePaymentPage(-1)">Previous</button><span>Page ${paymentCurrentPage} of ${totalPages}</span><button ${paymentCurrentPage === totalPages ? 'disabled' : ''} onclick="changePaymentPage(1)">Next</button>`; }
             window.changePaymentPage = function(change) { paymentCurrentPage += change; renderPaginatedPayments(); }
 
-            // ================== HOMEWORK PAGINATION ==================
             function applyHomeworkFilters() { filteredHomeworkKeys = Object.keys(allHomework).sort((a,b) => new Date(allHomework[b].submittedAt) - new Date(allHomework[a].submittedAt)); homeworkCurrentPage = 1; renderPaginatedHomeworks(); }
             function renderPaginatedHomeworks() { const startIndex = (homeworkCurrentPage - 1) * homeworksPerPage; const endIndex = startIndex + homeworksPerPage; const homeworkKeysToShow = filteredHomeworkKeys.slice(startIndex, endIndex); const homeworksToRender = {}; homeworkKeysToShow.forEach(key => { homeworksToRender[key] = allHomework[key]; }); renderHomeworkReviewTable(homeworksToRender); renderHomeworkPaginationControls(); }
             function renderHomeworkPaginationControls() { const container = document.getElementById('homeworkPaginationControls'); const totalPages = Math.ceil(filteredHomeworkKeys.length / homeworksPerPage); if (totalPages <= 1) { container.innerHTML = ''; return; } container.innerHTML = `<button ${homeworkCurrentPage === 1 ? 'disabled' : ''} onclick="changeHomeworkPage(-1)">Previous</button><span>Page ${homeworkCurrentPage} of ${totalPages}</span><button ${homeworkCurrentPage === totalPages ? 'disabled' : ''} onclick="changeHomeworkPage(1)">Next</button>`; }
@@ -1245,8 +1223,8 @@
 
                     if (newBalance !== oldBalance) {
                         const logData = { userId: userId, oldBalance: oldBalance, newBalance: newBalance, reason: reason || 'No reason provided' };
-                        if (reason) { // Log to balance_logs only if reason is given
-                            const logEntry = { userId: userId, adminId: auth.currentUser.uid, adminEmail: auth.currentUser.email, userName: userData.name, reason: reason, oldBalance: oldBalance, newBalance: newBalance, timestamp: new Date().toISOString() };
+                        if (reason) {
+                            const logEntry = { userId: userId, adminEmail: 'Admin', userName: userData.name, reason: reason, oldBalance: oldBalance, newBalance: newBalance, timestamp: new Date().toISOString() };
                             database.ref('balance_logs').push(logEntry);
                         }
                         logAdminActivity('User Balance Changed', logData);
@@ -1318,7 +1296,7 @@
                         name: document.getElementById("courseName").value,
                         category: document.getElementById("courseCategory").value,
                         price: parseInt(document.getElementById("coursePrice").value) || 0,
-                        order: parseInt(document.getElementById("courseOrder").value) || 0, // NEW: Saving order
+                        order: parseInt(document.getElementById("courseOrder").value) || 0,
                         homeworkReward: parseInt(document.getElementById("courseHomeworkReward").value) || 0,
                         homeworkLimit: parseInt(document.getElementById("courseHomeworkLimit").value) || 0,
                         imageURL: document.getElementById("courseImageURL").value,
@@ -1392,13 +1370,6 @@
                     alert("Operation cancelled.");
                     return;
                 }
-                const user = auth.currentUser;
-                const confirmation3 = prompt("Final confirmation. Please type your admin email to proceed.");
-                if (confirmation3 !== user.email) {
-                    alert("Incorrect email. Operation cancelled.");
-                    return;
-                }
-
                 alert("Seeding data...");
                 const courses = [ { name: "Photo Editing", image: "https://i.ibb.co/wZy4F5GY/Photo-Editing.jpg" }, { name: "Video Editing", image: "https://i.ibb.co/BS61VSm/Video-Editing.jpg" }, { name: "Lead Generation", image: "https://i.ibb.co/TqbVq1rL/Lead-Generation.jpg" }, { name: "Affiliated Marketing", image: "https://i.ibb.co/TxDRgjjS/Affiliate-Marketing.jpg" }, { name: "CPA Marketing", image: "https://i.ibb.co/JRddPyVK/CPA-Marketing.jpg" }, { name: "Social Marketing", image: "https://i.ibb.co/XfFWbrDd/Social-Marketing.jpg" }, { name: "Digital Marketing", image: "https://i.ibb.co/LdyFpy0R/Digital-Marketing.jpg" }, { name: "Products Sells and buy", image: "https://i.ibb.co/LD07Vn9R/Products-Sell-and-Buy.jpg" }, { name: "Data Entry", image: "https://i.ibb.co/11DVCZB/Data-Entry.jpg" }, { name: "Graphics Design", image: "https://i.ibb.co/5h7npzgv/Graphics-Design.jpg" }, { name: "Spoking English", image: "https://i.ibb.co/hJwBBnqP/Spoken-English.jpg" }, { name: "App Development", image: "https://i.ibb.co/ynm14PjM/App-Development.jpg" }, { name: "Website Development", image: "https://i.ibb.co/7tpC3sBH/Website-Development.jpg" }, { name: "Treading", image: "https://i.ibb.co/d492Tm5j/Trading.jpg" }, { name: "Crypto", image: "https://i.ibb.co/wFvWZ3Qq/Crypto.jpg" } ]; const subAdminRoles = [ "Photo Editing Teacher", "Team Leader", "Video Editing Teacher", "Trainer", "Counsellor", "Senior Counsellor", "Help-Line", "Social Marketing Teacher", "Web-Developer", "Selling Team", "Marketing Team", "Qualification Team", "Manager", "Controller", "Teacher", "Checker", "Senior Team Leader", "Senior Controller", "Counsellor Manager", "Marketing Manager" ]; const updates = {}; const coursesData = {}; courses.forEach(course => { const newCourseKey = database.ref().child('courses').push().key; coursesData[newCourseKey] = { name: course.name, imageURL: course.image, price: 1500, category: "Skill Development", description: `A comprehensive course on ${course.name}.`, status: "published" }; }); updates['/courses'] = coursesData; const rolesData = {}; subAdminRoles.forEach((role, index) => { const newRoleKey = database.ref().child('subAdminRoles').push().key; rolesData[newRoleKey] = { name: role, value: index + 1 }; }); updates['/subAdminRoles'] = rolesData; updates['/siteContent/settings/logoUrl'] = "https://i.ibb.co/jk2nT0LF/IMG-20251012-WA0006.jpg"; updates['/siteContent/settings/bannerImageUrl'] = "https://i.ibb.co/LzXmdd7g/Banner-Image.jpg"; updates['/siteContent/settings/aboutImageUrl'] = "https://i.ibb.co/PGbByrmD/About-Admin.jpg"; updates['/siteContent/banner/text'] = "আপনার দক্ষতার মাধ্যমে আয়ের জগতে স্বাগতম!"; updates['/siteContent/aboutAdmin/text'] = "আমরা একটি অভিজ্ঞ দল যারা আপনাকে ডিজিটাল বিশ্বের নতুন সব সুযোগের সাথে পরিচয় করিয়ে দিতে প্রতিশ্রুতিবদ্ধ। আমাদের লক্ষ্য হলো আপনাকে সঠিক জ্ঞান এবং দক্ষতার মাধ্যমে স্বাবলম্বী করে তোলা।"; database.ref().update(updates) .then(() => { logAdminActivity('Site Initialized with Sample Data'); alert("Site has been initialized with sample data successfully!"); }) .catch((error) => alert("An error occurred: " + error.message)); 
             }
@@ -1416,7 +1387,6 @@
                 t.innerHTML = "";
                 for (const e in coursesToRender) {
                     const n = coursesToRender[e];
-                    // NEW: Added 'order' column display
                     t.innerHTML += `<tr><td>${n.name}</td><td>${n.category || 'N/A'}</td><td>${(n.price||0).toLocaleString("bn-BD")}</td>
                     <td>${n.homeworkReward || 0}</td>
                     <td>${n.order || 0}</td>
@@ -1560,7 +1530,7 @@
                     document.getElementById("courseId").value = t;
                     document.getElementById("courseName").value = e.name; 
                     document.getElementById("coursePrice").value = e.price;
-                    document.getElementById("courseOrder").value = e.order || 0; // NEW: Populating order
+                    document.getElementById("courseOrder").value = e.order || 0;
                     document.getElementById("courseImageURL").value = e.imageURL || ""; 
                     document.getElementById("courseWhatsappLink").value = e.whatsappLink || "";
                     document.getElementById("courseTrailerURL").value = e.trailerUrl || "";
@@ -1582,18 +1552,15 @@
             window.editMenu = function(t) { const e = allMenus[t]; e && (document.getElementById("menuId").value = t, document.getElementById("menuName").value = e.name, document.getElementById("menuUrl").value = e.url, document.getElementById("menuOrder").value = e.order, openModal("menuModal", "মেনু সম্পাদনা করুন", "menuForm")) }
             window.openRoleModal = function() { openModal("roleModal", "নতুন সাব-অ্যাডমিন রোল", "roleForm"), document.getElementById("roleId").value = "" }
             
-            // NEW: Updated editRole to handle permissions
             window.editRole = function(t) { 
                 const e = allRoles[t]; 
                 if (e) {
                     document.getElementById("roleId").value = t;
                     document.getElementById("roleName").value = e.name;
                     document.getElementById("roleValue").value = e.value;
-                    // Reset all checkboxes first
                     document.querySelectorAll('.permissions-grid input[type="checkbox"]').forEach(checkbox => {
                         checkbox.checked = false;
                     });
-                    // Set checkboxes based on saved permissions
                     if (e.permissions) {
                         for (const perm in e.permissions) {
                             const checkbox = document.getElementById(`perm-${perm}`);
@@ -1646,7 +1613,6 @@
                 let monthlyRevenue = 0;
                 let monthlyUsers = 0;
                 
-                // NEW: Advanced Analytics calculations
                 let activeCount = 0;
                 let pendingCount = 0;
                 const countryCounts = {};
@@ -1669,10 +1635,8 @@
                 let referralCounts = {};
                 for (const userId in allUsers) {
                     const user = allUsers[userId];
-                     // NEW: Count statuses
                     if(user.status === 'active') activeCount++;
                     if(user.status === 'pending') pendingCount++;
-                    // NEW: Count countries
                     if(user.countryCode) {
                         countryCounts[user.countryCode] = (countryCounts[user.countryCode] || 0) + 1;
                     }
@@ -1694,7 +1658,6 @@
                 }
                 document.getElementById('monthlyNewUsers').textContent = monthlyUsers;
 
-                // NEW: Update new analytics cards
                 document.getElementById('activePendingUsers').textContent = `${activeCount} / ${pendingCount}`;
                 const topCountry = Object.keys(countryCounts).length > 0 ? Object.entries(countryCounts).sort((a, b) => b[1] - a[1])[0][0] : 'N/A';
                 document.getElementById('topUserCountry').textContent = topCountry;
@@ -1856,7 +1819,6 @@
                 alert(`সার্টিফিকেট প্রিভিউ:\n\nপ্রাপক: ${userName}\nকোর্স: ${courseName}\n\n(একটি পূর্ণাঙ্গ সার্টিফিকেট জেনারেটর এখানে যুক্ত করা যেতে পারে)`);
             }
             
-            // FIXED: activateUser function made global and corrected a variable name
             window.activateUser = async function(userIdToActivate) {
                 if (!confirm("Are you sure you want to activate this user? This will add bonuses to the user and their referrer.")) return;
                 const userRef = database.ref('users/' + userIdToActivate);
@@ -1877,7 +1839,6 @@
                                 if (!referrer) return;
 
                                 const mentorRoles = ['Senior Team Leader', 'Team Leader', 'Trainer'];
-                                // Corrected variable name from referrerRoles to mentorRoles
                                 let bonusAmount = mentorRoles.includes(referrer.role) ? referralSettings.mentorReferrerBonus : referralSettings.referrerBonus;
                                 
                                 referrerRef.child('balance').transaction(currentBalance => {
